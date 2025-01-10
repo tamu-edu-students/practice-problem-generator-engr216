@@ -52,8 +52,8 @@ Feature: Log-In
 - [ ] coverage &ge; 90%
 - [ ] etc. 
 
-* Github Actions \- 2
-Acceptance Criteria(Chore)
+* Github Actions \- 2<br>
+Acceptance Criteria (Chore):
 
 Rubocop is working, Rspec is working, Cucumber is working, all backend facing
 
