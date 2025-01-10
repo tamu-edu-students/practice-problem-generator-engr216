@@ -12,7 +12,25 @@
 
 **Which stories were pulled into the Sprint?**
 
-* Log-In as a Teacher \- 2  
+* Log-In as a Teacher \- 2
+* ### Acceptance Criteria
+
+```gherkin
+Feature: Log-In
+    Scenario: Successful Log In for Teachers
+        Given Mary is a teacher in the system
+        When Mary attempts to log in with her username and password
+        And the credentials are correct
+        Then she will successfully enter webpage
+    Scenario: Unsuccessful Log In for Students
+        Given Nick is not a teacher in the system
+        When Nick attempts to log in with a username and password
+        And the credentials are incorrect
+        Then he will be prompted "Invalid Credentials" and not enter webpage
+```
+
+- [ ] coverage &ge; 90%
+- [ ] etc. 
 * Log-In as a Student \- 2  
 * Github Actions \- 2  
 * Deploy Web Page \- 2  
@@ -27,8 +45,7 @@
 **Which Stories are the 4 Developers starting with, and what are their time estimates / points?**
 
 * Kevin   
-  * **Deployment**, 1 day work time, setting up environment deployment and deployment to Heroku.  
-  * Acceptance Criteria:   
+  * **Deployment**, 1 day work time, setting up environment deployment and deployment to Heroku. 
       
 * Jordan   
   * **Log-In as a Student**, 3 days work time, have to add google oauth, @tamu sso, middleware, detecting student vs teacher  
