@@ -43,7 +43,13 @@ Students can log in and view problem types. Teachers can log in and view a stude
 
 
 * Cooper  
-  * **Select Problem Category**, 3 days work time, have to create front end page for student with dummy buttons and categories based on info from client  
+  * **Select Problem Category**, 3 days work time, have to create front end page for student with dummy buttons and categories based on info from client
+     * coverage ≥ 90% - 1 hour
+     * create front end page - 5 hours
+     * create dummy data such as categories - 1 hour
+     * pass all tests - 2 hours
+     * 2 or less rubocop issues - 1 hour
+     * create routing - 3 hours
 
 * Dhruv   
   * **Github Action**, 3 days work time, adding automation for test coverage checking, rubocop, rspec, cucumber, commit deployment, etc.  
