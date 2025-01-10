@@ -12,7 +12,7 @@
 
 **Which stories were pulled into the Sprint?**
 
-* Log-In as a Teacher \- 2<br>
+### Log-In as a Teacher \- 2<br>
 Acceptance Criteria:
 
 ```gherkin
@@ -32,7 +32,7 @@ Feature: Log-In
 - [ ] coverage &ge; 90%
 - [ ] etc.
 
-* Log-In as a Student \- 2<br>
+### Log-In as a Student \- 2<br>
 Acceptance Criteria:
 
 ```gherkin
@@ -52,7 +52,7 @@ Feature: Log-In
 - [ ] coverage &ge; 90%
 - [ ] etc. 
 
-* Github Actions \- 2<br>
+### Github Actions \- 2<br>
 Acceptance Criteria (Chore):
 
 Rubocop is working, Rspec is working, Cucumber is working, all backend facing
@@ -80,7 +80,7 @@ Acceptance Criteria (Chore):
 - [ ] Heroku Deployment
 - [ ] Database setup
 
-* Select Problem Category \- <br>
+### Select Problem Category \- 1<br>
 Acceptance Criteria:
 
 ```gherkin
@@ -97,7 +97,7 @@ Acceptance Criteria:
 
 - [ ] coverage &ge; 90%
 
-* Return Home from Page \- 1<br>
+### Return Home from Page \- 1<br>
 Acceptance Criteria:
 
 ```gherkin
@@ -113,7 +113,7 @@ Feature: Return Home
 - [ ] etc. 
 
 
-* View List of Students as a Teacher \- 1<br>
+### View List of Students as a Teacher \- 1<br>
 Acceptance Criteria:
 
 ```gherkin
