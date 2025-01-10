@@ -17,12 +17,12 @@ Students can log in and view problem types. Teachers can log in and view a stude
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
 | Log-In as a Teacher           | Person A   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92743293)                                                                       |
-| Log-In as a Student         | Person B   | 2      | [Acceptance Criteria 1](#) [Acceptance Criteria 2](#)                                                                          |
-| Github Actions               | Person C   | 2      | [Acceptance Criteria](#)                                                                                                       |
-| Deploy Web Page               | Person D   | 2      | [Acceptance Criteria 1](#) [Acceptance Criteria 2](#) [Acceptance Criteria 3](#)                                                |
-| Select Problem Category        | Person E   | 1      | [Acceptance Criteria](#)                                                                                                       |
-| Return Home from Page          | Person F   | 1      | [Acceptance Criteria](#)                                                                                                       |
-| View List of Students as a Teacher | Person G   | 1      | [Acceptance Criteria](#)                                                                                                       |
+| Log-In as a Student         | Person B   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92596818)                                                                         |
+| Github Actions               | Person C   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212651)                                                                                                       |
+| Deploy Web Page               | Person D   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213644)                                                |
+| Select Problem Category        | Person E   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92596777)                                                                                                       |
+| Return Home from Page          | Person F   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212001)                                                                                                       |
+| View List of Students as a Teacher | Person G   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)                                                                                                       |
 
 
 
