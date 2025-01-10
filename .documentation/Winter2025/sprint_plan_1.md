@@ -60,6 +60,7 @@ Rubocop is working, Rspec is working, Cucumber is working, all backend facing
 * Deploy Web Page \- 2
 Acceptance Criteria (Chore)
 
+```gherkin
     Scenario: MVC and Route Generation
         Given user wants to visit a webpage
         When user visits respective template pages
@@ -74,7 +75,7 @@ Acceptance Criteria (Chore)
          Given user wants to query the database
          When the user queries the database
          Then the user should be able to view seeded data in the database without errors
-
+```
 - [ ] Basic Ruby generation
 - [ ] Heroku Deployment
 - [ ] Database setup
