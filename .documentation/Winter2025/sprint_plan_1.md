@@ -12,8 +12,8 @@
 
 **Which stories were pulled into the Sprint?**
 
-* Log-In as a Teacher \- 2
-Acceptance Criteria
+* Log-In as a Teacher \- 2<br>
+Acceptance Criteria:
 
 ```gherkin
 Feature: Log-In
@@ -32,8 +32,8 @@ Feature: Log-In
 - [ ] coverage &ge; 90%
 - [ ] etc.
 
-* Log-In as a Student \- 2
-Acceptance Criteria
+* Log-In as a Student \- 2<br>
+Acceptance Criteria:
 
 ```gherkin
 Feature: Log-In
@@ -57,8 +57,8 @@ Acceptance Criteria(Chore)
 
 Rubocop is working, Rspec is working, Cucumber is working, all backend facing
 
-* Deploy Web Page \- 2
-Acceptance Criteria (Chore)
+* Deploy Web Page \- 2<br>
+Acceptance Criteria (Chore):
 
 ```gherkin
     Scenario: MVC and Route Generation
@@ -80,7 +80,7 @@ Acceptance Criteria (Chore)
 - [ ] Heroku Deployment
 - [ ] Database setup
 
-* Select Problem Category \- 1
+* Select Problem Category \- <br>
 Acceptance Criteria:
 
 ```gherkin
@@ -97,8 +97,8 @@ Acceptance Criteria:
 
 - [ ] coverage &ge; 90%
 
-* Return Home from Page \- 1
-Acceptance Criteria
+* Return Home from Page \- 1<br>
+Acceptance Criteria:
 
 ```gherkin
 Feature: Return Home
@@ -113,8 +113,8 @@ Feature: Return Home
 - [ ] etc. 
 
 
-* View List of Students as a Teacher \- 1
-Acceptance Criteria
+* View List of Students as a Teacher \- 1<br>
+Acceptance Criteria:
 
 ```gherkin
 Feature: View List of Students as Teacher
