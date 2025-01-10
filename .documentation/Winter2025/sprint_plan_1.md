@@ -16,20 +16,18 @@ Students can log in and view problem types. Teachers can log in and view a stude
 
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
-| Log-In as a Teacher           | None   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92743293)                                                                       |
+| Log-In as a Teacher           |    | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92743293)                                                                       |
 | Log-In as a Student         | Jordan   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92596818)                                                                         |
 | Github Actions               | Dhruv   | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212651)                                                                                                       |
 | Deploy Web Page               | Kevin   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213644)                                                |
 | Select Problem Category        | Cooper   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=92596777)                                                                                                       |
-| Return Home from Page          | None   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212001)                                                                                                       |
-| View List of Students as a Teacher | None   | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)                                                                                                       |
+| Return Home from Page          |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212001)                                                                                                       |
+| View List of Students as a Teacher |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)                                                                                                       |
+| Total Points|    | 10      |                                                                                                      |
 
 
 
 
-**How many points were pulled into the Sprint?**
-
-* 10
 
 **Which Stories are the 4 Developers starting with, and what are their time estimates / points?**
 
