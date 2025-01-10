@@ -52,8 +52,12 @@ Students can log in and view problem types. Teachers can log in and view a stude
      * create routing - 3 hours
 
 * Dhruv   
-  * **Github Action**, 3 days work time, adding automation for test coverage checking, rubocop, rspec, cucumber, commit deployment, etc.  
-
+  * **Github Action**, 3 days work time, adding automation for test coverage checking, rubocop, rspec, cucumber, commit deployment, etc.
+     * Test coverage checking - 3 hour
+     * Rubocop Automation - 1 hours
+     * Rspec Automation - 1 hour
+     * Cucumber Automation - 1 hour
+     * Commit Deployment to Heroku - 1 hour
 
 **Links:**
 
