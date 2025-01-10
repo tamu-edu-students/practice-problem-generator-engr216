@@ -141,39 +141,14 @@ Feature: View List of Students as Teacher
       
 * Jordan   
   * **Log-In as a Student**, 3 days work time, have to add google oauth, @tamu sso, middleware, detecting student vs teacher  
-  * Acceptance Criteria:   
-    Feature: Log-In  
-        Scenario: Successful Log In for Students  
-            Given John is a student in the system  
-            When John attempts to log in with his username and password  
-            And the credentials are correct  
-            Then he will successfully enter webpage  
-        Scenario: Unsuccessful Log In for Students  
-            Given Mike is not a student in the system  
-            When Mike attempts to log in with a username and password  
-            And the credentials are incorrect  
-            Then he will be prompted "Invalid Credentials" and not enter webpage  
-*  coverage ≥ 90%
 
 
 * Cooper  
   * **Select Problem Category**, 3 days work time, have to create front end page for student with dummy buttons and categories based on info from client  
-  * Acceptance Criteria:   
-    Feature: Select Problem Category  
-    Scenario: View available categories  
-        Given I am on the practice problem generator page and I am logged in as a student  
-        Then I see a list of physics categories, including "Mechanics," "Thermodynamics," "Electromagnetism,"  etc.  
-      
-      Scenario: Select a category and generate problems  
-        Given I am on the practice problem generator page and I am logged in as a student  
-        When I select the "Mechanics" category  
-        And I click on the "Generate Problems" button  
-        Then I am presented with a set of multiple-choice questions from the "Mechanics" category.  
-      
-*  coverage ≥ 90%  
+
 * Dhruv   
   * **Github Action**, 3 days work time, adding automation for test coverage checking, rubocop, rspec, cucumber, commit deployment, etc.  
-  * Acceptance Criteria: Rubocop is working, Rspec is working, Cucumber is working, all backend facing
+
 
 **Links:**
 
