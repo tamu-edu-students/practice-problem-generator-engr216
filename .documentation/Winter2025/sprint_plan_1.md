@@ -13,7 +13,7 @@
 **Which stories were pulled into the Sprint?**
 
 * Log-In as a Teacher \- 2
-* ### Acceptance Criteria
+Acceptance Criteria
 
 ```gherkin
 Feature: Log-In
@@ -30,13 +30,104 @@ Feature: Log-In
 ```
 
 - [ ] coverage &ge; 90%
+- [ ] etc.
+
+* Log-In as a Student \- 2
+Acceptance Criteria
+
+```gherkin
+Feature: Log-In
+    Scenario: Successful Log In for Students
+        Given John is a student in the system
+        When John attempts to log in with his username and password
+        And the credentials are correct
+        Then he will successfully enter webpage
+    Scenario: Unsuccessful Log In for Students
+        Given Mike is not a student in the system
+        When Mike attempts to log in with a username and password
+        And the credentials are incorrect
+        Then he will be prompted "Invalid Credentials" and not enter webpage
+```
+
+- [ ] coverage &ge; 90%
 - [ ] etc. 
-* Log-In as a Student \- 2  
-* Github Actions \- 2  
-* Deploy Web Page \- 2  
-* Select Problem Category \- 1  
-* Return Home from Page \- 1  
+
+* Github Actions \- 2
+Acceptance Criteria(Chore)
+
+Rubocop is working, Rspec is working, Cucumber is working, all backend facing
+
+* Deploy Web Page \- 2
+Acceptance Criteria (Chore)
+
+    Scenario: MVC and Route Generation
+        Given user wants to visit a webpage
+        When user visits respective template pages
+        Then the page should load that page without errors
+
+    Scenario: Deployment on Heroku
+        Given user wants to visit webpage
+        When user visits respective Heroku deployment link
+        Then the Heroku page should load version in main/master without errors
+     
+     Scenario: Database
+         Given user wants to query the database
+         When the user queries the database
+         Then the user should be able to view seeded data in the database without errors
+
+- [ ] Basic Ruby generation
+- [ ] Heroku Deployment
+- [ ] Database setup
+
+* Select Problem Category \- 1
+Acceptance Criteria:
+
+```gherkin
+  Scenario: View available categories
+    Given I am on the practice problem generator page and I am logged in as a student
+    Then I see a list of physics categories, including "Mechanics," "Thermodynamics," "Electromagnetism,"  etc.
+
+  Scenario: Select a category and generate problems
+    Given I am on the practice problem generator page and I am logged in as a student
+    When I select the "Mechanics" category
+    And I click on the "Generate Problems" button
+    Then I am presented with a set of multiple-choice questions from the "Mechanics" category.
+```
+
+- [ ] coverage &ge; 90%
+
+* Return Home from Page \- 1
+Acceptance Criteria
+
+```gherkin
+Feature: Return Home
+    Scenario: Return Home from the Problem's page
+        Given I am on the Problem's page
+        When I click on the "Home" button 
+        Then I should be redirected to the Student Home view
+
+```
+
+- [ ] coverage &ge; 90%
+- [ ] etc. 
+
+
 * View List of Students as a Teacher \- 1
+Acceptance Criteria
+
+```gherkin
+Feature: View List of Students as Teacher
+    Scenario: Access list of students from the Teacher's home page
+        Given I am logged in as a teacher user
+        And I am on the teacher Home Page
+        When I navigate to the "Students" section
+        Then I should see a list of all student users
+```
+
+- [ ] coverage &ge; 90%
+- [ ] etc. 
+
+
 
 **How many points were pulled into the Sprint?**
 
