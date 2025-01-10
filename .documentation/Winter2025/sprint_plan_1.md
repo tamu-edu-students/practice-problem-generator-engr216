@@ -8,7 +8,7 @@
 | :---: | :---: | :---: | :---: |
 | 1 | Nick | Vivek | Dhruv, Jordan, Cooper, Kevin |
 
-**Sprint Goal:** Our first sprint we are going to create a deployed web application. It will have a Log-In for students and teachers. Users can navigate between pages.
+**Sprint Goal:** Students can log in and view problem types. Teachers can log in and view a student list. Users can navigate between pages.
 
 **Which stories were pulled into the Sprint?**
 
