@@ -36,10 +36,10 @@ Students can log in and view problem types. Teachers can log in and view a stude
       
 * Jordan   
   * **Log-In as a Student** 3 days work time
-   **   Add google o auth - 3 hours
-   **   add @tamu sso and authenticate @tamu.edu - 3 hours
-   **   middleware - 8 hours
-   **   detecting student vs teacher - 3 hours
+  * Add google o auth - 3 hours
+  * add @tamu sso and authenticate @tamu.edu - 3 hours
+  * middleware - 8 hours
+  * detecting student vs teacher - 3 hours
 
 
 * Cooper  
