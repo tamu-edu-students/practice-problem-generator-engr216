@@ -40,6 +40,7 @@ Students can log in and view problem types. Teachers can log in and view a stude
   * add @tamu sso and authenticate @tamu.edu - 3 hours
   * middleware - 8 hours
   * detecting student vs teacher - 3 hours
+     * test
 
 
 * Cooper  
