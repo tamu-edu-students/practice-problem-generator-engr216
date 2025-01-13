@@ -54,8 +54,8 @@ We will be creating a Practice Problem Generator for ENGR 216\. This application
 | Feature | Lo-Fi Mock-Up View |
 | :---- | :---- |
 | Overview | ![][image2] |
-| Log-In as a teacher | ![][Images/IMG_3776.HEIC] |
-| Log-In as a student | ![][Images/IMG_3776.HEIC] |
+| Log-In as a teacher | ![](Images/IMG_3776.HEIC) |
+| Log-In as a student | ![](Images/IMG_3776.HEIC) |
 | Return home from page | ![][image5] |
 | Unlimited Problem Generator  | **![][image6]** |
 | Settings Page for Student | **![][image7]** |
