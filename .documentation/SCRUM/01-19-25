@@ -1,1 +1,43 @@
+# Sprint Update - Tuesday, January 19th
+
+### Attendance:
+- **ALL**
+
+### Sprint Goal Restated
+
+### Votes:
+
+#### First of Five Votes:
+| Person   | First Vote | Explanation (First Vote)                                               |
+|----------|------------|-------------------------------------------------------------------------|
+| Dhruv    | 4          | Has made good progress with his "actions"                        |
+| Jordan   | 4          | Jordan feels we are at a good pace to completion       |
+| Kevin    | 3          | Spent a couple hours on his feature and forgot about testing, believes it'll take a while            |
+| Cooper   | 5          | Feels he has gotten a good amount done in his personal development                                  |
+
+#### Second of Five Votes:
+| Person   | Second Vote | Explanation (Second Vote)                                             |
+|----------|-------------|-------------------------------------------------------------------------|
+| Dhruv    | 4           | Needs some more time to complete his actions                                                                        |
+| Jordan   | 3           | Jordan needs others to finish their stories before he can make real progress                                                                        |
+| Kevin    | 3           | Kevin needs some more time to get comfortable with Rspec and testing |
+| Cooper   | 4           | Cooper needs a little bit more time to get full coverage                                                                        |
+
+### Actionable Plan
+
+#### Current Tasks:
+- **Dhruv:** Dhruv is one third of the way done, 2-3 hours left, finished Rubocop
+- **Jordan:** Not Started, still waiting for other stories
+- **Kevin:** Has not found time, needs one good afternoon (2 hours) to knock out his story
+- **Cooper:** Has finished basic HTML page, needs to add coverage, (2-3 hours)
+
+#### Next Tasks:
+- **Dhruv:** Still working on actions
+  - **Time Estimate:** 2-3 hours, test coverage control and auto deployment
+- **Jordan:** Log In as a student
+  - **Time Estimate:** same time estimate (8 hours), waiting for landing pages
+- **Kevin:** Create landing pages  
+  - **Time Estimate:** 2 hours, just barebones home, student and teacher page, including routing
+- **Cooper:** Selecting problem category, routes to problem page
+  - **Time Estimate:** 2-3 hours, adding coverage
 
