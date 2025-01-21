@@ -50,6 +50,10 @@ group :development do
   gem "web-console"
 end
 
+group :test do 
+  gem 'rspec-rails'
+end
+
 group :production do
   gem "pg" # for Heroku deployment
 end
