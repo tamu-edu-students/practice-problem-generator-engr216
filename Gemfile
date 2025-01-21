@@ -50,8 +50,9 @@ group :development do
   gem "web-console"
 end
 
-group :test do 
-  gem 'rspec-rails'
+group :test do
+  gem "rspec-rails"
+  gem "capybara"
 end
 
 group :production do
