@@ -1,0 +1,12 @@
+<h1>Questions for <%= @category.name %></h1>
+
+<% @questions.each do |q| %>
+  <p><strong>Question:</strong> <%= q[:question] %></p>
+  <ul>
+    <% q[:choices].each do |choice| %>
+      <li><%= choice %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to "Back to Categories", root_path %>
