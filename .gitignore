@@ -35,3 +35,6 @@
 
 # Ignore vendor/bundle
 /vendor/bundle
+
+# Ignore simplecov coverage reports
+/coverage/

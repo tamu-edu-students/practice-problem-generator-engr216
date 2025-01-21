@@ -4,8 +4,15 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-
 require 'cucumber/rails'
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/features/'
+end
+
+SimpleCov.command_name 'Cucumber'
+SimpleCov.coverage_dir 'coverage'
+SimpleCov.merge_timeout 3600
 
 Rails.env = 'test'
 
@@ -31,7 +38,7 @@ ActionController::Base.allow_rescue = false
 begin
   DatabaseCleaner.strategy = :transaction
 rescue NameError
-  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
+  raise 'You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it.'
 end
 
 # You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
