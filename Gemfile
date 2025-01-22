@@ -43,6 +43,9 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
 
+  # Explicitly adding RuboCop in case of custom configurations
+  gem "rubocop", require: false
+
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
