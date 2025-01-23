@@ -1,0 +1,42 @@
+name: RuboCop Linter
+
+on:
+  push:
+    branches:
+      - "**" 
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.4" 
+
+      - name: Install dependencies
+        run: |
+          bundle install --jobs 4 --retry 3
+
+      - name: Verify jq installation
+        run: |
+          if ! command -v jq &> /dev/null; then
+            echo "jq not found! Installing..."
+            sudo apt-get update && sudo apt-get install -y jq
+          else
+            echo "jq is already installed."
+          fi
+
+      - name: Run RuboCop
+        id: rubocop
+        run: |
+          offenses=$(bundle exec rubocop --format json | jq '.summary.offense_count')
+          echo "Rubocop offenses found: $offenses"
+          if [ "$offenses" -ge 4 ]; then
+            echo "More than 3 offenses found, failing the workflow!"
+            exit 1
+          fi

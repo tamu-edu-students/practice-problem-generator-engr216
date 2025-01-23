@@ -25,4 +25,6 @@ students.each do |student|
   Student.create!(student)
 end
 
+Category.create([{ name: "Mechanics" }, { name: "Thermodynamics" }, { name: "Electromagnetism" }])
+
 puts "Seeded #{Student.count} students!"
