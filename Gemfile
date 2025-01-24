@@ -44,7 +44,6 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
 
   # Explicitly adding RuboCop in case of custom configurations
-  gem "rubocop", require: false
 
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
@@ -60,8 +59,7 @@ group :development do
 end
 
 group :test do
-  gem "rspec-rails"
-  gem "capybara"
+    gem "capybara"
 end
 
 group :production do
@@ -72,3 +70,8 @@ group :test do
   gem 'rails-controller-testing'
   gem 'simplecov', require: false
 end
+
+
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
