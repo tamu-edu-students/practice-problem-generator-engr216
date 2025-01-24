@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   resources :students
-  root to: redirect("/students")
 
   get "login", to: "pages#login", as: "login"
   root to: "pages#login"
