@@ -91,8 +91,12 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   # 
+=======
+  #
+>>>>>>> 0e821a3a3ed421d7c0118910a07caff90e6cc2d1
   SimpleCov.start 'rails' do
     add_filter '/spec/'
   end
