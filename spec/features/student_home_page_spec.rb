@@ -6,5 +6,9 @@ RSpec.feature "Student Home Page", type: :feature do
     visit student_home_path
 
     expect(page).to have_selector("h1", text: "Student Home")
+
+    click_button "Problem-type 1"
+    expect(current_path).to eq(problem_type_1_path)
+
   end
 end
