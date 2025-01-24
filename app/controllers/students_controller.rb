@@ -1,6 +1,6 @@
 class StudentsController < ApplicationController
+  before_action :authorize_student
   before_action :set_student, only: %i[show edit update destroy]
-
   # GET /students or /students.json
   def index
     @students = Student.all
