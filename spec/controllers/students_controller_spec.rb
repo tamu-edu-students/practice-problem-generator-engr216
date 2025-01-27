@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
   let(:valid_attributes) { { first_name: 'John', last_name: 'Doe', uin: '123456789' } }
+  let(:invalid_attributes) { { first_name: '', last_name: '', uin: '' } }
   let!(:student) { Student.create(valid_attributes) }
 
   describe 'GET #index' do
@@ -45,6 +46,19 @@ RSpec.describe StudentsController, type: :controller do
         expect(response).to redirect_to(Student.last)
       end
     end
+
+    context 'with invalid params' do
+      it 'does not create a new Student' do
+        expect do
+          post :create, params: { student: invalid_attributes }
+        end.not_to change(Student, :count)
+      end
+
+      it 'renders the new template' do
+        post :create, params: { student: invalid_attributes }
+        expect(response).to render_template(:new)
+      end
+    end
   end
 
   describe 'PATCH #update' do
@@ -66,6 +80,13 @@ RSpec.describe StudentsController, type: :controller do
       it 'redirects to the student' do
         patch :update, params: { id: student.id, student: new_attributes }
         expect(response).to redirect_to(student)
+      end
+    end
+
+    context 'with invalid params' do
+      it 'renders the edit template' do
+        patch :update, params: { id: student.id, student: invalid_attributes }
+        expect(response).to render_template(:edit)
       end
     end
   end
