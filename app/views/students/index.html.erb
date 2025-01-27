@@ -3,6 +3,9 @@
 <% content_for :title, "Students" %>
 
 <h1>Students</h1>
+<h2>
+  <%= link_to "Go to Practice Problems", practice_problems_path, class: "btn btn-primary btn-lg" %>
+</h2>
 
 <div id="students">
   <% @students.each do |student| %>
