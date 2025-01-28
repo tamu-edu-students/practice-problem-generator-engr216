@@ -51,33 +51,34 @@ Students can log in and view problem types. Teachers can log in and view a stude
    - **Changes Made:** Implemented CI/CD rules for the repo such as auto test coverage and rubocop checks when building on push in GitHub. Also set up auto deployment to Heroku when changes are made to main.  
    - **Reason for Changes:** Streamline development and ensure code quality.
 
-5. **View List of Students as a Teacher**  
+4. **View List of Students as a Teacher**  
    - **Developer:** Cooper Calk  
    - **Status:** In Progress  
    - **Test Cases:** [Link](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)  
    - **Changes Made:** Made list of students available to teachers to view.  
    - **Reason for Changes:** To allow teacher users to see the students using the app and enable future interactions.
 
-6. **Log-In as a Student**  
+5. **Log-In as a Student**  
    - **Developer:** Jordan Daryanani 
    - **Status:** Completed  
    - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/6)  
-   - **Changes Made:** [Not provided]  
-   - **Reason for Changes:** [Not provided]
+   - **Changes Made:** Changed the login page buttons to link to OAuth. Set up OAuth tokens, automatically creating Student users if a student is not already created. Added middleware (students can not view teacher pages). This allows for additional security and confidentiality as students cannot view each other’s scores.
+   - **Reason for Changes:** Allows teachers and students to be separated into their respective pages and allows for additional security.
 
-7. **Return Home from Page**  
+6. **Return Home from Page**  
    - **Developer:** Kevin Shi
    - **Status:** Completed  
    - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/3)  
    - **Changes Made:** Created problems page and student home view, and respective buttons to navigate back and forth. Added routing between them based on Rspec and Cucumber tests.  
    - **Reason for Changes:** To provide proper navigation for the student user.
 
-8. **Log-In as a Teacher**  
+7. **Log-In as a Teacher**  
    - **Developer:** Jordan Daryanani  
    - **Status:** Completed  
    - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/5)  
-   - **Changes Made:** [Not provided]  
-   - **Reason for Changes:** [Not provided]
+   - **Changes Made:** Added middleware (Teacher’s cannot view student pages as a student). Teacher login button logs in as a teacher and correctly brings them to their page.
+   - **Reason for Changes:** Allows teachers and students to be separated into their respective pages and allows for additional security.
+
 
 ---
 
