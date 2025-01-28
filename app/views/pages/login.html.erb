@@ -1,0 +1,4 @@
+<!-- app/views/pages/login.html.erb -->
+<h1>Login</h1>
+<p><%= button_to "Login as Teacher", "/auth/google_oauth2?state=teacher", data: { turbo: "false" } %></p>
+<p><%= button_to "Login as Student", "/auth/google_oauth2?state=student", data: { turbo: "false" } %></p>
