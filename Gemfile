@@ -43,7 +43,6 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
 
-
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
@@ -58,7 +57,7 @@ group :development do
 end
 
 group :test do
-    gem "capybara"
+  gem 'capybara'
 end
 
 group :production do
@@ -69,7 +68,6 @@ group :test do
   gem 'rails-controller-testing'
   gem 'simplecov', require: false
 end
-
 
 gem 'omniauth'
 gem 'omniauth-google-oauth2'

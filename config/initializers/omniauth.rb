@@ -1,6 +1,6 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
     # Retrieve the Google credentials from Rails credentials
-    google_credentials = Rails.application.credentials.google
+    google_credentials = Rails.application.credentials.google_oauth
   
     # Configure the Google OAuth provider with the client_id and client_secret
     provider :google_oauth2, google_credentials[:client_id], google_credentials[:client_secret], {
@@ -9,4 +9,4 @@ Rails.application.config.middleware.use OmniAuth::Builder do
         image_aspect_ratio: 'square', # Ensures the profile picture is a square.
         image_size: 50, # Sets the profile picture size to 50x50 pixels.
       }
-  end
+end
