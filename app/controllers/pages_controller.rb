@@ -9,5 +9,5 @@ class PagesController < ApplicationController
 
   def teacher_home; end
 
-  def problem_type_1; end
+  def problem_type1; end
 end

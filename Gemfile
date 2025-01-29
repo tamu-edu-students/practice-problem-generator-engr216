@@ -58,15 +58,12 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'rails-controller-testing'
+  gem 'simplecov', require: false
 end
 
 group :production do
   gem 'pg' # for Heroku deployment
-end
-
-group :test do
-  gem 'rails-controller-testing'
-  gem 'simplecov', require: false
 end
 
 gem 'omniauth'

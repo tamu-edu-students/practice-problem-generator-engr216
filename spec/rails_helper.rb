@@ -64,4 +64,7 @@ RSpec.configure do |config|
   SimpleCov.command_name 'RSpec'
   SimpleCov.coverage_dir 'coverage'
   SimpleCov.merge_timeout 3600
+
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.allowed_request_methods = %i[get post]
 end

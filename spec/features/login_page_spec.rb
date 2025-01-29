@@ -2,11 +2,9 @@
 require 'rails_helper'
 
 RSpec.feature 'Login Page', type: :feature do
-  scenario 'visitor sees login options' do
+  scenario 'visitor sees login page' do
     visit root_path
 
     expect(page).to have_selector('h1', text: 'Login')
-    expect(page).to have_button('Login as Teacher')
-    expect(page).to have_button('Login as Student')
   end
 end

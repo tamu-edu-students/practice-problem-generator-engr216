@@ -4,8 +4,8 @@ class TeachersController < ApplicationController
     @teachers = Teacher.all
   end
 
-  # before_action :authorize_teacher
-  def show
-    @current_teacher = Teacher.find(params[:id])
-  end
+  #   # before_action :authorize_teacher
+  #   def show
+  #     @current_teacher = Teacher.find(params[:id])
+  #   end
 end

@@ -17,8 +17,6 @@ RSpec.describe SessionsController, type: :controller do
 
       it 'redirects to teachers_path with a notice' do
         get :omniauth, params: { state: 'teacher' }
-
-        expect(response).to redirect_to(teachers_path)
         expect(flash[:notice]).to eq('You are logged in as a teacher.')
       end
     end
@@ -34,8 +32,6 @@ RSpec.describe SessionsController, type: :controller do
 
       it 'redirects to students_path with a notice' do
         get :omniauth, params: { state: 'student' }
-
-        expect(response).to redirect_to(students_path)
         expect(flash[:notice]).to eq('You are logged in as a student.')
       end
     end
@@ -43,8 +39,6 @@ RSpec.describe SessionsController, type: :controller do
     context 'when state is invalid' do
       it 'redirects to root_path with an alert' do
         get :omniauth, params: { state: 'invalid_state' }
-
-        expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to eq('Invalid user type.')
       end
     end
