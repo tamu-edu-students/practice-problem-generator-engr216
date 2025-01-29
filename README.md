@@ -53,5 +53,9 @@ heroku run rails db:seed
 heroku open
 ```
 
+## Contact
+- phone: 512-975-6499
+- email: vivek.somarapu@tamu.edu
+
 ### Current deployment: 
 https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/students
