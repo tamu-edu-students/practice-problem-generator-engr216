@@ -18,39 +18,39 @@ $ cd practice-problem-generator-engr216
 ```
 ### Install Dependencies:
 ```bash
-$ bundle install
-$ rails db:migrate
-$ rails db:seed
+bundle install
+rails db:migrate
+rails db:seed
 ```
 ### View page
 ```bash
-$ rails server
+rails server
 ```
 
 ## Running Tests
 ```bash
-$ bundle exec rspec
+bundle exec rspec
 ```
 ```bash
-$ bundle exec cucumber
+bundle exec cucumber
 ```
 
 ## Deployment
 
 ```bash
-$ heroku login
+heroku login
 ```
 ```bash
-$ git push heroku main
+git push heroku main
 ```
 ```bash
-$ heroku run rails db:migrate
+heroku run rails db:migrate
 ```
 ```bash
-$ heroku run rails db:seed
+heroku run rails db:seed
 ```
 ```bash
-$ heroku open
+heroku open
 ```
 
 ### Current deployment: 
