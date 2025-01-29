@@ -1,28 +1,33 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Practice Problem Generator for ENGR216
 
-Things you may want to cover:
+Getting Started
+Follow the steps below to set up and run this project on your local development environment.
 
-* Ruby version
+Prerequisites
+Ruby: 3.3.4 
+Rails: 8.0.1
 
-* System dependencies
+Setup
+Clone the repository:
+$ git clone https://github.com/tamu-edu-students/practice-problem-generator-engr216.git
+$ cd practice-problem-generator-engr216
+$ bundle install
+$ rails db:migrate
+$ rails db:seed
+$ rails server
 
-* Configuration
+Running Tests
 
-* Database creation
+$ bundle exec rspec 
+$ bundle exec cucumber
 
-* Database initialization
+Deployment
+$ heroku login
+$ git push heroku main
+$ heroku run rails db:migrate
+$ heroku run rails db:seed
+$ heroku open
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-# practice-problem-generator-engr216
-
-link: https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/students
+Current deployment: https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/students
