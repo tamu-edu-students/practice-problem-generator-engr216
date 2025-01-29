@@ -55,7 +55,7 @@ heroku open
 
 ## Contact
 #### Phone: 512-975-6499
-#### email: vivek.somarapu@tamu.edu
+#### Email: vivek.somarapu@tamu.edu
 
 ### Current deployment: 
 https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/students
