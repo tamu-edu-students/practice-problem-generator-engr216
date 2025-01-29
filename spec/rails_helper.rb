@@ -3,19 +3,12 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
-<<<<<<< HEAD
-abort("The Rails environment is running in production mode!") if Rails.env.production?
-# Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
-# that will avoid rails generators crashing because migrations haven't been run yet
-# return unless Rails.env.test?
-require 'rspec/rails'
-# Add additional requires below this line. Rails is not loaded until this point!
-=======
+
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'simplecov'
->>>>>>> bd6bae44ee879d87ccaa170d16ccff8a9ddfebea
+
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -53,46 +46,19 @@ RSpec.configure do |config|
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
-<<<<<<< HEAD
-  # RSpec Rails uses metadata to mix in different behaviours to your tests,
-  # for example enabling you to call `get` and `post` in request specs. e.g.:
-  #
-  #     RSpec.describe UsersController, type: :request do
-=======
-  # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
-  #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
-  #
-  #     RSpec.describe UsersController, type: :controller do
->>>>>>> bd6bae44ee879d87ccaa170d16ccff8a9ddfebea
   #       # ...
   #     end
   #
   # The different available types are documented in the features, such as in
-<<<<<<< HEAD
-  # https://rspec.info/features/7-0/rspec-rails
-  #
-  # You can also this infer these behaviours automatically by location, e.g.
-  # /spec/models would pull in the same behaviour as `type: :model` but this
-  # behaviour is considered legacy and will be removed in a future version.
-  #
-  # To enable this behaviour uncomment the line below.
-  # config.infer_spec_type_from_file_location!
-=======
   # https://rspec.info/features/6-0/rspec-rails
   config.infer_spec_type_from_file_location!
->>>>>>> bd6bae44ee879d87ccaa170d16ccff8a9ddfebea
+
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-<<<<<<< HEAD
-=======
-  # 
+
   SimpleCov.start 'rails' do
     add_filter '/spec/'
   end
@@ -100,5 +66,5 @@ RSpec.configure do |config|
   SimpleCov.command_name 'RSpec'
   SimpleCov.coverage_dir 'coverage'
   SimpleCov.merge_timeout 3600
->>>>>>> bd6bae44ee879d87ccaa170d16ccff8a9ddfebea
+
 end
