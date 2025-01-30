@@ -35,25 +35,25 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
  
 * Dhruv   
   * **Styling Login page** 2 Hours
-     * Design - 1Hr
-     * Implementation - 1Hr
+     * Design - 1 Hour
+     * Implementation - 1 Hour
 
 * Vivek  
   * **Student Dashboard**, 4.5 Hours
      * Design - 30 Minutes
-     * Implementation - 2 Hrs
-     * Testing - 2 Hrs
+     * Implementation - 2 Hours
+     * Testing - 2 Hours
 
 * Nick   
   * **Settings Page**, 3.5 Hours
      * Design - 30 Minutes
      * Set Up Routing - 1 Hour
-     * Implement & Testing - 2 Hour
+     * Implement & Testing - 2 Hours
      
 * Kevin   
   * **Design Teacher Dashboard**, 3 Hours
-     * Design - 1Hr
-     * Implementation - 2Hr
+     * Design - 1 Hour
+     * Implementation - 2 Hours
 
 
 **Links:**
