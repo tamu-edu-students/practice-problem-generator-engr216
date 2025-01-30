@@ -18,7 +18,7 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
 | Styling Login Page           |  Dhruv  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902096)                                                                       |
-| Student Dashboard         |  Vivek  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=93212857)                                                                         |
+| Student Dashboard         |  Vivek  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902028)                                                                         |
 | Settings Page              |  Nick  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212651)                                                                                                       |
 | Design Teacher Dashboard               |  Kevin  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902035)                                                |
 | Generate Problem Page for Student |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902663)                                                                                                       |
@@ -32,34 +32,29 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
 
 
 **Which Stories are the 4 Developers starting with, and what are their time estimates / points?**
-
-* Kevin   
-  * **Deployment**, 1 day work time, setting up environment deployment and deployment to Heroku. 
-      
-* Jordan   
-  * **Log-In as a Student** 3 days work time
-     * Add google o auth - 3 hours
-     * add @tamu sso and authenticate @tamu.edu - 3 hours
-     * middleware - 8 hours
-     * detecting student vs teacher - 3 hours
-
-
-* Cooper  
-  * **Select Problem Category**, 3 days work time, have to create front end page for student with dummy buttons and categories based on info from client
-     * coverage ≥ 90% - 1 hour
-     * create front end page - 5 hours
-     * create dummy data such as categories - 1 hour
-     * pass all tests - 2 hours
-     * 2 or less rubocop issues - 1 hour
-     * create routing - 3 hours
-
+ 
 * Dhruv   
-  * **Github Action**, 3 days work time, adding automation for test coverage checking, rubocop, rspec, cucumber, commit deployment, etc.
-     * Test coverage checking - 3 hour
-     * Rubocop Automation - 1 hours
-     * Rspec Automation - 1 hour
-     * Cucumber Automation - 1 hour
-     * Commit Deployment to Heroku - 1 hour
+  * **Styling Login page** 2 Hours
+     * Design - 1Hr
+     * Implementation - 1Hr
+
+* Vivek  
+  * **Student Dashboard**, 4.5 Hours
+     * Design - 30 Minutes
+     * Implementation - 2 Hrs
+     * Testing - 2 Hrs
+
+* Nick   
+  * **Settings Page**, 3.5 Hours
+     * Design - 30 Minutes
+     * Set Up Routing - 1 Hour
+     * Implement & Testing - 2 Hour
+     
+* Kevin   
+  * **Design Teacher Dashboard**, 3 Hours
+  * Design - 1Hr
+  * Implementation - 2Hr
+
 
 **Links:**
 
