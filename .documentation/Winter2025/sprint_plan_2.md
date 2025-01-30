@@ -1,15 +1,16 @@
 
 
-# Team Bulbasaur Sprint 1 Plan
+# Team Bulbasaur Sprint 2 Plan
 
 **Team Roles:**
 
 | Sprint | Scrum Master | Product Owner | Developers |
 | :---: | :---: | :---: | :---: |
 | 1 | Nick | Vivek | Dhruv, Jordan, Cooper, Kevin |
+| 1 | Jordan | Cooper | Dhruv, Nick, Vivek, Kevin |
 
 ### Sprint Goal
-Students can log in and view problem types. Teachers can log in and view a student list. Users can navigate between pages. <br>
+Students can view a non-functional student dashboard. Teachers can view a non-functional teacher dashboard. Users can login and be brought to their respective dashboard. <br>
 
 
 **Which stories were pulled into the Sprint?**
