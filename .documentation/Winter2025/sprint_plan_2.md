@@ -17,15 +17,15 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
 
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
-| Functional Login Page           |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902096)                                                                       |
-| Student Dashboard         |  Vivek  | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=93212857)                                                                         |
+| Styling Login Page           |  Dhruv  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902096)                                                                       |
+| Student Dashboard         |  Vivek  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=93212857)                                                                         |
 | Settings Page              |  Nick  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93212651)                                                                                                       |
-| Design Teacher Dashboard               |    | 2      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902035)                                                |
+| Design Teacher Dashboard               |  Kevin  | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902035)                                                |
+| Generate Problem Page for Student |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902663)                                                                                                       |
 | History Page for Student        |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902170)                                                                                                       |
 | Manage Student Page for Teacher          |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902340)                                                                                                       |
 | Student Statistic Page for Teacher |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902403)                                                                                                       |
-| Styling Login Page |    | 1      | [Acceptance Criteria](https://github.com/orgs/tamu-edu-students/projects/87/views/1?filterQuery=&pane=issue&itemId=95902096)                                                                                                       |
-| Total Points|    | 10      |                                                                                                      |
+| Total Points|    | 8      |                                                                                                      |
 
 
 
