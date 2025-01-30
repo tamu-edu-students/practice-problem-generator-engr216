@@ -124,10 +124,11 @@ Testing covers: code smells, style offenses, and coverage.
 
 ## Customer Feedback
 
-- **Customer Meeting Date & Time:** [Date, Time, Location]
+- **Customer Meeting Date & Time:** [Jan 30, 2024, 1:00 P.M, Zach 425 F]
 - **Summary of Discussion and Feedback:**
-  - [Provide details of the feedback received during the customer demo and meeting.]
-  - [Explain how this feedback will affect the next sprint.]
+  - Client prioritizes ui/ux and would like to see a user friendly interface that is easy to interact with
+  - Specific features to add: Track the time it takes for students to finish a problem type, back buttons for every page rather than just a home button
+  - We will focus the design of pages rather than full implementations of features for the next sprint. 
 
 ## Deployment and Environment Setup
 
