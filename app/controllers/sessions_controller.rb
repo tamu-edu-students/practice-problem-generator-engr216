@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
       # if @teacher.valid?
       #   session[:user_id] = @teacher.id
       #   session[:user_type] = 'teacher'
-      redirect_to teachers_path, notice: t('teacher.logged_in')
+      redirect_to students_path, notice: t('teacher.logged_in')
       # else
       #   redirect_to root_path, alert: 'Login failed.'
       # end
@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
       # if @student.valid?
       #   session[:user_id] = @student.id
       #   session[:user_type] = 'student'
-      redirect_to students_path, notice: t('student.logged_in')
+      redirect_to practice_problems_path, notice: t('student.logged_in')
       # else
       #   redirect_to root_path, alert: 'Login failed.'
       # end
