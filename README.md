@@ -48,6 +48,9 @@ bundle exec cucumber
 heroku login
 ```
 ```bash
+heroku create temp-app
+```
+```bash
 git push heroku main
 ```
 ```bash
