@@ -22,6 +22,13 @@ bundle install
 rails db:migrate
 rails db:seed
 ```
+### Setting up Environment Variables
+Create a `.env` file in the root of the project directory:
+```
+GOOGLE_CLIENT_ID=497801265275-2ee9flnfs8sn8lkip8l50q1c8v42solo.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+```
+
 ### View page
 ```bash
 rails server
