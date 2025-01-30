@@ -7,7 +7,7 @@
 | Sprint | Scrum Master | Product Owner | Developers |
 | :---: | :---: | :---: | :---: |
 | 1 | Nick | Vivek | Dhruv, Jordan, Cooper, Kevin |
-| 1 | Jordan | Cooper | Dhruv, Nick, Vivek, Kevin |
+| 2 | Jordan | Cooper | Dhruv, Nick, Vivek, Kevin |
 
 ### Sprint Goal
 Students can view a non-functional student dashboard. Teachers can view a non-functional teacher dashboard. Users can login and be brought to their respective dashboard. <br>
