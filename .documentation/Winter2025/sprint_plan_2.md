@@ -52,8 +52,8 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
      
 * Kevin   
   * **Design Teacher Dashboard**, 3 Hours
-  * Design - 1Hr
-  * Implementation - 2Hr
+     * Design - 1Hr
+     * Implementation - 2Hr
 
 
 **Links:**
