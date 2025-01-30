@@ -38,3 +38,6 @@
 
 # Ignore simplecov coverage reports
 /coverage/
+
+
+.env
