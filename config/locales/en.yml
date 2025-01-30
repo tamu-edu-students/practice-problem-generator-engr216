@@ -30,6 +30,14 @@
 en:
   hello: "Hello world"
   student:
-    created: 'Student was successfully created.'
-    updated: 'Student was successfully updated.'
-    destroyed: 'Student was successfully destroyed.'
+    created: "Student was successfully created."
+    updated: "Student was successfully updated."
+    destroyed: "Student was successfully destroyed."
+    logged_in: "You are logged in as a student."
+  teacher:
+    logged_in: "You are logged in as a teacher."
+  sessions:
+    invalid_user_type: "Invalid user type."
+
+
+    

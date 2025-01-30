@@ -9,7 +9,6 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'simplecov'
 
-
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -53,7 +52,6 @@ RSpec.configure do |config|
   # https://rspec.info/features/6-0/rspec-rails
   config.infer_spec_type_from_file_location!
 
-
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
@@ -67,4 +65,6 @@ RSpec.configure do |config|
   SimpleCov.coverage_dir 'coverage'
   SimpleCov.merge_timeout 3600
 
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.allowed_request_methods = %i[get post]
 end

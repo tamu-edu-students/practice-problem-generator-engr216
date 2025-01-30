@@ -1,18 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe "Sessions", type: :request do
-  describe "GET /logout" do
-    it "returns http success" do
-      get "/sessions/logout"
-      expect(response).to have_http_status(:success)
-    end
+describe 'GET /omniauth' do
+  it 'redirects to the appropriate path' do
+    get '/auth/google_oauth2/callback', params: { state: 'teacher' }
+    expect(response).to redirect_to(teachers_path)
   end
-
-  describe "GET /omniauth" do
-    it "returns http success" do
-      get "/sessions/omniauth"
-      expect(response).to have_http_status(:success)
-    end
-  end
-
 end
