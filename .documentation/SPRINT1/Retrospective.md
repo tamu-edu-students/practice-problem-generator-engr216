@@ -2,9 +2,9 @@
 
 ## Sprint Overview
 
-- **Sprint Number:** X
-- **Sprint Dates:** [Start Date] - [End Date]
-- 
+- **Sprint Number:** 1
+- **Sprint Dates:** 01/10/25 - 01/24/25
+  
 ### Team Members and Roles:
 
 | Role               | Name              | Points Completed |
@@ -82,18 +82,19 @@ Students can log in and view problem types. Teachers can log in and view a stude
 
 ---
 
-## Sprint Backlog Items and Status
+## Sprint Backlog Items, Status, and Testing
 
-| Item # | User Story                          | Status     | Notes |
-|--------|-------------------------------------|------------|-------|
-| 1      | Deploy Web Page                  | Completed  | [Details] |
-| 2      | Select Problem Category           | Completed  | [Details] |
-| 3      | Github Actions                    | Completed  | [Details] |
-| 4      | View List of Students as a Teacher | In Progress| [Details] |
-| 5      | Log-In as a Student               | Completed  | [Details] |
-| 6      | Return Home from Page             | Completed  | [Details] |
-| 7      | Log-In as a Teacher               | Completed  | [Details] |
+Testing covers: code smells, style offenses, and coverage.
 
+| Item # | User Story                          | Status       | Notes                                                                 |
+|--------|-------------------------------------|--------------|-----------------------------------------------------------------------|
+| 1      | Deploy Web Page                     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
+| 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: Small offenses (spacing, quotes), autofixed by RuboCop<br>Coverage: 100% with RSpec and Cucumber |
+| 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None (Duplicate gem in Gemfile removed)<br>Coverage: No coverage check, tested manually |
+| 4      | View List of Students as a Teacher  | In Progress  | Coding Smells: None<br>Style Offenses: None<br>Coverage: 0% (Not started, waiting on Item 7) |
+| 5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
+| 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
+| 7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
 
 ---
 
@@ -127,16 +128,6 @@ Students can log in and view problem types. Teachers can log in and view a stude
 - **Summary of Discussion and Feedback:**
   - [Provide details of the feedback received during the customer demo and meeting.]
   - [Explain how this feedback will affect the next sprint.]
-
----
-
-## Testing
-
-- **Smells:** [List any potential code smells identified during testing]
-- **Style Offenses:** [List any style offenses encountered]
-- **Coverage:** [Provide details on test coverage, including Cucumber and RSpec results]
-
----
 
 ## Deployment and Environment Setup
 
