@@ -13,10 +13,10 @@
 | Scrum Master (SM)  | Nicholas Turoci            | N/A              |
 | Developer (Dev)    | Dhruv Manihar| 2         |
 | Developer (Dev)    | Kevin Shi| 2        |
-| Developer (Dev)    | Cooper Calk| 1         |
+| Developer (Dev)    | Cooper Calk| 2         |
 | Developer (Dev)    | Jordan Daryanani| 4        |
 
-**Total Points Completed:**[9 Points
+**Total Points Completed:** 10 Points
 
 ---
 
@@ -91,7 +91,7 @@ Testing covers: code smells, style offenses, and coverage.
 | 1      | Deploy Web Page                     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
 | 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: Small offenses (spacing, quotes), autofixed by RuboCop<br>Coverage: 100% with RSpec and Cucumber |
 | 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None (Duplicate gem in Gemfile removed)<br>Coverage: No coverage check, tested manually |
-| 4      | View List of Students as a Teacher  | In Progress  | Coding Smells: None<br>Style Offenses: None<br>Coverage: 0% (Not started, waiting on Item 7) |
+| 4      | View List of Students as a Teacher  | Completed | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.59% (Not started, waiting on Item 7) |
 | 5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
 | 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
 | 7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
@@ -134,4 +134,47 @@ Testing covers: code smells, style offenses, and coverage.
 
 1. **Clone the Repository:**
    ```bash
-   git clone [Repo URL]
+   git clone https://github.com/tamu-edu-students/practice-problem-generator-engr216.git
+   cd practice-problem-generator-engr216
+   ```
+
+2. **Install Dependencies:**
+   ```bash
+   bundle install
+   rails db:migrate
+   rails db:seed
+   ```
+
+3. **Create a `.env` File with Google Credentials:**
+   ```bash
+   GOOGLE_CLIENT_ID=497801265275-2ee9flnfs8sn8lkip8l50q1c8v42solo.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=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
+   ```
+
+4. **Login to Heroku:**
+   ```bash
+   heroku login
+   ```
+
+5. **Create a New Heroku App:**
+   ```bash
+   heroku create temp-app
+   ```
+
+6. **Push the Code to Heroku:**
+   ```bash
+   git push heroku main
+   ```
+
+7. **Run Migrations on Heroku:**
+   ```bash
+   heroku run rails db:migrate
+   heroku run rails db:seed
+   ```
+
+8. **Open the App:**
+   ```bash
+   heroku open
+   ```
+
+
