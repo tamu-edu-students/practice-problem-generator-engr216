@@ -106,17 +106,21 @@ Testing covers: code smells, style offenses, and coverage.
 
 ---
 
-## Design Diagram
+## **Design Diagram**
 
 **Design before Implementation:**
 
-[Include UML Class Diagram or another design format with relationships of the app's entities.]
+| Feature | Lo-Fi Mock-Up View |
+| :---- | :---- |
+| Log-In as a teacher | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Teacher.png) |
+| Log-In as a student | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Student.png) |
 
 **Changes Made to Design During the Sprint:**
 
-- [If any changes occurred, describe the changes made and the reason behind them.]
+- No changes to Design yet
 
 ---
+
 
 ## Legacy Code Refactoring (if applicable)
 
