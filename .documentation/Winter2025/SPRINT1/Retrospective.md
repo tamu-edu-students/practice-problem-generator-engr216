@@ -53,7 +53,7 @@ Students can log in and view problem types. Teachers can log in and view a stude
 
 4. **View List of Students as a Teacher**  
    - **Developer:** Cooper Calk  
-   - **Status:** In Progress  
+   - **Status:** Complete 
    - **Test Cases:** [Link](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)  
    - **Changes Made:** Made list of students available to teachers to view.  
    - **Reason for Changes:** To allow teacher users to see the students using the app and enable future interactions.
@@ -92,9 +92,9 @@ Testing covers: code smells, style offenses, and coverage.
 | 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: Small offenses (spacing, quotes), autofixed by RuboCop<br>Coverage: 100% with RSpec and Cucumber |
 | 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None (Duplicate gem in Gemfile removed)<br>Coverage: No coverage check, tested manually |
 | 4      | View List of Students as a Teacher  | Completed | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.59% (Not started, waiting on Item 7) |
-| 5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
+| *5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber.<br> Modified: Took out middleware as it created issues with merging and deploying, will add in later sprint |
 | 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
-| 7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber |
+| *7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber.<br> Modified: Took out middleware as it created issues with merging and deploying, will add in later sprint |
 
 ---
 
