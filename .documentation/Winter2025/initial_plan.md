@@ -53,17 +53,18 @@ We will be creating a Practice Problem Generator for ENGR 216\. This application
 
 | Feature | Lo-Fi Mock-Up View |
 | :---- | :---- |
-| Overview | ![][image2] |
-| Log-In as a teacher | ![](Images/IMG_3776.HEIC) |
-| Log-In as a student | ![](Images/IMG_3776.HEIC) |
-| Return home from page | ![][image5] |
-| Unlimited Problem Generator  | **![][image6]** |
-| Settings Page for Student | **![][image7]** |
-| Problem History  | ![][image8] |
-| Teacher-view Filter | ![][image9] |
-| Opt-in to teacher viewing report card | ![][image10] |
-| Answer check/feedback | ![][image11] |
-| Attempt count per topic, Percent correct, Section Filter  | ![][image12] |
+| Overview | ![](/.documentation/Winter2025/Images/Lo-Fi/All_Student.png) |
+| Log-In as a teacher | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Teacher.png) |
+| Log-In as a student | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Student.png) |
+| Return home from page | ![](/.documentation/Winter2025/Images/Lo-Fi/Student_To_PastProblems.png) |
+| Unlimited Problem Generator | **![](/.documentation/Winter2025/Images/Lo-Fi/QuestionFeedback_to_NewQuestion.png)** |
+| Settings Page for Student | **![](/.documentation/Winter2025/Images/Lo-Fi/Student_To_Settings.png)** |
+| Problem History | ![](/.documentation/Winter2025/Images/Lo-Fi/Student_To_PastProblems.png) |
+| Teacher-view Filter | ![](/.documentation/Winter2025/Images/Lo-Fi/All_Teacher.png) |
+| Opt-in to teacher viewing report card | ![](/.documentation/Winter2025/Images/Lo-Fi/Student_To_Settings.png) |
+| Answer check/feedback | ![](/.documentation/Winter2025/Images/Lo-Fi/QuestionFeedback_to_NewQuestion.png) |
+| Attempt count per topic, Percent correct, Section Filter | ![](/.documentation/Winter2025/Images/Lo-Fi/All_Student.png) |
+
 
 **Links:**
 
