@@ -1,4 +1,37 @@
-<!-- app/views/pages/login.html.erb -->
-<h1>Login</h1>
-<p><%= button_to "Login as Teacher", "/auth/google_oauth2?state=teacher", data: { turbo: "false" } %></p>
-<p><%= button_to "Login as Student", "/auth/google_oauth2?state=student", data: { turbo: "false" } %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <%= stylesheet_link_tag "login", media: "all" %>
+</head>
+<body>
+  <div class="w-full max-w-md mx-4 bg-gray-800 rounded-xl shadow-2xl p-8">
+    <div class="text-center space-y-2 mb-8">
+      <h1 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        Welcome back
+      </h1>
+      <p class="text-base text-gray-400">
+        Choose your role to continue with Google
+      </p>
+    </div>
+
+    <div class="space-y-6">
+      <%= button_to "Login as Teacher", "/auth/google_oauth2?state=teacher", data: { turbo: "false" }, class: "w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-blue-500/50 hover:text-blue-400 rounded-lg transition-all" %>
+
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-700"></div>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+          <span class="bg-gray-800 px-2 text-gray-500">or</span>
+        </div>
+      </div>
+
+      <%= button_to "Login as Student", "/auth/google_oauth2?state=student", data: { turbo: "false" }, class: "w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-purple-500/50 hover:text-purple-400 rounded-lg transition-all" %>
+    </div>
+  </div>
+</body>
+</html>
