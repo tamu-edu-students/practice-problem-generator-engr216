@@ -1,4 +1,4 @@
-/* Custom styles for the login page */
+
 body {
   margin: 0;
   display: flex;
@@ -8,20 +8,17 @@ body {
   min-height: 100vh;
 }
 
-/* Smooth transitions */
 .transition-all {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Button focus styles */
 button:focus {
   outline: 2px solid rgba(59, 130, 246, 0.5);
   outline-offset: 2px;
 }
 
-/* Custom gradient text animation */
 .bg-gradient-to-r {
   background-size: 200% auto;
   animation: gradient 3s linear infinite;
@@ -39,7 +36,6 @@ button:focus {
   }
 }
 
-/* Enhanced shadow effect */
 .shadow-2xl {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
