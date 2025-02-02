@@ -1,3 +1,5 @@
+<!-- app/views/pages/login.html.erb -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,40 +11,34 @@
   <link rel="stylesheet" href="login.css">
 </head>
 <body class="min-h-screen w-full bg-gray-900 flex items-center justify-center">
-  <div class="w-full max-w-md mx-4 bg-gray-800 rounded-xl shadow-2xl p-8">
-    <div class="text-center space-y-2 mb-8">
-      <h1 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-        Welcome
-      </h1>
-      <p class="text-base text-gray-400">
-        Choose your role to continue
-      </p>
-    </div>
+  <div class="w-full max-w-md mx-auto bg-gray-800 rounded-xl shadow-2xl p-8">
 
-    <div class="space-y-6">
-      <%= button_to "/auth/google_oauth2?state=teacher", method: :post, data: { turbo: "false" }, class: "group w-full" do %>
-        <button type="submit" class="w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-blue-500/50 hover:text-blue-400 rounded-lg transition-all relative">
-          <i class="ri-school-line absolute left-4 text-2xl transition-transform group-hover:scale-110"></i>
-          <span>Login as Teacher</span>
-        </button>
-      <% end %>
+  <!-- Header Section -->
+  <div class="text-center space-y-2 mb-8">
+    <h1 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      Welcome
+    </h1>
+    <p class="text-base text-gray-400">
+      Choose your role to continue with Google
+    </p>
+  </div>
 
-      <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-700"></div>
-        </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-gray-800 px-2 text-gray-500">or</span>
-        </div>
+  <!-- Login Buttons -->
+  <div class="space-y-6">
+    <%= button_to "Login as Teacher", "/auth/google_oauth2?state=teacher", data: { turbo: "false" }, class: "w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-blue-500/50 hover:text-blue-400 rounded-lg transition-all" %>
+
+    <!-- Divider -->
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-700"></div>
       </div>
-
-      <%= button_to "/auth/google_oauth2?state=student", method: :post, data: { turbo: "false" }, class: "group w-full" do %>
-        <button type="submit" class="w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-purple-500/50 hover:text-purple-400 rounded-lg transition-all relative">
-          <i class="ri-graduation-cap-line absolute left-4 text-2xl transition-transform group-hover:scale-110"></i>
-          <span>Login as Student</span>
-        </button>
-      <% end %>
+      <div class="relative flex justify-center text-xs uppercase">
+        <span class="bg-gray-800 px-2 text-gray-500">or</span>
+      </div>
     </div>
+
+    <%= button_to "Login as Student", "/auth/google_oauth2?state=student", data: { turbo: "false" }, class: "w-full h-16 text-lg text-gray-300 bg-transparent hover:bg-gray-700 border border-gray-700 hover:border-purple-500/50 hover:text-purple-400 rounded-lg transition-all" %>
+  </div>
   </div>
 </body>
 </html>

@@ -1,7 +1,11 @@
 /* Custom styles for the login page */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  justify-content: center;  /* centers horizontally */
+  align-items: center;      /* centers vertically */
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 /* Smooth transitions */
