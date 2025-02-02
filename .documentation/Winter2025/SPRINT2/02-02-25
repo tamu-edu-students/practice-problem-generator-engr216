@@ -1,0 +1,42 @@
+# Sprint Update - Tuesday, February 2ndth
+
+### Attendance:
+- **ALL**
+
+### Sprint Goal Restated
+
+### Votes:
+
+#### First of Five Votes:
+| Person   | First Vote | Explanation (First Vote)                                               |
+|----------|------------|-------------------------------------------------------------------------|
+| Dhruv    | 4          |  Confident will finish sprint backlog, worried about overall sprint goal                       |
+| Nick   | 4          | Pretty confident will finish task. Unconfident in overall sprint goal.       |
+| Kevin    | 4          |  We have our merge conflicts solved, oauth working, we have a lot of time to finish our current tasks.             |
+| Vivek   |  5         |  Understand all requirements, able to complete before the sprint is over.                                 |
+
+#### Second of Five Votes:
+| Person   | Second Vote | Explanation (Second Vote)                                             |
+|----------|-------------|-------------------------------------------------------------------------|
+| Dhruv    | 4           | Same reasoning                                                                        |
+| Nick   | 3           |    Lack of commits after first sprint.                                                                     |
+| Kevin    | 4           |  | Reasoning
+| Vivek   | 4           |  Agrees with Dhruv and Nick, worried abotu overall goal                                                                       |
+
+### Actionable Plan
+
+#### Current Tasks:
+- **Dhruv:** Finished current task, waiting for pull.
+- **Nick:** Finished current task, waiting for pull.
+- **Kevin:** Have not started.
+- **Vivek:** Have not started with code, general design in mind.
+
+#### Next Tasks:
+- **Dhruv:** Generate Problem Page for Students
+  - **Time Estimate:** 2 Hours: Cucumber Steps (10-20 minutes), Routing/Create pages (20-30 minutes), Testing (30 minutes)
+- **Nick:** History Page for Student 
+  - **Time Estimate:** 2 Hours: Cucumber Steps (10-20 minutes), Routing/Create pages (20-30 minutes), Testing (30 minutes)
+- **Kevin:**
+  - **Time Estimate:** 3 Hours: Testing (1 Hour), Implementation (1 Hour), Styling (1 Hour)
+- **Vivek:** 
+  - **Time Estimate:** Same time estimate as last.
