@@ -11,34 +11,11 @@ class SessionsController < ApplicationController
   def omniauth
     auth = request.env['omniauth.auth']
 
-    if params[:state] == 'teacher'
-      # @teacher = Teacher.find_or_create_by(uid: auth['uid'], provider: auth['provider']) do |u|
-      #   u.email = auth['info']['email']
-      #   names = auth['info']['name'].split
-      #   u.first_name = names[0]
-      #   u.last_name = names[1..].join(' ')
-      # end
-      teacher = Teacher.find_by(email: auth.info.email)
-      if (teacher) 
-        session[:user_type] = 'teacher' 
-        redirect_to teacher_dashboard_path, notice: t('teacher.logged_in')
-      else
-        redirect_to root_path, alert: 'Login failed.'
-      end
-    elsif params[:state] == 'student'
-      # @student = Student.find_or_create_by(uid: auth['uid'], provider: auth['provider']) do |u|
-      #   names = auth['info']['name'].split
-      #   u.first_name = names[0]
-      #   u.last_name = names[1..].join(' ')
-      # end
-
-      # if @student.valid?
-      #   session[:user_id] = @student.id
-      #   session[:user_type] = 'student'
-      redirect_to practice_problems_path, notice: t('student.logged_in')
-      # else
-      #   redirect_to root_path, alert: 'Login failed.'
-      # end
+    case params[:state]
+    when 'teacher'
+      handle_teacher_login(auth)
+    when 'student'
+      handle_student_login(auth)
     else
       redirect_to root_path, alert: t('sessions.invalid_user_type')
     end
@@ -48,5 +25,51 @@ class SessionsController < ApplicationController
     # Handle OAuth failure, e.g., log the error or redirect
     flash[:alert] = "Authentication failed: #{params[:message].humanize}"
     redirect_to root_path
+  end
+
+  def handle_teacher_login(auth)
+    teacher = Teacher.find_by(email: auth.info.email)
+    if teacher
+      session[:user_id] = teacher.id
+      session[:user_type] = 'teacher'
+      redirect_to teacher_dashboard_path, notice: t('teacher.logged_in')
+    else
+      redirect_to root_path, alert: t('sessions.login_failed')
+    end
+  end
+
+  def handle_student_login(auth)
+    email = auth.info.email
+
+    return redirect_invalid_domain unless valid_email_domain?(email)
+
+    student = find_or_create_student(email)
+    return redirect_login_failed unless student
+
+    student_session_set(student)
+    redirect_to practice_problems_path, notice: t('student.logged_in')
+  end
+
+  private
+
+  def valid_email_domain?(email)
+    email.end_with?('tamu.edu')
+  end
+
+  def redirect_invalid_domain
+    redirect_to root_path, alert: t('sessions.invalid_domain')
+  end
+
+  def find_or_create_student(email)
+    Student.find_or_create_by(email: email)
+  end
+
+  def redirect_login_failed
+    redirect_to root_path, alert: t('sessions.login_failed')
+  end
+
+  def student_session_set(student)
+    session[:user_id] = student.id
+    session[:user_type] = 'student'
   end
 end

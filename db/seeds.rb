@@ -22,12 +22,13 @@ students = [
 ]
 
 teachers = [
+  { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher'},
   { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi'},
   { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci'},
   { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk'},
   { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani'},
   { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarpu'},
-  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhurv', last_name: 'manihar'}
+  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar'}
 ]
 
 students.each do |student|
@@ -41,3 +42,4 @@ end
 Category.create([{ name: "Mechanics" }, { name: "Thermodynamics" }, { name: "Electromagnetism" }])
 
 puts "Seeded #{Student.count} students!"
+puts "Seeded #{Teacher.count} teachers!"
