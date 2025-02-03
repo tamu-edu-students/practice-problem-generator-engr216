@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
 
   # GET /auth/google_oauth2/callback
   def omniauth
-    request.env['omniauth.auth']
+    auth = request.env['omniauth.auth']
 
     if params[:state] == 'teacher'
       # @teacher = Teacher.find_or_create_by(uid: auth['uid'], provider: auth['provider']) do |u|
@@ -18,14 +18,13 @@ class SessionsController < ApplicationController
       #   u.first_name = names[0]
       #   u.last_name = names[1..].join(' ')
       # end
-
-      # if @teacher.valid?
-      #   session[:user_id] = @teacher.id
-      #   session[:user_type] = 'teacher'
-      redirect_to students_path, notice: t('teacher.logged_in')
-      # else
-      #   redirect_to root_path, alert: 'Login failed.'
-      # end
+      teacher = Teacher.find_by(email: auth.info.email)
+      if (teacher) 
+        session[:user_type] = 'teacher' 
+        redirect_to teacher_dashboard_path, notice: t('teacher.logged_in')
+      else
+        redirect_to root_path, alert: 'Login failed.'
+      end
     elsif params[:state] == 'student'
       # @student = Student.find_or_create_by(uid: auth['uid'], provider: auth['provider']) do |u|
       #   names = auth['info']['name'].split

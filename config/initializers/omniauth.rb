@@ -1,7 +1,11 @@
+puts "OmniAuth initializer loaded" # for cucumber test debugging
+require 'omniauth'
+require 'omniauth-google-oauth2'
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   # Retrieve the Google credentials from environment variables
-  google_client_id = ENV['GOOGLE_CLIENT_ID']
-  google_client_secret = ENV['GOOGLE_CLIENT_SECRET']
+  google_client_id = ENV['GOOGLE_CLIENT_ID'] || 'dummy_client_id'
+  google_client_secret = ENV['GOOGLE_CLIENT_SECRET'] || 'dummy_client_secret'
 
   # Configure the Google OAuth provider with the client_id and client_secret
   provider :google_oauth2, google_client_id, google_client_secret, {

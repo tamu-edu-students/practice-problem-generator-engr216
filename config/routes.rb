@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   get '/set_role/:role', to: 'sessions#set_role', as: :get_set_role
   post '/set_role/:role', to: 'sessions#set_role', as: :post_set_role
   
+  # Teacher Dashboard Routes
+  get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
+
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do
     post :generate, on: :collection
