@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_24_040630) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_03_221010) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_24_040630) do
     t.string "uin"
     t.string "uid"
     t.string "provider"
+    t.string "email"
   end
 
   create_table "teachers", force: :cascade do |t|

@@ -12,6 +12,7 @@
 # Clear existing data
 Student.destroy_all
 Teacher.destroy_all
+Category.destroy_all
 # Sample students
 students = [
   { first_name: 'John', last_name: 'Doe', uin: '123456789' },

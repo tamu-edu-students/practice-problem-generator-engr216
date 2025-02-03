@@ -41,10 +41,10 @@ class SessionsController < ApplicationController
   def handle_student_login(auth)
     email = auth.info.email
 
-    return redirect_invalid_domain unless valid_email_domain?(email)
+    return root_path unless valid_email_domain?(email)
 
     student = find_or_create_student(email)
-    return redirect_login_failed unless student
+    return root_path unless student
 
     student_session_set(student)
     redirect_to practice_problems_path, notice: t('student.logged_in')
