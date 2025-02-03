@@ -1,9 +1,15 @@
-<h1>Select a Physics Category</h1>
-<h2>
-  <%= link_to "Go to Students", students_path, class: "btn btn-primary btn-lg" %>
-</h2>
+# <% content_for :head do %>
+#   <%= stylesheet_link_tag 'student_dashboard', media: 'all' %>
+# <% end %>
 
-<%= form_with url: generate_practice_problems_path, method: :post do %>
-  <%= select_tag :category_id, options_from_collection_for_select(@categories, :id, :name), id: "category_select" %>
-  <%= submit_tag "Generate Problems" %>
-<% end %>
+<div class="min-h-screen w-full flex flex-col items-center justify-center bg-#1a202c;  p-6">
+  <h1 class="text-5xl font-bold text-center mb-8 text-black">Howdy, Student</h1>
+
+  <div class="w-full max-w-screen-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6">
+    <% @physics_units.each do |unit| %>
+      <button class="btn btn-primary text-lg font-semibold p-6 w-full h-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+        <%= unit %>
+      </button>
+    <% end %>
+  </div>
+</div>
