@@ -1,4 +1,32 @@
 <!-- app/views/pages/login.html.erb -->
-<h1>Login</h1>
-<p><%= button_to "Login as Teacher", "/auth/google_oauth2?state=teacher", data: { turbo: "false" } %></p>
-<p><%= button_to "Login as Student", "/auth/google_oauth2?state=student", data: { turbo: "false" } %></p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="login-container">
+    <!-- Header Section -->
+    <div class="login-header">
+      <h1 class="login-title">Login</h1>
+    </div>
+
+    <!-- Login Buttons -->
+    <div class="button-container">
+      <%= button_to "Teacher Portal", "/auth/google_oauth2?state=teacher", data: { turbo: "false" }, class: "login-button teacher-button" %>
+
+      <!-- Divider -->
+      <div class="divider-container">
+        <div class="divider-line"></div>
+        <span class="divider-text">or</span>
+      </div>
+
+      <%= button_to "Student Portal", "/auth/google_oauth2?state=student", data: { turbo: "false" }, class: "login-button student-button" %>
+    </div>
+  </div>
+</body>
+</html>
