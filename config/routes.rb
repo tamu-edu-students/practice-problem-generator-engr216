@@ -21,8 +21,12 @@ Rails.application.routes.draw do
   # Teacher Dashboard Routes
   get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
 
+  # Add the settings route
+  get 'settings', to: 'settings#show', as: 'settings'
+  
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do
     post :generate, on: :collection
   end
+
 end
