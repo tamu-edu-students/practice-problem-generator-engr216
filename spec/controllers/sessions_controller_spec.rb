@@ -10,11 +10,14 @@ RSpec.describe SessionsController, type: :controller do
         OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
                                                                              uid: '123',
                                                                              provider: 'google_oauth2',
-                                                                             info: { email: 'teacher@example.com',
-                                                                                     name: 'Teacher Name' }
+                                                                             info: { email: 'test_teacher@tamu.edu',
+                                                                                     first_name: 'test',
+                                                                                    last_name: 'teacher' }
                                                                            })
-      end
+                                                                           request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
 
+      end
+      
       it 'redirects to teachers_path with a notice' do
         get :omniauth, params: { state: 'teacher' }
         expect(flash[:notice]).to eq('You are logged in as a teacher.')
@@ -26,8 +29,12 @@ RSpec.describe SessionsController, type: :controller do
         OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
                                                                              uid: '456',
                                                                              provider: 'google_oauth2',
-                                                                             info: { name: 'Student Name' }
+                                                                             info: {  email: 'test_student@tamu.edu',
+                                                                                      first_name: 'test',
+                                                                                      last_name: 'student'}
                                                                            })
+                                                                           request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
+
       end
 
       it 'redirects to students_path with a notice' do
