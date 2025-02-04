@@ -18,8 +18,12 @@ Rails.application.routes.draw do
   get '/set_role/:role', to: 'sessions#set_role', as: :get_set_role
   post '/set_role/:role', to: 'sessions#set_role', as: :post_set_role
   
+  # Add the settings route
+  get 'settings', to: 'settings#show', as: 'settings'
+  
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do
     post :generate, on: :collection
   end
+
 end
