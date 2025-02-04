@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
+  before do
+    Student.delete_all
+  end
+
   let(:valid_attributes) { { first_name: 'John', last_name: 'Doe', uin: '123456789' } }
   let(:invalid_attributes) { { first_name: '', last_name: '', uin: '' } }
   let!(:student) { Student.create(valid_attributes) }
