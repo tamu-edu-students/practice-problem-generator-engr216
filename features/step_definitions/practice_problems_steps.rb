@@ -27,4 +27,3 @@
 # Then('I am presented with a set of multiple-choice questions from the {string} category.') do |category_name|
 #   expect(page).to have_content("Questions for #{category_name}")
 # end
-
