@@ -6,13 +6,16 @@ RSpec.describe SessionsController, type: :controller do
     let(:auth) { OmniAuth.config.mock_auth[:google_oauth2] }
 
     context 'when state is teacher' do
+      Teacher.where(email: 'test_teacher@tamu.edu').delete_all
+      let!(:teacher) { Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher') }
+
       before do
         OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
                                                                              uid: '123',
                                                                              provider: 'google_oauth2',
-                                                                             info: { email: 'test_teacher@tamu.edu',
-                                                                                     first_name: 'test',
-                                                                                     last_name: 'teacher' }
+                                                                             info: { email: teacher.email,
+                                                                                     first_name: teacher.first_name,
+                                                                                     last_name: teacher.last_name }
                                                                            })
         request.env['omniauth.auth'] =
           OmniAuth.config.mock_auth[:google_oauth2]
@@ -25,13 +28,16 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context 'when state is student' do
+      Student.where(email: 'test_student@tamu.edu').delete_all
+      let!(:student) { Student.find_or_create_by!(email: 'test_student@tamu.edu', first_name: 'test', last_name: 'student', uin: '123456789') }
+
       before do
         OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
                                                                              uid: '456',
                                                                              provider: 'google_oauth2',
-                                                                             info: {  email: 'test_student@tamu.edu',
-                                                                                      first_name: 'test',
-                                                                                      last_name: 'student' }
+                                                                             info: {  email: student.email,
+                                                                                      first_name: student.first_name,
+                                                                                      last_name: student.last_name }
                                                                            })
         request.env['omniauth.auth'] =
           OmniAuth.config.mock_auth[:google_oauth2]

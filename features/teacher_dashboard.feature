@@ -1,7 +1,8 @@
   Feature: Only Teachers Navigate Dashboard 
 
   Scenario: View teacher dashboard
-    Given I am on the log in page
+    Give there exists a teacher
+    And I am on the log in page
     When I log in as a teacher
     Then I should be on the teacher dashboard
 

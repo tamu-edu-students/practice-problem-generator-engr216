@@ -1,8 +1,24 @@
+Given('Given there exists a teacher') do
+  Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
+    teacher.first_name = 'test'
+    teacher.last_name  = 'teacher'
+  end
+end
+
 Given('I am on the log in page') do
   visit root_path
 end
 
 When('I log in as a teacher') do
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
+    uid: '123',
+    provider: 'google_oauth2',
+    info: {
+      email: 'test_teacher@tamu.edu',
+      first_name: 'test',
+      last_name: 'teacher'
+    }
+  })
   visit '/auth/google_oauth2/callback?state=teacher'
 end
 
