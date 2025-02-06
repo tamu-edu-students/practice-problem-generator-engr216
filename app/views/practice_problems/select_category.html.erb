@@ -1,0 +1,9 @@
+<h1>Select a Physics Category</h1>
+<h2>
+  <%= link_to "Go to Students", students_path, class: "btn btn-primary btn-lg" %>
+</h2>
+
+<%= form_with url: generate_practice_problems_path, method: :post do %>
+  <%= select_tag :category_id, options_from_collection_for_select(@categories, :id, :name), id: "category_select" %>
+  <%= submit_tag "Generate Problems" %>
+<% end %>

@@ -16,16 +16,19 @@
   <!-- Include Tailwind and other stylesheets -->
   <%= stylesheet_link_tag :app %>
 
-  <!-- Conditionally load login.css only on the login page -->
-  <% if request.path.include?('/login') %>
-    <%= stylesheet_link_tag 'login', 'data-turbolinks-track': 'reload' %>
-  <% end %>
 
-  <%= javascript_importmap_tags %>
-</head>
-<body>
-  <main class="container mx-auto mt-28 px-5 flex">
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
+
+    <!-- Add Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Add DaisyUI CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.0/dist/full.css" rel="stylesheet">
+  </head>
+
+  <body class="min-h-screen w-full">
     <%= yield %>
-  </main>
-</body>
+  </body>
 </html>
