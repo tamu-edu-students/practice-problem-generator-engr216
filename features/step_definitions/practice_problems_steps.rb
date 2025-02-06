@@ -1,7 +1,9 @@
 Before do
-  Category.create!(name: 'Mechanics')
-  Category.create!(name: 'Thermodynamics')
-  Category.create!(name: 'Electromagnetism')
+  Category.where(name: %w[Mechanics Thermodynamics Electromagnetism]).destroy_all
+
+  Category.find_or_create_by!(name: 'Mechanics')
+  Category.find_or_create_by!(name: 'Thermodynamics')
+  Category.find_or_create_by!(name: 'Electromagnetism')
 end
 
 Given('I am on the practice problem generator page and I am logged in as a student') do
