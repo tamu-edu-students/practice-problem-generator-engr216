@@ -13,3 +13,4 @@ Feature: Select Category and Generate Problems
     When I select the "Mechanics" category
     And I click on the "Generate Problems" button
     Then I am presented with a set of multiple-choice questions from the "Mechanics" category.
+
