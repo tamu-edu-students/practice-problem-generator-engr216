@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "history/show"
   root to: redirect("/login")
 
   # Login routes
@@ -23,6 +24,9 @@ Rails.application.routes.draw do
 
   # Add the settings route
   get 'settings', to: 'settings#show', as: 'settings'
+
+  # Add the history route
+  get 'history', to: 'history#show', as: 'history'
   
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do

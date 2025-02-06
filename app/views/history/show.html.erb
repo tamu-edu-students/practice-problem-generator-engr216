@@ -1,0 +1,50 @@
+<div class="history-container">
+  <h1>History</h1>
+
+  <!-- Main T-Chart Wrapper -->
+  <div class="t-chart">
+    
+    <!-- Header row -->
+    <div class="chart-header">
+      <div>Problems</div>
+      <div>Answers</div>
+    </div>
+
+    <!-- Row 1: Problem #1 -->
+    <div class="chart-row">
+      <div>Problem #1: Projectile Motion</div>
+      <div>
+        45 degrees<br>
+        <span class="correct">Correct</span>
+      </div>
+    </div>
+
+    <!-- Row 2: Problem #2 -->
+    <div class="chart-row">
+      <div>Problem #2: Force Calculation</div>
+      <div>
+        60 N<br>
+        <span class="wrong">Wrong</span>
+      </div>
+    </div>
+
+    <!-- Row 3: Problem #3 -->
+    <div class="chart-row">
+      <div>Problem #3: Momentum</div>
+      <div>
+        20 kg·m/s<br>
+        <span class="correct">Correct</span>
+      </div>
+    </div>
+
+    <!-- Add more rows as needed -->
+  </div>
+</div>
+
+
+
+
+  <!-- Back Button Section -->
+  <div class="absolute top-8 left-8">
+    <%= link_to 'Back', students_path, class: 'bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition' %>
+  </div>
