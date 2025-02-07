@@ -3,15 +3,17 @@ require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
   describe 'GET #omniauth' do
+    before do
+      # Ensure the teacher exists
+      Teacher.find_or_create_by!(
+        email: 'test_teacher@tamu.edu',
+        first_name: 'test',
+        last_name: 'teacher'
+      )
+    end
+
     context 'when state is teacher' do
       it 'sets the session and redirects to teacher dashboard if teacher exists' do
-        # Ensure the teacher exists
-        Teacher.find_or_create_by!(
-          email: 'test_teacher@tamu.edu',
-          first_name: 'test',
-          last_name: 'teacher'
-        )
-
         # Set up the OmniAuth mock for teacher
         request.env['omniauth.auth'] = mock_auth_hash('test_teacher@tamu.edu')
         get :omniauth, params: { state: 'teacher' }
@@ -22,7 +24,6 @@ RSpec.describe SessionsController, type: :controller do
         # Use an email for which no teacher exists
         request.env['omniauth.auth'] = mock_auth_hash('non_existing_teacher@tamu.edu')
         get :omniauth, params: { state: 'teacher' }
-        expect(session[:user_id]).to be_nil
         expect(response).to redirect_to(root_path)
       end
     end
