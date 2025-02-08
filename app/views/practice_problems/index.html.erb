@@ -1,3 +1,4 @@
+<!-- app/views/practice_problems/index.html.erb -->
 <div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
   <!-- Navbar (Fixed at Top) -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0">
@@ -7,7 +8,6 @@
         Past Problems
       </button>
     </div>
-
     <!-- Right: Account Dropdown -->
     <div class="flex-none">
       <div class="dropdown dropdown-end">
@@ -28,10 +28,10 @@
 
     <!-- Problem Grid -->
     <div class="w-full max-w-screen-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6">
-      <% @physics_units.each do |unit| %>
-        <button class="btn bg-[#9aa8c5] text-black border border-blue-500 hover:border-blue-700 hover:bg-blue-500 hover:text-white text-lg font-semibold aspect-square flex items-center justify-center text-center shadow-lg hover:scale-105 transition-transform p-4">
-          <%= unit %>
-        </button>
+      <% @categories.each do |category| %>
+        <%= link_to category.name,
+            generate_practice_problems_path(category_id: category.id),
+            class: "btn bg-[#9aa8c5] text-black border border-blue-500 hover:border-blue-700 hover:bg-blue-500 hover:text-white text-lg font-semibold aspect-square flex items-center justify-center text-center shadow-lg hover:scale-105 transition-transform p-4" %>
       <% end %>
     </div>
   </div>

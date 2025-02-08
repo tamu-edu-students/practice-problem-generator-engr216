@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do
+    get :generate, on: :collection
     post :generate, on: :collection
   end
 

@@ -25,6 +25,24 @@ students.each do |student|
   Student.create!(student)
 end
 
-Category.create([{ name: "Mechanics" }, { name: "Thermodynamics" }, { name: "Electromagnetism" }])
+categories = [
+  'Measurement & Error',
+  'Propagation of Error',
+  'Finite Differences',
+  'Experimental Statistics',
+  'Confidence Intervals',
+  'Universal Accounting Equation',
+  'Particle Statics',
+  'Momentum & Collisions',
+  'Rigid Body Statics',
+  'Angular Momentum',
+  'Harmonic Motion',
+  'Engineering Ethics',
+  'Art in Engineering'
+]
+
+categories.each do |name|
+  Category.find_or_create_by!(name: name)
+end
 
 puts "Seeded #{Student.count} students!"
