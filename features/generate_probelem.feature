@@ -1,7 +1,7 @@
 Feature: Generate Problems
 
     As a Student
-    So that I can do practice problems in a ceratin category
+    So that I can do practice problems in a certain category
     I want to generate a practice problem.
   
     Scenario: View generate problem page
