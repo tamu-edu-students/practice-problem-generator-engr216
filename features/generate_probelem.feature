@@ -2,7 +2,7 @@ Feature: Generate Problems
 
     As a Student
     So that I can do practice problems in a certain category
-    I want to generate a practice problem.
+    I want to generate a practice problem for that category.
   
     Scenario: View generate problem page
         Given I am on the select problem category page
