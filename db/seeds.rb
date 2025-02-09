@@ -36,7 +36,6 @@ students.each do |student|
   Student.create!(student)
 end
 
-<<<<<<< HEAD
 categories = [
   'Measurement & Error',
   'Propagation of Error',
