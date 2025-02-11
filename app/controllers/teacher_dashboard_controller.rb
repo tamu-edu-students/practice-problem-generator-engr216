@@ -6,4 +6,12 @@ class TeacherDashboardController < ApplicationController
 
     redirect_to login_path
   end
+
+  def index
+    @students = Student.all
+  end
+
+  def manage_students
+    @students = Student.all
+  end
 end

@@ -10,17 +10,21 @@
 
 # Seed the RottenPotatoes DB with some movies.
 # Clear existing data
+
+require 'faker'
+
 Student.destroy_all
 Teacher.destroy_all
 Category.destroy_all
-# Sample students
-students = [
-  { first_name: 'John', last_name: 'Doe', uin: '123456789' },
-  { first_name: 'Jane', last_name: 'Smith', uin: '987654321' },
-  { first_name: 'Alice', last_name: 'Johnson', uin: '567890123' },
-  { first_name: 'Bob', last_name: 'Brown', uin: '345678901' },
-  { first_name: 'Charlie', last_name: 'Davis', uin: '234567890' }
-]
+
+students = 50.times.map do
+  Student.create!(
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    uin: Faker::Number.number(digits: 9)
+  )
+end
+
 
 teachers = [
   { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher'},
@@ -28,13 +32,13 @@ teachers = [
   { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci'},
   { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk'},
   { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani'},
-  { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarpu'},
+  { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarapu'},
   { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar'}
 ]
 
-students.each do |student|
-  Student.create!(student)
-end
+# students.each do |student|
+#   Student.create!(student)
+# end
 
 teachers.each do |teacher|
   Teacher.create!(teacher)
