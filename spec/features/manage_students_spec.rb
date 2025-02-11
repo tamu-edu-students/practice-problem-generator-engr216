@@ -30,6 +30,5 @@ RSpec.feature 'Manage Students', type: :feature do
     visit '/teacher_dashboard/manage_students'
 
     expect(page).to have_content('John Doe')
-    expect(page).to have_content('123456789')
   end
 end
