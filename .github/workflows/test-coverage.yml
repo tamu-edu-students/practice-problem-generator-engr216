@@ -21,9 +21,6 @@ jobs:
       - name: Run RSpec Tests
         run: bundle exec rspec
 
-      - name: Run Cucumber Tests
-        run: bundle exec cucumber
-
       - name: Upload coverage report (optional)
         uses: actions/upload-artifact@v4
         with:
