@@ -1,12 +1,57 @@
-<h1>Questions for <%= @category.name %></h1>
-
-<% @questions.each do |q| %>
-  <p><strong>Question:</strong> <%= q[:question] %></p>
-  <ul>
-    <% q[:choices].each do |choice| %>
-      <li><%= choice %></li>
-    <% end %>
-  </ul>
-<% end %>
-
-<%= link_to "Back to Categories", practice_problems_path %>
+<!-- app/views/practice_problems/generate.html.erb -->
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+  <!-- Navbar (Fixed at Top) -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0">
+    <!-- Left: Past Problems Button -->
+    <div class="flex-1">
+      <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Past Problems
+      </button>
+    </div>
+    <!-- Right: Account Dropdown -->
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Spacer between navbar and content -->
+  <div class="h-24"></div>
+  
+  <!-- Category Title Section -->
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black">Category: <%= @category.name %></h1>
+  </div>
+  
+  <!-- Container for Question Pane and Buttons -->
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <!-- Question Pane -->
+    <div class="bg-gray-50 shadow-md rounded-lg p-12 w-full max-w-4xl">
+      <p class="font-semibold text-3xl mb-6 text-black">
+        Question: <%= @question[:question] %>
+      </p>
+      
+      <!-- Answer Choices as Clickable Buttons with Black Outline -->
+      <div class="flex flex-wrap justify-center gap-4">
+        <% @question[:choices].each do |choice| %>
+          <button type="button" class="px-4 py-2 bg-green-500 text-black rounded border border-black hover:bg-green-600 transition-colors">
+            <%= choice %>
+          </button>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_practice_problems_path(category_id: @category.id), class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
