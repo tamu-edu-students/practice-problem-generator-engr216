@@ -1,0 +1,16 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "tailwindcss/tailwind";
+@import "daisyui";
+
+.table, .table th, .table td {
+    background-color: #242933 !important;
+    color: white !important;
+    border-color: #ffffff2c !important;
+}
+
+.table thead tr{
+    border-bottom: 1px solid #ffffff2c !important; 
+}
+  

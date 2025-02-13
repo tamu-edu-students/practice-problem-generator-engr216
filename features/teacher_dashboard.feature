@@ -10,3 +10,4 @@
     Given I am not logged in
     When I navigate to the teacher dashboard link
     Then I should not be on the teacher dashboard
+

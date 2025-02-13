@@ -14,6 +14,8 @@ gem 'jbuilder'
 # gem "redis", ">= 4.0.1"
 # Gemfile
 
+gem 'faker'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Teacher login with various emails', type: :feature do
+RSpec.feature 'Manage Students', type: :feature do
   before do
     Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
       teacher.first_name = 'test'
@@ -8,7 +8,6 @@ RSpec.feature 'Teacher login with various emails', type: :feature do
     end
   end
 
-  # Helper to perform teacher login using OmniAuth mock
   def perform_teacher_login(email:, first_name:, last_name:)
     OmniAuth.config.mock_auth[:google_oauth2] =
       OmniAuth::AuthHash.new(provider: 'google_oauth2',
@@ -18,18 +17,18 @@ RSpec.feature 'Teacher login with various emails', type: :feature do
     visit '/auth/google_oauth2/callback?state=teacher'
   end
 
-  scenario 'User attempts teacher login with a non-existent email and sees login failure' do
-    perform_teacher_login(email: 'not_a_teacher@tamu.edu', first_name: 'not', last_name: 'teacher')
+  scenario 'Teacher sees Manage Student page' do
+    perform_teacher_login(email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher')
+    visit '/teacher_dashboard/manage_students'
 
-    aggregate_failures 'login failure expectations' do
-      expect(page).to have_content('Login')
-      expect(page).not_to have_content('Teacher Dashboard')
-    end
+    expect(page).to have_selector('h1', text: 'Manage Students')
   end
 
-  scenario 'User attempts teacher login with a teacher email and sees teacher dashboard' do
+  scenario 'Teacher sees a list of students' do
     perform_teacher_login(email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher')
+    Student.find_or_create_by!(first_name: 'John', last_name: 'Doe', uin: '123456789')
+    visit '/teacher_dashboard/manage_students'
 
-    expect(page).to have_content('Student Management')
+    expect(page).to have_content('John Doe')
   end
 end

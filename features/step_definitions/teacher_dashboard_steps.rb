@@ -23,7 +23,7 @@ When('I log in as a teacher') do
 end
 
 Then('I should be on the teacher dashboard') do
-  expect(page).to have_content('Teacher Dashboard')
+  expect(page).to have_content('Student Management')
 end
 
 Given('I am not logged in') do
