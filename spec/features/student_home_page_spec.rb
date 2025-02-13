@@ -5,6 +5,6 @@ RSpec.feature 'Student Home Page', type: :feature do
   scenario 'student sees their home page' do
     visit practice_problems_path
 
-    expect(page).to have_selector('h1', text: 'Howdy, Student')
+    expect(page).to have_selector('h1', text: 'Select Category')
   end
 end
