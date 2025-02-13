@@ -31,7 +31,7 @@
       <% @categories.each do |category| %>
         <%= link_to category.name,
             generate_practice_problems_path(category_id: category.id),
-            class: "btn bg-[#9aa8c5] text-black border border-blue-500 hover:border-blue-700 hover:bg-blue-500 hover:text-white text-lg font-semibold aspect-square flex items-center justify-center text-center shadow-lg hover:scale-105 transition-transform p-4" %>
+            class: "btn bg-[#9aa8c5] text-black border border-blue-500 hover:border-blue-700 hover:bg-blue-500 hover:text-white text-lg font-semibold flex items-center justify-center text-center shadow-lg hover:scale-105 transition-transform p-4 w-full" %>
       <% end %>
     </div>
   </div>
