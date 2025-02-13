@@ -1,33 +1,39 @@
-<h1 class="text-center">Settings</h1>
+<h1 class="text-center text-3xl font-bold mt-8">Settings</h1>
 
-<!-- Check if @user is present -->
-<% if @user.nil? %>
-  <p>User not found. Please log in.</p>
-<% else %>
-  <p class="text-center">Edit your settings below:</p>
+<div class="max-w-xl mx-auto mt-8 bg-white shadow-md rounded p-6">
+  <ul class="space-y-4">
+    <!-- Email Row -->
+    <li class="flex justify-between items-center border-b border-gray-300 pb-2">
+      <span class="font-medium text-gray-700">Email</span>
+      <span class="text-gray-900">n2rowc@tamu.edu</span>
+    </li>
 
-  <%= form_for(@user) do |f| %>
-    <div class="container">
-      <div class="form-group">
-        <%= f.label :email, class: 'form-label' %>
-        <%= f.text_field :email, class: 'form-control' %>
-      </div>
+    <!-- Authenticate Teacher Row with a toggle switch -->
+    <li class="flex justify-between items-center border-b border-gray-300 pb-2">
+      <span class="font-medium text-gray-700">Authenticate Teacher</span>
+      <label for="auth-teacher" class="relative inline-flex items-center cursor-pointer">
+        <input id="auth-teacher" type="checkbox" class="sr-only peer"
+          onclick="if(confirm('Are you sure you want to toggle teacher authentication?')) { } else { this.checked = !this.checked; }">
+        <div class="w-12 h-7 bg-gray-300 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 transition-colors duration-300 peer-checked:bg-blue-600">
+          <div class="w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 ml-1 mt-1 peer-checked:translate-x-5"></div>
+        </div>
+      </label>
+    </li>
 
-      <div class="form-group text-center">
-        <%= button_to 'Reset Data', reset_data_path, method: :post, class: 'btn btn-warning' %>
-      </div>
-
-      <div class="form-group text-center">
-        <%= button_to 'Authenticate Teacher', authenticate_teacher_path, method: :post, class: 'btn btn-info' %>
-      </div>
-
-      <div class="form-group text-center">
-        <%= f.submit 'Save Changes', class: 'btn btn-success' %>
-      </div>
-    </div>
-  <% end %>
-<% end %>
-
-<div class="text-center">
-  <%= link_to 'Back', students_path, class: 'btn btn-primary' %>
+    <!-- Reset Data Row with an always-visible button -->
+    <li class="flex justify-between items-center">
+      <span class="font-medium text-gray-700">Reset Data</span>
+      <button type="button"
+              onclick="if(confirm('Are you sure you want to reset data?') && confirm('This action cannot be undone, are you really sure?')) { alert('Data reset action triggered!'); }"
+              class="px-4 py-2 rounded"
+              style="background-color: #dc2626; color: white;">
+        Reset Data
+      </button>
+    </li>
+  </ul>
 </div>
+
+<div class="text-center mt-4">
+  <%= link_to 'Back', students_path, class: 'text-blue-500 hover:underline' %>
+</div>
+

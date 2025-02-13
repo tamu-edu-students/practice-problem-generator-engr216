@@ -1,39 +1,39 @@
-<div class="history-container">
-  <h1>History</h1>
+<div class="max-w-3xl mx-auto p-5 font-sans">
+  <h1 class="text-2xl mb-4">History</h1>
 
   <!-- Main T-Chart Wrapper -->
-  <div class="t-chart">
+  <div class="border border-gray-300 rounded overflow-hidden">
     
     <!-- Header row -->
-    <div class="chart-header">
-      <div>Problems</div>
-      <div>Answers</div>
+    <div class="flex font-bold bg-gray-100 border-b border-gray-300 divide-x divide-gray-300">
+      <div class="flex-1 py-3 px-4">Problems</div>
+      <div class="flex-1 py-3 px-4">Answers</div>
     </div>
 
     <!-- Row 1: Problem #1 -->
-    <div class="chart-row">
-      <div>Problem #1: Projectile Motion</div>
-      <div>
+    <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
+      <div class="flex-1 py-3 px-4">Problem #1: Projectile Motion</div>
+      <div class="flex-1 py-3 px-4">
         45 degrees<br>
-        <span class="correct">Correct</span>
+        <span class="text-green-600 font-bold">Correct</span>
       </div>
     </div>
 
     <!-- Row 2: Problem #2 -->
-    <div class="chart-row">
-      <div>Problem #2: Force Calculation</div>
-      <div>
+    <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
+      <div class="flex-1 py-3 px-4">Problem #2: Force Calculation</div>
+      <div class="flex-1 py-3 px-4">
         60 N<br>
-        <span class="wrong">Wrong</span>
+        <span class="text-red-600 font-bold">Wrong</span>
       </div>
     </div>
 
     <!-- Row 3: Problem #3 -->
-    <div class="chart-row">
-      <div>Problem #3: Momentum</div>
-      <div>
+    <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
+      <div class="flex-1 py-3 px-4">Problem #3: Momentum</div>
+      <div class="flex-1 py-3 px-4">
         20 kg·m/s<br>
-        <span class="correct">Correct</span>
+        <span class="text-green-600 font-bold">Correct</span>
       </div>
     </div>
 
@@ -41,10 +41,7 @@
   </div>
 </div>
 
-
-
-
-  <!-- Back Button Section -->
-  <div class="absolute top-8 left-8">
-    <%= link_to 'Back', students_path, class: 'bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition' %>
-  </div>
+<!-- Back Button Section -->
+<div class="absolute top-8 left-8">
+  <%= link_to 'Back', students_path, class: 'bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition' %>
+</div>
