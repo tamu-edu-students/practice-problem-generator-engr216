@@ -1,5 +1,5 @@
 Given('I am on the student dashboard and I am logged in as a student') do
-  visit '/students'
+  visit '/practice_problems'
 end
 
 Then('I should see a settings button.') do
@@ -12,21 +12,21 @@ When('I click the settings button') do
 end
 
 Then('I should be on a page where I can see and edit my settings.') do
-  visit '/settings'
+  expect(page).to have_current_path('/settings')
 end
 
 Given('I am on the student settings page and I am logged in as a student') do
   visit '/settings'
 end
 
-Then('I should see a back button.') do
-  expect(page).to have_link('Back')
+Then('I should see a Problem Select button.') do
+  expect(page).to have_link('Problem Select')
 end
 
-When('I click the back button') do
-  click_link('Back')
+When('I click the Problem Select button') do
+  click_link('Problem Select')
 end
 
 Then('I should be on the student dashboard.') do
-  visit '/students'
+  visit '/practice_problems'
 end
