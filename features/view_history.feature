@@ -16,5 +16,5 @@ Feature: View History Page
     
   Scenario: Go home from history page
     Given I am on the history page
-    When I click the back button on the history page
+    When I click the Problem Select button on the history page
     Then I should be on the student dashboard
