@@ -1,0 +1,70 @@
+<!-- app/views/teachers_dashboard/student_statistics.html.erb -->
+
+<head>
+  <%= stylesheet_link_tag 'manage_students', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <!-- Include Google Charts Loader -->
+  <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js" %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<div class="w-full flex flex-col bg-[#9aa8c5]">
+  <!-- Navbar -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6 mt-16">
+    <h1 class="text-4xl font-bold mb-6 text-black">Student Statistics</h1>
+
+    <!-- PIE CHARTS AREA: Responsive grid that wraps -->
+    <div id="charts" class="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      <% @categories.each do |category| %>
+        <div class="chart-container bg-white text-black rounded-lg p-2 shadow">
+          <h3 class="text-sm font-bold mb-1"><%= category.name %></h3>
+          <%= pie_chart chart_data_for_category(category, @selected_student),
+                        id: "chart-#{category.id}",
+                        height: "150px",
+                        library: { legend: { position: "bottom" } } %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- FLEX CONTAINER FOR SECTION COLUMNS -->
+    <div class="w-full px-2">
+      <div class="flex flex-row space-x-2">
+        <% (900..905).each do |section| %>
+          <div class="flex-1 bg-white text-black rounded-lg p-4 shadow">
+            <h2 class="text-xl font-bold mb-3">Section <%= section %></h2>
+            <ul class="text-left space-y-2">
+              <% @students.select { |s| s.section.to_i == section }.each do |student| %>
+                <li class="flex justify-between items-center">
+                  <!-- Clicking the name reloads the page with that student's id -->
+                  <span class="cursor-pointer">
+                    <%= link_to "#{student.first_name} #{student.last_name}", student_statistics_path(student_id: student.id), class: "text-black" %>
+                  </span>
+                  <span class="ml-2 text-sm"><%= student.uin %></span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
