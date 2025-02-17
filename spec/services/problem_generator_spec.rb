@@ -21,9 +21,7 @@ RSpec.describe ProblemGenerator, type: :service do
     end
 
     it 'each question has question, choices, and answer keys' do
-      problem_generator.generate_questions.each do |q|
-        expect(q).to include(:question, :choices, :answer)
-      end
+      expect(problem_generator.generate_questions).to all(include(:question, :choices, :answer))
     end
   end
 
