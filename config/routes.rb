@@ -23,6 +23,9 @@ Rails.application.routes.draw do
   get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
   get 'teacher_dashboard/manage_students', to: 'teacher_dashboard#manage_students', as: :manage_students
 
+  # Practice Problem Dashboard Routes
+  # get '/practice_problems', to: 'practice_problem_dashboard#index', as: :practice_problems
+
   # Add the settings route
   get 'settings', to: 'settings#show', as: 'settings'
 
