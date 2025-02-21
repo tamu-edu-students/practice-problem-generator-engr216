@@ -14,7 +14,11 @@ gem 'jbuilder'
 # gem "redis", ">= 4.0.1"
 # Gemfile
 
+# for seeding
 gem 'faker'
+
+# for student statistics page
+gem 'chartkick'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"

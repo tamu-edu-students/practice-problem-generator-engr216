@@ -10,11 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_03_221010) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_15_012552) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "student_category_statistics", force: :cascade do |t|
+    t.integer "student_id", null: false
+    t.integer "category_id", null: false
+    t.integer "attempts"
+    t.integer "correct_attempts"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_student_category_statistics_on_category_id"
+    t.index ["student_id"], name: "index_student_category_statistics_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -24,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_03_221010) do
     t.string "uid"
     t.string "provider"
     t.string "email"
+    t.string "section"
   end
 
   create_table "teachers", force: :cascade do |t|
@@ -36,4 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_03_221010) do
     t.string "provider"
     t.index ["email"], name: "index_teachers_on_email", unique: true
   end
+
+  add_foreign_key "student_category_statistics", "categories"
+  add_foreign_key "student_category_statistics", "students"
 end

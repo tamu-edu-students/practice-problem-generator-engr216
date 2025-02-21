@@ -1,31 +1,24 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-# Seed the RottenPotatoes DB with some movies.
-# Clear existing data
+# db/seeds.rb
 
 require 'faker'
 
+# Clear existing data
+StudentCategoryStatistic.destroy_all
 Student.destroy_all
 Teacher.destroy_all
 Category.destroy_all
 
+# Create 50 students with a random section number (as a string) between 900 and 905
 students = 50.times.map do
   Student.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    uin: Faker::Number.number(digits: 9)
+    uin: Faker::Number.number(digits: 9),
+    section: rand(900..905).to_s
   )
 end
 
-
+# Seed teachers
 teachers = [
   { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher'},
   { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi'},
@@ -36,11 +29,12 @@ teachers = [
   { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar'}
 ]
 
-# students.each do |student|
-#   Student.create!(student)
-# end
+teachers.each do |teacher_attrs|
+  Teacher.create!(teacher_attrs)
+end
 
-categories = [
+# Seed categories
+category_names = [
   'Measurement & Error',
   'Propagation of Error',
   'Finite Differences',
@@ -56,13 +50,25 @@ categories = [
   'Art in Engineering'
 ]
 
-categories.each do |name|
+category_names.each do |name|
   Category.find_or_create_by!(name: name)
 end
 
-teachers.each do |teacher|
-  Teacher.create!(teacher)
+# Create dummy statistics for each student for every category
+students.each do |student|
+  Category.all.each do |category|
+    attempts = rand(5..20)
+    correct_attempts = rand(0..attempts)
+    StudentCategoryStatistic.create!(
+      student: student,
+      category: category,
+      attempts: attempts,
+      correct_attempts: correct_attempts
+    )
+  end
 end
 
 puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"
+puts "Seeded #{Category.count} categories!"
+puts "Seeded #{StudentCategoryStatistic.count} student category statistics records!"

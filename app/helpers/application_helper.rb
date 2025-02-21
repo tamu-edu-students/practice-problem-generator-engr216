@@ -1,2 +1,4 @@
 module ApplicationHelper
-end
+    include Chartkick::Helper
+  end
+  

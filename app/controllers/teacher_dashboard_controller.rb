@@ -14,4 +14,12 @@ class TeacherDashboardController < ApplicationController
   def manage_students
     @students = Student.all
   end
+
+  def student_statistics
+    # If a student is selected, load that student’s data.
+    @selected_student = Student.find(params[:student_id]) if params[:student_id].present?
+    @students = Student.all
+    @categories = Category.all
+  end
+
 end
