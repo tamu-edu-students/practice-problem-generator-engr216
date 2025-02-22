@@ -103,7 +103,7 @@ Testing covers: code smells, style offenses, and coverage.
 | 5      | Design Practice Problem Dashboard      | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
 | 6      | Generate Problem Page for Student      | Completed    | Coding Smells: Nothing currently, but could cause databse generation in the future. <br>Style Offenses: None<br>Coverage: 100%  |
 | 7      | Settings Page for Student              | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 8      | Student Statistic Page for Teacher     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 8      | Student Statistic Page for Teacher     | Incomplete    | N/A  |
 
 ---
 
