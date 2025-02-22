@@ -142,11 +142,12 @@ Testing covers: code smells, style offenses, and coverage.
 
 ## Customer Feedback
 
-- **Customer Meeting Date & Time:** [Jan 30, 2024, 1:00 P.M, Zach 425 F]
+- **Customer Meeting Date & Time:** [Meeting on 2/20/25 at 2:15 PM, ZACH 424]
 - **Summary of Discussion and Feedback:**
-  - Client prioritizes ui/ux and would like to see a user friendly interface that is easy to interact with
-  - Specific features to add: Track the time it takes for students to finish a problem type, back buttons for every page rather than just a home button
-  - We will focus the design of pages rather than full implementations of features for the next sprint. 
+    - Customer was pleased with progress made overall from the last demo that was made.
+    - Customer gave us direction both for short term and long term ideas, this included big picture ideas like statistical pages having graphical components for both students and teachers, and smaller tweaks like having a physical back button on every page, not just relying on browser buttons.
+    - Customer agreed that the next phase of the project should be at least some problems implemented and practicable by students, which is what our team has now agreed to focus on next.
+
 
 ## Deployment and Environment Setup
 ## Prerequisites
