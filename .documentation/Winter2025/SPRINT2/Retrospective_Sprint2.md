@@ -96,13 +96,13 @@ Testing covers: code smells, style offenses, and coverage.
 
 | Item # | User Story                          | Status       | Notes                                                                 |
 |--------|-------------------------------------|--------------|-----------------------------------------------------------------------|
-| 1      | Deploy Web Page                     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
-| 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: Small offenses (spacing, quotes), autofixed by RuboCop<br>Coverage: 100% with RSpec and Cucumber |
-| 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None (Duplicate gem in Gemfile removed)<br>Coverage: No coverage check, tested manually |
-| 4      | View List of Students as a Teacher  | Completed | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.59% (Not started, waiting on Item 7) |
-| *5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber.<br> Modified: Took out middleware as it created issues with merging and deploying, will add in later sprint |
-| 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%          |
-| *7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 97.6% with RSpec and Cucumber.<br> Modified: Took out middleware as it created issues with merging and deploying, will add in later sprint |
+| 1      | Design Teacher Dashboard            | Completed    | Coding Smells: <br>Style Offenses: <br>Coverage:           |
+| 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 4      | View List of Students as a Teacher  | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
 
 ---
 
