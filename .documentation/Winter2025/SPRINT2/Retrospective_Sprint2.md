@@ -145,51 +145,59 @@ Testing covers: code smells, style offenses, and coverage.
   - We will focus the design of pages rather than full implementations of features for the next sprint. 
 
 ## Deployment and Environment Setup
+## Prerequisites
+- Ruby: 3.3.4 
+- Rails: 8.0.1
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/tamu-edu-students/practice-problem-generator-engr216.git
-   cd practice-problem-generator-engr216
-   ```
+## Setup
+### Clone the repository:
 
-2. **Install Dependencies:**
-   ```bash
-   bundle install
-   rails db:migrate
-   rails db:seed
-   ```
+```bash
+$ git clone https://github.com/tamu-edu-students/practice-problem-generator-engr216.git
+$ cd practice-problem-generator-engr216
+```
+### Install Dependencies:
+```bash
+bundle install
+rails db:migrate
+rails db:seed
+```
+### Setting up Environment Variables
+Create a `.env` file in the root of the project directory. Contact our team for more details.
 
-3. **Create a `.env` File with Google Credentials:**
-   ```bash
-   GOOGLE_CLIENT_ID=497801265275-2ee9flnfs8sn8lkip8l50q1c8v42solo.apps.googleusercontent.com
-   GOOGLE_CLIENT_SECRET=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
-   ```
+### View page
+```bash
+rails server
+```
 
-4. **Login to Heroku:**
-   ```bash
-   heroku login
-   ```
+## Running Tests
+```bash
+bundle exec rspec
+```
+```bash
+bundle exec cucumber
+```
 
-5. **Create a New Heroku App:**
-   ```bash
-   heroku create temp-app
-   ```
+## Deployment
 
-6. **Push the Code to Heroku:**
-   ```bash
-   git push heroku main
-   ```
-
-7. **Run Migrations on Heroku:**
-   ```bash
-   heroku run rails db:migrate
-   heroku run rails db:seed
-   ```
-
-8. **Open the App:**
-   ```bash
-   heroku open
-   ```
+```bash
+heroku login
+```
+```bash
+heroku create temp-app
+```
+```bash
+git push heroku main
+```
+```bash
+heroku run rails db:migrate
+```
+```bash
+heroku run rails db:seed
+```
+```bash
+heroku open
+```
 
 
 **Links:**
