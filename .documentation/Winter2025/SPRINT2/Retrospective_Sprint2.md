@@ -132,7 +132,7 @@ Testing covers: code smells, style offenses, and coverage.
 
 ## Legacy Code Refactoring (if applicable)
 
-- Not Applicable for Sprint 1
+- Recreated/Refactored the styling on every page from Sprint1.
 
 ---
 
