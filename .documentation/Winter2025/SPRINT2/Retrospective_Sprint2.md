@@ -96,13 +96,14 @@ Testing covers: code smells, style offenses, and coverage.
 
 | Item # | User Story                          | Status       | Notes                                                                 |
 |--------|-------------------------------------|--------------|-----------------------------------------------------------------------|
-| 1      | Design Teacher Dashboard            | Completed    | Coding Smells: <br>Style Offenses: <br>Coverage:           |
-| 2      | Select Problem Category             | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 3      | Github Actions                      | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 4      | View List of Students as a Teacher  | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 5      | Log-In as a Student                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 6      | Return Home from Page               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
-| 7      | Log-In as a Teacher                 | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 1      | Design Teacher Dashboard               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 2      | History Page for Student               | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 3      | Manage Student Page for Teacher        | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 4      | Styling Login Page                     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 5      | Design Practice Problem Dashboard      | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 6      | Generate Problem Page for Student      | Completed    | Coding Smells: Nothing currently, but could cause databse generation in the future. <br>Style Offenses: None<br>Coverage: 100%  |
+| 7      | Settings Page for Student              | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
+| 8      | Student Statistic Page for Teacher     | Completed    | Coding Smells: None<br>Style Offenses: None<br>Coverage: 100%  |
 
 ---
 
