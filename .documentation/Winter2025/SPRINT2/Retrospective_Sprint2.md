@@ -3,7 +3,7 @@
 ## Sprint Overview
 
 - **Sprint Number:** 2
-- **Sprint Dates:** 02/03/25 - 02/14/25
+- **Sprint Dates:** 01/30/25 - 02/14/25
   
 ### Team Members and Roles:
 
