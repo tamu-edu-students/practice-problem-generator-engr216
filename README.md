@@ -64,4 +64,4 @@ heroku open
 #### Email: vivek.somarapu@tamu.edu
 
 ### Current deployment: 
-https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/students
+https://whispering-reaches-02252-73f884c5e5f0.herokuapp.com/
