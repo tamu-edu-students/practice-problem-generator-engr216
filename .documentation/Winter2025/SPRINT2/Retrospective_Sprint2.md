@@ -78,7 +78,7 @@ Students can view a non-functional student dashboard. Teachers can view a non-fu
    - **Changes Made:** Added a settings page for students to authenticate teacher or reset data.
    - **Reason for Changes:** Students need to connect a teacher to their account as well as indicate whether they want their teacher to track their progress. In order to do this they need a page to indicate these preferences.
 
-7. **Student Statistic Page for Teacher**  
+8. **Student Statistic Page for Teacher**  
    - **Developer:** Kevin Shi 
    - **Status:** Incomplete
    - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/39)  
@@ -121,8 +121,11 @@ Testing covers: code smells, style offenses, and coverage.
 
 | Feature | Lo-Fi Mock-Up View |
 | :---- | :---- |
-| Log-In as a teacher | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Teacher.png) |
-| Log-In as a student | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Student.png) |
+| Styling Login Page | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Teacher.png) |
+| Styling Login Page | ![](/.documentation/Winter2025/Images/Lo-Fi/Login_To_Student.png) |
+| Settings Page for Student | ![](/.documentation/Winter2025/Images/Lo-Fi/Student_To_Settings.png) |
+| Generate Problem Page for Student|  ![](/.documentation/Winter2025/Images/Lo-Fi/QuestionFeedback_to_NewQuestion.png) |
+
 
 **Changes Made to Design During the Sprint:**
 
