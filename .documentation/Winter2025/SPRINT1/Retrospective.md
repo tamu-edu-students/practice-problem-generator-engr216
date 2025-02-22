@@ -100,7 +100,7 @@ Testing covers: code smells, style offenses, and coverage.
 
 ## Burn Down Chart
 
-![Burndown Chart](/.documentation/Winter2025/Images/output.png)
+![Burndown Chart](/.documentation/Winter2025/Images/Sprint2Burndown.PNG)
 
 
 
