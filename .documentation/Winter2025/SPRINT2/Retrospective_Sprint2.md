@@ -2,82 +2,90 @@
 
 ## Sprint Overview
 
-- **Sprint Number:** 1
-- **Sprint Dates:** 01/10/25 - 01/24/25
+- **Sprint Number:** 2
+- **Sprint Dates:** 02/03/25 - 02/14/25
   
 ### Team Members and Roles:
 
 | Role               | Name              | Points Completed |
 |--------------------|-------------------|------------------|
-| Product Owner (PO) | Vivek Somarapu            | N/A              |
-| Scrum Master (SM)  | Nicholas Turoci            | N/A              |
+| Product Owner (PO) | Cooper Calk           | N/A              |
+| Scrum Master (SM)  | Jordan Daryanani            | N/A              |
 | Developer (Dev)    | Dhruv Manihar| 2         |
 | Developer (Dev)    | Kevin Shi| 2        |
-| Developer (Dev)    | Cooper Calk| 2         |
-| Developer (Dev)    | Jordan Daryanani| 4        |
+| Developer (Dev)    | Vivek Somarapu| 2         |
+| Developer (Dev)    | Nicholas Turoci| 2        |
 
-**Total Points Completed:** 10 Points
+**Total Points Completed:** 8 Points
 
 ---
 
 ## Sprint Goal
 
-Students can log in and view problem types. Teachers can log in and view a student list. Users can navigate between pages. 
-
+Students can view a non-functional student dashboard. Teachers can view a non-functional teacher dashboard. Users can login and be brought to their respective dashboard. 
 ---
 
 ## Achievements in the Sprint
 
 ### Summary of Implemented User Stories:
 
-1. **Deploy Web Page**  
+1. **Design Teacher Dashboard**  
    - **Developer:** Kevin Shi  
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/2)  
-   - **Changes Made:** Basic setup of rails environment with Heroku deployment.  
-   - **Reason for Changes:** Setup and viewing for the future.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/54)  
+   - **Changes Made:** Migration/schema update to database + seeds for testing, Barebones “teacher dashboard” page, Routing based on roles.
+   - **Reason for Changes:** Allows for more identification elements for teacher and students, Lays foundation for teacher statistics and other teacher-related settings, For security, strictly prevents students from accessing the teacher page. Strictly tested using omniauth mock users.
 
-2. **Select Problem Category**  
-   - **Developer:** Cooper Calk  
+2. **History Page for Student**  
+   - **Developer:** Nicholas Turoci
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/4)  
-   - **Changes Made:** Created a page with feature and backend/db for a student to select a category of problem to work on, which then redirects to a page currently with a dummy question.  
-   - **Reason for Changes:** To enable users to choose a specific problem type to practice rather than always having a random one.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/55)  
+   - **Changes Made:** Added a designated page where students can view past problems they have completed along with feedback.  
+   - **Reason for Changes:** In order to have a Physics review app, students need to see their progress as well as feedback to ensure growth.
 
-3. **Github Actions**
-   - **Developer:** Dhruv Manihar
+3. **Manage Student Page for Teacher**
+   - **Developer:** Vivek Somarapu
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/7)  
-   - **Changes Made:** Implemented CI/CD rules for the repo such as auto test coverage and rubocop checks when building on push in GitHub. Also set up auto deployment to Heroku when changes are made to main.  
-   - **Reason for Changes:** Streamline development and ensure code quality.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/56)  
+   - **Changes Made:** Designed and implemented a page for students to manage students in the form of a table, with the ability to view, edit, delete, and create a student 
+   - **Reason for Changes:** Teachers must be able to view all their students and they need a centralized place to manage each of these students. 
 
-4. **View List of Students as a Teacher**  
-   - **Developer:** Cooper Calk  
+4. **Styling Login page**  
+   - **Developer:** Dhruv Manihar 
    - **Status:** Complete 
-   - **Test Cases:** [Link](https://github.com/orgs/tamu-edu-students/projects/87/views/1?pane=issue&itemId=93213056)  
-   - **Changes Made:** Made list of students available to teachers to view.  
-   - **Reason for Changes:** To allow teacher users to see the students using the app and enable future interactions.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/26)  
+   - **Changes Made:** Added styling to login page that was plain html using tailwinds/rails ui
+   - **Reason for Changes:** Better UI experience for student/teacher logging in
 
-5. **Log-In as a Student**  
-   - **Developer:** Jordan Daryanani 
+5. **Design Practice Problem Dashboard**  
+   - **Developer:** Vivek Somarapu 
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/6)  
-   - **Changes Made:** Changed the login page buttons to link to OAuth. Set up OAuth tokens, automatically creating Student users if a student is not already created. Added middleware (students can not view teacher pages). This allows for additional security and confidentiality as students cannot view each other’s scores.
-   - **Reason for Changes:** Allows teachers and students to be separated into their respective pages and allows for additional security.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/57)  
+   - **Changes Made:** Designed and implemented a page that allows for students to view and select problem categories with appropriate nav bar. 
+   - **Reason for Changes:** Students must be able to view options for which types of problems they may want to generate. 
 
 6. **Return Home from Page**  
-   - **Developer:** Kevin Shi
+   - **Developer:** Dhruv Manihar
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/3)  
-   - **Changes Made:** Created problems page and student home view, and respective buttons to navigate back and forth. Added routing between them based on Rspec and Cucumber tests.  
-   - **Reason for Changes:** To provide proper navigation for the student user.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/37)  
+   - **Changes Made:** Added “dummy problems” that show up when selecting the practice category. Allows to generate a new problem while on the page as well.  
+   - **Reason for Changes:** Creating the basic interface for showing a problem to a student. 
 
 7. **Log-In as a Teacher**  
-   - **Developer:** Jordan Daryanani  
+   - **Developer:** Nicholas Turoci 
    - **Status:** Completed  
-   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/5)  
-   - **Changes Made:** Added middleware (Teacher’s cannot view student pages as a student). Teacher login button logs in as a teacher and correctly brings them to their page.
-   - **Reason for Changes:** Allows teachers and students to be separated into their respective pages and allows for additional security.
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/58)  
+   - **Changes Made:** Added a settings page for students to authenticate teacher or reset data.
+   - **Reason for Changes:** Students need to connect a teacher to their account as well as indicate whether they want their teacher to track their progress. In order to do this they need a page to indicate these preferences.
+
+7. **Student Statistic Page for Teacher**  
+   - **Developer:** Kevin Shi 
+   - **Status:** Incomplete
+   - **Test Cases:** [Link](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/39)  
+   - **Changes Made:**
+   - **Reason for Changes:** 
+
+
 
 
 ---
