@@ -63,7 +63,11 @@ class StudentsController < ApplicationController
   end
 
   # Only allow a list of trusted parameters through.
-  def student_params
-    params.expect(student: %i[first_name last_name uin])
-  end
+-  def student_params
+-    params.expect(student: %i[first_name last_name uin])
+-  end
++  def student_params
++    params.require(:student).permit(:first_name, :last_name, :email, :uin, :teacher, :teacher_id, :authenticate)
++  end
 end
+

@@ -1,45 +1,43 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-# Seed the RottenPotatoes DB with some movies.
-# Clear existing data
-
 require 'faker'
 
-Student.destroy_all
+# Clear existing data
 Teacher.destroy_all
+Student.destroy_all
 Category.destroy_all
 
-students = 50.times.map do
-  Student.create!(
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    uin: Faker::Number.number(digits: 9)
+# Seed Teachers
+teachers_data = [
+  { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher' },
+  { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi' },
+  { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci' },
+  { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk' },
+  { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani' },
+  { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarapu' },
+  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar' }
+]
+
+teachers = teachers_data.map do |data|
+  Teacher.create!(
+    name: "#{data[:first_name].capitalize} #{data[:last_name].capitalize}",
+    email: data[:email]
   )
 end
 
+# Seed Students
+50.times do
+  assigned_teacher = teachers.sample
+  Student.create!(
+    first_name: Faker::Name.first_name,
+    last_name:  Faker::Name.last_name,
+    email:      Faker::Internet.email,
+    uin:        Faker::Number.number(digits: 9).to_i,
+    teacher:    assigned_teacher.name,   # storing teacher's name as string
+    teacher_id: assigned_teacher.id,       # association
+    authenticate: [true, false].sample
+  )
+end
 
-teachers = [
-  { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher'},
-  { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi'},
-  { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci'},
-  { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk'},
-  { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani'},
-  { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarapu'},
-  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar'}
-]
-
-# students.each do |student|
-#   Student.create!(student)
-# end
-
+# Seed Categories
 categories = [
   'Measurement & Error',
   'Propagation of Error',
@@ -60,9 +58,6 @@ categories.each do |name|
   Category.find_or_create_by!(name: name)
 end
 
-teachers.each do |teacher|
-  Teacher.create!(teacher)
-end
-
-puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"
+puts "Seeded #{Student.count} students!"
+puts "Seeded #{Category.count} categories!"
