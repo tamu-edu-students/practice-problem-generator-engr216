@@ -1,9 +1,10 @@
 require 'faker'
 
-# Clear existing data
-Teacher.destroy_all
+# Clear existing data for Students and Teachers (and others if needed)
 Student.destroy_all
-Category.destroy_all
+Teacher.destroy_all
+# Answer.destroy_all
+# Question.destroy_all
 
 # Seed Teachers
 teachers_data = [
@@ -16,10 +17,10 @@ teachers_data = [
   { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar' }
 ]
 
-teachers = teachers_data.map do |data|
+teachers = teachers_data.map do |teacher_data|
   Teacher.create!(
-    name: "#{data[:first_name].capitalize} #{data[:last_name].capitalize}",
-    email: data[:email]
+    name: "#{teacher_data[:first_name].capitalize} #{teacher_data[:last_name].capitalize}",
+    email: teacher_data[:email]
   )
 end
 
@@ -31,33 +32,37 @@ end
     last_name:  Faker::Name.last_name,
     email:      Faker::Internet.email,
     uin:        Faker::Number.number(digits: 9).to_i,
-    teacher:    assigned_teacher.name,   # storing teacher's name as string
-    teacher_id: assigned_teacher.id,       # association
+    teacher:    assigned_teacher,  # associating the teacher object
     authenticate: [true, false].sample
   )
 end
 
-# Seed Categories
-categories = [
-  'Measurement & Error',
-  'Propagation of Error',
-  'Finite Differences',
-  'Experimental Statistics',
-  'Confidence Intervals',
-  'Universal Accounting Equation',
-  'Particle Statics',
-  'Momentum & Collisions',
-  'Rigid Body Statics',
-  'Angular Momentum',
-  'Harmonic Motion',
-  'Engineering Ethics',
-  'Art in Engineering'
-]
+# Comment out or remove the following if you don't want to seed Questions and Answers now:
+=begin
+5.times do
+  question = Question.create!(
+    category: Faker::Educator.subject,
+    question: Faker::Lorem.sentence,
+    answers: Faker::Lorem.sentence
+  )
 
-categories.each do |name|
-  Category.find_or_create_by!(name: name)
+  3.times do
+    Answer.create!(
+      question_id: question.id,
+      category: question.category,
+      question_description: Faker::Lorem.paragraph,
+      answer_choices: [Faker::Lorem.word, Faker::Lorem.word, Faker::Lorem.word],
+      answer: Faker::Lorem.word,
+      correctness: [true, false].sample,
+      student_email: Faker::Internet.email,
+      date_completed: Date.today.to_s,
+      time_spent: "#{rand(5..30)} seconds"
+    )
+  end
 end
+=end
 
-puts "Seeded #{Teacher.count} teachers!"
 puts "Seeded #{Student.count} students!"
-puts "Seeded #{Category.count} categories!"
+puts "Seeded #{Teacher.count} teachers!"
+# puts "Seeded #{Question.count} questions!"
+# puts "Seeded #{Answer.count} answers!"
