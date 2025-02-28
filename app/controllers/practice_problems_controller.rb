@@ -5,7 +5,7 @@ class PracticeProblemsController < ApplicationController
   end
 
   def generate
-    @category = params[:category]  # now a category string from the URL
+    @category = params[:category] # now a category string from the URL
     all_questions = ProblemGenerator.new(@category).generate_questions
     @question = pick_question(all_questions)
     session[:last_question] = @question[:question]
