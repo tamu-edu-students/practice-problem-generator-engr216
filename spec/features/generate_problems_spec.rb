@@ -2,11 +2,11 @@
 require 'rails_helper'
 
 RSpec.describe 'practice_problems/generate.html.erb', type: :view do
-  let(:category) { Category.create!(name: 'Measurement & Error') }
+  let(:category) { 'Measurement & Error' }
   let(:question) do
     {
       question: "What is Newton's second law?",
-      choices: ['F = ma', 'E = mc^2', 'P = IV', 'V = IR']
+      answer_choices: ['F = ma', 'E = mc^2', 'P = IV', 'V = IR']
     }
   end
 
@@ -21,7 +21,7 @@ RSpec.describe 'practice_problems/generate.html.erb', type: :view do
   end
 
   it 'displays the category title' do
-    expect(rendered).to have_content("Category: #{category.name}")
+    expect(rendered).to have_content("Category: #{category}")
   end
 
   it 'displays the question text' do
@@ -29,7 +29,7 @@ RSpec.describe 'practice_problems/generate.html.erb', type: :view do
   end
 
   it 'displays each answer choice' do
-    question[:choices].each do |choice|
+    question[:answer_choices].each do |choice|
       expect(rendered).to include(choice)
     end
   end

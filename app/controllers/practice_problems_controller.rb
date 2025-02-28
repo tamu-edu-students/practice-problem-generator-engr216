@@ -1,11 +1,11 @@
 class PracticeProblemsController < ApplicationController
   def index
-    @categories = Category.all
+    @categories = Question.select(:category).distinct.order(:category)
     render :index
   end
 
   def generate
-    @category = Category.find(params[:category_id])
+    @category = params[:category] # now a category string from the URL
     all_questions = ProblemGenerator.new(@category).generate_questions
     @question = pick_question(all_questions)
     session[:last_question] = @question[:question]
