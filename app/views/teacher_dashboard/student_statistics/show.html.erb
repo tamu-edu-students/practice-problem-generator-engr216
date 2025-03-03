@@ -1,0 +1,37 @@
+<head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<div class="w-full flex flex-col bg-[#9aa8c5] min-h-screen">
+  <!-- Navbar -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/teacher_dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6 mt-16">
+    <h1 class="text-4xl font-bold mb-6 text-black"><%= "#{@student.first_name} #{@student.last_name}" %>'s Problem History</h1>
+
+    <!-- Summary Container -->
+    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
+      <p class="text-lg"><%= @problem_summary %></p>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_28_011826) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_011814) do
   create_table "answers", force: :cascade do |t|
     t.integer "question_id"
     t.string "category"
@@ -25,6 +25,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_011826) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "questions", force: :cascade do |t|
     t.string "category"
     t.string "question"
@@ -33,10 +39,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_011826) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "student_category_statistics", force: :cascade do |t|
+    t.integer "student_id", null: false
+    t.integer "category_id", null: false
+    t.integer "attempts"
+    t.integer "correct_attempts"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_student_category_statistics_on_category_id"
+    t.index ["student_id"], name: "index_student_category_statistics_on_student_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "email"
+    t.string "section"
     t.integer "uin"
     t.string "teacher"
     t.integer "teacher_id"
@@ -50,4 +68,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_011826) do
     t.string "name"
     t.index ["email"], name: "index_teachers_on_email", unique: true
   end
+
+  add_foreign_key "student_category_statistics", "categories"
+  add_foreign_key "student_category_statistics", "students"
 end

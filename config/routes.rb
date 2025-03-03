@@ -23,6 +23,12 @@ Rails.application.routes.draw do
   get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
   get 'teacher_dashboard/manage_students', to: 'teacher_dashboard#manage_students', as: :manage_students
 
+  # Studnet Statistics in Teacher Dashboard
+  namespace :teacher_dashboard do
+    get 'student_statistics', to: 'student_statistics#index', as: :student_statistics
+    get 'student_statistics/:id', to: 'student_statistics#show', as: :student_statistics_show
+  end
+
   # Practice Problem Dashboard Routes
   # get '/practice_problems', to: 'practice_problem_dashboard#index', as: :practice_problems
 

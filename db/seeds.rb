@@ -24,18 +24,38 @@ teachers = teachers_data.map do |teacher_data|
   )
 end
 
-# Seed Students
-50.times do
-  assigned_teacher = teachers.sample
+# Helper to create a student, Currently utiliezd by student statistics page
+def create_student(teacher)
   Student.create!(
     first_name: Faker::Name.first_name,
-    last_name:  Faker::Name.last_name,
-    email:      Faker::Internet.email,
-    uin:        Faker::Number.number(digits: 9).to_i,
-    teacher:    assigned_teacher,  # associating the teacher object
+    last_name: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    uin: Faker::Number.number(digits: 9).to_i,
+    teacher: teacher,
     authenticate: [true, false].sample
   )
 end
+
+teachers.each do |teacher|
+  rand(1..3).times { create_student(teacher) } # Each gets 1-3 students
+end
+
+# Distribute remaining students to reach ~50 total
+remaining_students = 50 - Student.count
+remaining_students.times { create_student(teachers.sample) } if remaining_students > 0
+
+# REPLACED BY ABOVE FOR BETTER DISTRIBUTION OF STUDENTS TO TEACHER
+# 50.times do
+#   assigned_teacher = teachers.sample
+#   Student.create!(
+#     first_name: Faker::Name.first_name,
+#     last_name:  Faker::Name.last_name,
+#     email:      Faker::Internet.email,
+#     uin:        Faker::Number.number(digits: 9).to_i,
+#     teacher:    assigned_teacher,  # associating the teacher object
+#     authenticate: [true, false].sample
+#   )
+# end
 
 # Comment out or remove the following if you don't want to seed Questions and Answers now:
 =begin

@@ -1,4 +1,4 @@
-Before do
+Before('@practice_problems') do
   Category.where(name: %w[Mechanics Thermodynamics Electromagnetism]).destroy_all
 
   Category.find_or_create_by!(name: 'Mechanics')
