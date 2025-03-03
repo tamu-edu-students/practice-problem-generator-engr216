@@ -1,4 +1,3 @@
-# spec/controllers/students_controller_spec.rb
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
@@ -42,14 +41,17 @@ RSpec.describe StudentsController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid params' do
+      # Merge a unique email so that uniqueness validation passes.
+      let(:new_valid_attributes) { valid_attributes.merge(email: 'unique@example.com') }
+
       it 'creates a new Student' do
         expect do
-          post :create, params: { student: valid_attributes }
+          post :create, params: { student: new_valid_attributes }
         end.to change(Student, :count).by(1)
       end
 
       it 'redirects to the created student' do
-        post :create, params: { student: valid_attributes }
+        post :create, params: { student: new_valid_attributes }
         expect(response).to redirect_to(Student.last)
       end
     end

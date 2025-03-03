@@ -3,16 +3,16 @@ require 'rails_helper'
 
 RSpec.describe PracticeProblemsController, type: :controller do
   describe 'GET #index' do
-    # Create a question with a known category so it will appear in the distinct list.
-    let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question', answers: 'TBD') }
+    # Create a question with a known category.
+    # Omit the "answers" attribute to avoid clashing with the association.
+    let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
 
     before do
       get :index
     end
 
     it 'includes the newly created category in assigns(:categories)' do
-      # Since @categories is now a relation of Question records with only the category field,
-      # we extract the category strings.
+      # Extract category strings from the assigned questions.
       categories = assigns(:categories).map(&:category)
       expect(categories).to include('Test Category')
     end

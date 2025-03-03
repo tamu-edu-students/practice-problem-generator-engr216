@@ -25,7 +25,7 @@ RSpec.feature 'Manage Students', type: :feature do
 
   scenario 'Teacher sees a list of students' do
     perform_teacher_login(email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher')
-    Student.find_or_create_by!(first_name: 'John', last_name: 'Doe', uin: 123_456_789)
+    Student.find_or_create_by!(first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com', uin: 123_456_789)
     visit '/teacher_dashboard/manage_students'
 
     expect(page).to have_content('John Doe')
