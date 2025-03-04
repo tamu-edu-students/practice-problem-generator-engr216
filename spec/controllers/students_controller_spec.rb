@@ -5,8 +5,10 @@ RSpec.describe StudentsController, type: :controller do
     Student.delete_all
   end
 
-  let(:valid_attributes) { { first_name: 'John', last_name: 'Doe', uin: '123456789' } }
-  let(:invalid_attributes) { { first_name: '', last_name: '', uin: '' } }
+  let(:valid_attributes) do
+    { first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com', uin: 123_456_789, authenticate: false }
+  end
+  let(:invalid_attributes) { { first_name: '', last_name: '', email: '', uin: nil } }
   let!(:student) { Student.create(valid_attributes) }
 
   describe 'GET #index' do
@@ -39,14 +41,17 @@ RSpec.describe StudentsController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid params' do
+      # Merge a unique email so that uniqueness validation passes.
+      let(:new_valid_attributes) { valid_attributes.merge(email: 'unique@example.com') }
+
       it 'creates a new Student' do
         expect do
-          post :create, params: { student: valid_attributes }
+          post :create, params: { student: new_valid_attributes }
         end.to change(Student, :count).by(1)
       end
 
       it 'redirects to the created student' do
-        post :create, params: { student: valid_attributes }
+        post :create, params: { student: new_valid_attributes }
         expect(response).to redirect_to(Student.last)
       end
     end
@@ -67,7 +72,7 @@ RSpec.describe StudentsController, type: :controller do
 
   describe 'PATCH #update' do
     context 'with valid params' do
-      let(:new_attributes) { { first_name: 'Jane', last_name: 'Smith' } }
+      let(:new_attributes) { { first_name: 'Jane', last_name: 'Smith', email: 'jane.smith@example.com' } }
 
       it 'updates the requested student first name' do
         patch :update, params: { id: student.id, student: new_attributes }
@@ -79,6 +84,12 @@ RSpec.describe StudentsController, type: :controller do
         patch :update, params: { id: student.id, student: new_attributes }
         student.reload
         expect(student.last_name).to eq('Smith')
+      end
+
+      it 'updates the requested student email' do
+        patch :update, params: { id: student.id, student: new_attributes }
+        student.reload
+        expect(student.email).to eq('jane.smith@example.com')
       end
 
       it 'redirects to the student' do
