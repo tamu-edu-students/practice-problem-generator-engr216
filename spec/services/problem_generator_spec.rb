@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe ProblemGenerator, type: :service do
-  let(:category) { Category.create!(name: 'Physics') }
+  let(:category) { 'Physics' }
   let(:problem_generator) { described_class.new(category) }
 
   describe '#initialize' do
