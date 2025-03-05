@@ -1,10 +1,9 @@
 require 'faker'
 
-# Clear existing data for Students and Teachers (and others if needed)
+# Clear existing data for Students, Teachers, and Questions
 Student.destroy_all
 Teacher.destroy_all
-# Answer.destroy_all
-# Question.destroy_all
+Question.destroy_all
 
 # Seed Teachers
 teachers_data = [
@@ -37,32 +36,64 @@ end
   )
 end
 
-# Comment out or remove the following if you don't want to seed Questions and Answers now:
-=begin
-5.times do
-  question = Question.create!(
-    category: Faker::Educator.subject,
-    question: Faker::Lorem.sentence,
-    answers: Faker::Lorem.sentence
-  )
+# Seed Questions (Physics)
+physics_categories = {
+  "Mechanics" => [
+    "What is Newton's Second Law of Motion?",
+    "Calculate the net force on a 10 kg object accelerating at 3 m/s².",
+    "Define friction and provide an example in everyday life."
+  ],
+  "Thermodynamics" => [
+    "State the First Law of Thermodynamics.",
+    "What is entropy and why is it important?",
+    "How does a heat engine convert thermal energy into work?"
+  ],
+  "Electromagnetism" => [
+    "What does Coulomb's Law state about the force between charges?",
+    "Describe the phenomenon of electromagnetic induction.",
+    "How do electric and magnetic fields interact in electromagnetic waves?"
+  ],
+  "Optics" => [
+    "Explain Snell's Law and its relation to refraction.",
+    "How does a convex lens form an image?",
+    "What causes the dispersion of light in a prism?"
+  ],
+  "Quantum Mechanics" => [
+    "What is wave-particle duality?",
+    "State the Heisenberg Uncertainty Principle.",
+    "How does the Schrödinger equation describe quantum states?"
+  ],
+  "Relativity" => [
+    "What is time dilation in special relativity?",
+    "Explain the equivalence principle in general relativity.",
+    "Interpret the meaning of E=mc²."
+  ],
+  "Acoustics" => [
+    "How is sound intensity measured?",
+    "What is the Doppler Effect and how does it affect sound?",
+    "Explain how sound waves propagate through different mediums."
+  ],
+  "Nuclear Physics" => [
+    "What is nuclear fission and how is it harnessed for energy?",
+    "Describe the process of nuclear fusion in stars.",
+    "How does radioactive decay occur?"
+  ],
+  "Astrophysics" => [
+    "What defines a black hole?",
+    "Explain the lifecycle of a star from birth to death.",
+    "How do astronomers measure distances to galaxies?"
+  ]
+}
 
-  3.times do
-    Answer.create!(
-      question_id: question.id,
-      category: question.category,
-      question_description: Faker::Lorem.paragraph,
-      answer_choices: [Faker::Lorem.word, Faker::Lorem.word, Faker::Lorem.word],
-      answer: Faker::Lorem.word,
-      correctness: [true, false].sample,
-      student_email: Faker::Internet.email,
-      date_completed: Date.today.to_s,
-      time_spent: "#{rand(5..30)} seconds"
-    )
+physics_categories.each do |category, questions|
+  questions.each do |q_text|
+    q = Question.create!(category: category, question: q_text)
+    # Set the answer_choices attribute to an array
+    q.write_attribute(:answer_choices, ["TBD"])
+    q.save!
   end
 end
-=end
 
 puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"
-# puts "Seeded #{Question.count} questions!"
-# puts "Seeded #{Answer.count} answers!"
+puts "Seeded #{Question.count} questions!"

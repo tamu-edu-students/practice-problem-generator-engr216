@@ -1,26 +1,34 @@
 # features/step_definitions/generate_problems_steps.rb
 
 Given('I am on the select problem category page') do
-  # Ensure there's at least one category in the database.
-  Category.create!(name: 'Measurement & Error') if Category.count.zero?
+  # Ensure there's at least one question with the desired category exists.
+  if Question.where(category: 'Measurement & Error').count.zero?
+    q = Question.new(category: 'Measurement & Error', question: 'Sample question for Measurement & Error')
+    q.write_attribute(:answer_choices, ["TBD"])  # use the new column and pass an array
+    q.save!
+  end
   visit practice_problems_path
 end
 
 When('I select a category') do
   # Assuming your select category page displays categories as links with the category names.
-  category = Category.first
-  click_link(category.name)
+  category = Question.first.category
+  click_link(category)
 end
 
 Then('I should be on the generate problem page') do
-  # Verify that the page displays content that indicates a generated problem.
   expect(page).to have_content('Question:')
 end
 
 Given('I am on the generate problems page') do
-  # Ensure a category exists, then visit the generate page for that category.
-  category = Category.first || Category.create!(name: 'Measurement & Error')
-  visit generate_practice_problems_path(category_id: category.id)
+  # Ensure a question exists with the desired category, then visit the generate page for that category.
+  question_record = Question.find_by(category: 'Measurement & Error') ||
+                    Question.create!(
+                      category: 'Measurement & Error',
+                      question: 'Sample question for Measurement & Error',
+                      answer_choices: ['TBD']  # Updated attribute name from "answers" to "answer_choices"
+                    )
+  visit generate_practice_problems_path(category: question_record.category)
 end
 
 When('I click generate problem') do
@@ -45,6 +53,5 @@ When('I click change category') do
 end
 
 Then('I should be on the select problem category page') do
-  # Verify the page shows the heading unique to the category selection page.
   expect(page).to have_content('Select Category')
 end

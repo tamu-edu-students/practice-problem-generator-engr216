@@ -41,7 +41,7 @@
       
       <!-- Answer Choices as Clickable Buttons with Black Outline -->
       <div class="flex flex-wrap justify-center gap-4">
-        <% @question[:answer_choices].each do |choice| %>
+        <% (@question[:answer_choices] || []).each do |choice| %>
           <button type="button" class="px-4 py-2 bg-green-500 text-black rounded border border-black hover:bg-green-600 transition-colors">
             <%= choice %>
           </button>
