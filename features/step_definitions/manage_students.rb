@@ -1,7 +1,6 @@
 Given('I am on the teacher dashboard') do
   Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
-    teacher.first_name = 'test'
-    teacher.last_name  = 'teacher'
+    teacher.name = 'test teacher'
   end
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -26,8 +25,7 @@ end
 
 Given('I am on the student management page') do
   Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
-    teacher.first_name = 'test'
-    teacher.last_name  = 'teacher'
+    teacher.name = 'test teacher'
   end
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -41,6 +39,7 @@ Given('I am on the student management page') do
                                                                      })
 
   Student.find_or_create_by!(
+    email: 'john.doe@tamu.edu',
     first_name: 'John',
     last_name: 'Doe',
     uin: '123456789'
