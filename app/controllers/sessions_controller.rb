@@ -1,13 +1,4 @@
 class SessionsController < ApplicationController
-  # GET /logout
-  # def logout
-  #  reset_session
-  #  session[:user_id] = nil
-  #  session[:user_type] = nil
-  # redirect_to root_path, notice: 'You are logged out.'
-  # end
-
-  # GET /auth/google_oauth2/callback
   def omniauth
     auth = request.env['omniauth.auth']
 
@@ -22,7 +13,6 @@ class SessionsController < ApplicationController
   end
 
   def auth_failure
-    # Handle OAuth failure, e.g., log the error or redirect
     flash[:alert] = "Authentication failed: #{params[:message].humanize}"
     redirect_to root_path
   end
@@ -41,10 +31,16 @@ class SessionsController < ApplicationController
   def handle_student_login(auth)
     email = auth.info.email
 
-    return root_path unless valid_email_domain?(email)
+    unless valid_email_domain?(email)
+      redirect_to root_path, alert: t('sessions.invalid_domain')
+      return
+    end
 
-    student = find_or_create_student(email)
-    return root_path unless student
+    student = find_or_create_student(auth)
+    unless student
+      redirect_to root_path, alert: t('sessions.login_failed')
+      return
+    end
 
     student_session_set(student)
     redirect_to practice_problems_path, notice: t('student.logged_in')
@@ -56,16 +52,14 @@ class SessionsController < ApplicationController
     email.end_with?('tamu.edu')
   end
 
-  def redirect_invalid_domain
-    redirect_to root_path, alert: t('sessions.invalid_domain')
-  end
-
-  def find_or_create_student(email)
-    Student.find_or_create_by(email: email)
-  end
-
-  def redirect_login_failed
-    redirect_to root_path, alert: t('sessions.login_failed')
+  def find_or_create_student(auth)
+    Student.find_or_create_by(email: auth.info.email) do |student|
+      student.first_name = auth.info.first_name
+      student.last_name = auth.info.last_name
+      student.uin = '123456789' # Default UIN for testing
+    end
+  rescue ActiveRecord::RecordInvalid
+    nil # Return nil on validation failure
   end
 
   def student_session_set(student)

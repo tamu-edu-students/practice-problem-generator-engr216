@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # Redirecting after successful login
   get '/auth/google_oauth2/callback', to: 'sessions#omniauth'
   get '/logout', to: 'sessions#logout', as: 'logout'
+  get '/auth/failure', to: 'sessions#auth_failure', as: :auth_failure
 
   # Set Role Routes
   get '/set_role/:role', to: 'sessions#set_role', as: :get_set_role
@@ -23,21 +24,12 @@ Rails.application.routes.draw do
   get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
   get 'teacher_dashboard/manage_students', to: 'teacher_dashboard#manage_students', as: :manage_students
 
-  # Studnet Statistics in Teacher Dashboard
+  # Student Statistics in Teacher Dashboard
   namespace :teacher_dashboard do
     get 'student_statistics', to: 'student_statistics#index', as: :student_statistics
     get 'student_statistics/:id', to: 'student_statistics#show', as: :student_statistics_show
   end
 
-  # Practice Problem Dashboard Routes
-  # get '/practice_problems', to: 'practice_problem_dashboard#index', as: :practice_problems
-
-  # Add the settings route
-  get 'settings', to: 'settings#show', as: 'settings'
-
-  # Add the history route
-  get 'history', to: 'history#show', as: 'history'
-  
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do
     collection do
@@ -46,4 +38,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # settings route
+  get 'settings', to: 'settings#show', as: 'settings'
+
+  # history route
+  get 'history', to: 'history#show', as: 'history'
 end

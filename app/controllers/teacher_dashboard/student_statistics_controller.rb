@@ -9,11 +9,12 @@ module TeacherDashboard
 
     def show
       @student = Student.find(params[:id])
-      # Replace @answers with a summary string
-      correct_count = Answer.where(student_email: @student.email, correctness: true).count
-      total_count = Answer.where(student_email: @student.email).count
-      @problem_summary = "Total problems: #{total_count}, Correct: #{correct_count}, Incorrect: #{total_count - correct_count}"
-      Rails.logger.debug "Show - @problem_summary: #{@problem_summary}"
+      # Use StudentCategoryStatistic instead of Answer
+      @stats = StudentCategoryStatistic.where(student_id: @student.id)
+      total_attempts = @stats.sum(:attempts)
+      correct_attempts = @stats.sum(:correct_attempts)
+      incorrect_attempts = total_attempts - correct_attempts
+      @summary = "Total problems: #{total_attempts}, Correct: #{correct_attempts}, Incorrect: #{incorrect_attempts}"
     end
 
     private

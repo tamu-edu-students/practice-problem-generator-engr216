@@ -28,7 +28,25 @@
   <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6 mt-16">
     <h1 class="text-4xl font-bold mb-6 text-black"><%= "#{@student.first_name} #{@student.last_name}" %>'s Problem History</h1>
     <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
-      <p class="text-lg"><%= @problem_summary %></p>
+      <% if @student %>
+        <p class="text-lg"><%= @summary %></p>
+        <!-- Optional: Detailed stats by category -->
+        <% if @stats.present? %>
+          <h2 class="text-2xl font-semibold mt-6 mb-4">Category Breakdown</h2>
+          <ul class="space-y-2">
+            <% @stats.each do |stat| %>
+              <li>
+                <%= Category.find(stat.category_id).name %>: 
+                Attempts: <%= stat.attempts %>, 
+                Correct: <%= stat.correct_attempts %>, 
+                Incorrect: <%= stat.attempts - stat.correct_attempts %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      <% else %>
+        <p class="text-lg text-red-500">Student not found.</p>
+      <% end %>
     </div>
   </div>
 </div>
