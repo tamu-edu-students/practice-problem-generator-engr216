@@ -34,6 +34,6 @@ When('I navigate to the dashboard link') do
   visit practice_problems_path
 end
 
-# Then('I should not be on the problem dashboard') do
-#   expect(page).to have_content('Login')
-# end
+Then('I should not be on the problem dashboard') do
+  expect(page).not_to have_content('Select Category')
+end
