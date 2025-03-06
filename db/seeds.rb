@@ -62,6 +62,28 @@ end
 end
 =end
 
+categories = [
+  'Measurement & Error',
+  'Propagation of Error',
+  'Finite Differences',
+  'Experimental Statistics',
+  'Confidence Intervals',
+  'Universal Accounting Equation',
+  'Particle Statics',
+  'Momentum & Collisions',
+  'Rigid Body Statics',
+  'Angular Momentum',
+  'Harmonic Motion',
+  'Engineering Ethics',
+  'Art in Engineering'
+]
+
+categories.each do |name|
+  Category.find_or_create_by!(name: name)
+end
+
+puts "Seeded #{Category.count} categories!"
+
 puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"
 # puts "Seeded #{Question.count} questions!"
