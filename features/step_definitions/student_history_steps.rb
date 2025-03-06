@@ -35,7 +35,6 @@ def login_as_teacher
     @question = Question.create!(category: "Math", question: "2+2?", answers: "4")
     Answer.create!(student_email: @student.email, question_id: @question.id, answer: "4", correctness: true)
     Answer.create!(student_email: @student.email, question_id: @question.id, answer: "3", correctness: false)
-    visit teacher_dashboard_student_statistics_show_path(@student)
-    puts "Page content: #{page.body}"  # Debug
+    visit teacher_dashboard_student_statistics_show_path(@student, cache_bust: Time.now.to_i)
     expect(page.body).to include("Total problems: 2, Correct: 1, Incorrect: 1")
   end
