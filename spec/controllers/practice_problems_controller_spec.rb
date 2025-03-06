@@ -3,22 +3,23 @@ require 'rails_helper'
 
 RSpec.describe PracticeProblemsController, type: :controller do
   describe 'GET #index' do
-    # Use let! to ensure the question is created before the request
-    let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
+  # Use let! to ensure the question is created before the request
+  let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
 
-    before do
-      get :index
-    end
-
-    it 'includes the newly created category in assigns(:categories)' do
-      categories = assigns(:categories).map(&:category)
-      expect(categories).to include('Test Category')
-    end
-
-    it 'renders the :index template' do
-      expect(response).to render_template(:index)
-    end
+  before do
+    get :index
   end
+
+  it 'includes the newly created category in assigns(:categories)' do
+    categories = assigns(:categories).map(&:category)
+    expect(categories).to include('Test Category')
+  end
+
+  it 'renders the :index template' do
+    expect(response).to render_template(:index)
+  end
+end
+
 
   describe 'GET #generate' do
     # Use a simple category string instead of a Category model.
