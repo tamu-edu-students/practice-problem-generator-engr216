@@ -10,5 +10,5 @@ Feature: Back Button
         Then I should be brought back to the Student Management Page
     Scenario: Student Management Page Back Button
         Given I am on the Student Management Page 
-        When I click the Back button
+        When I click the Back button on this page
         Then I should be brought back to the Teacher dashboard
