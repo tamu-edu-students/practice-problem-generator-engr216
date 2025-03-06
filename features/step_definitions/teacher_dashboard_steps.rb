@@ -8,14 +8,14 @@ When('I log in as a teacher') do
   end
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
-    uid: '123',
-    provider: 'google_oauth2',
-    info: {
-      email: 'test_teacher@tamu.edu',
-      first_name: 'Test',
-      last_name: 'Teacher'
-    }
-  })
+                                                                       uid: '123',
+                                                                       provider: 'google_oauth2',
+                                                                       info: {
+                                                                         email: 'test_teacher@tamu.edu',
+                                                                         first_name: 'Test',
+                                                                         last_name: 'Teacher'
+                                                                       }
+                                                                     })
   visit '/auth/google_oauth2/callback?state=teacher'
 end
 

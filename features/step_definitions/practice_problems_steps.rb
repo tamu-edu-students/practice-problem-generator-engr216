@@ -2,19 +2,16 @@ Before do
   Question.where(category: %w[Mechanics Thermodynamics Electromagnetism]).destroy_all
 
   Question.find_or_create_by!(category: 'Mechanics') do |q|
-    q.question = "Sample question for Mechanics"
+    q.question = 'Sample question for Mechanics'
     # Removed q.answers to avoid association type mismatch.
   end
   Question.find_or_create_by!(category: 'Thermodynamics') do |q|
-    q.question = "Sample question for Thermodynamics"
+    q.question = 'Sample question for Thermodynamics'
   end
   Question.find_or_create_by!(category: 'Electromagnetism') do |q|
-    q.question = "Sample question for Electromagnetism"
+    q.question = 'Sample question for Electromagnetism'
   end
 end
-
-
-
 
 # Given('I am on the practice problem generator page and I am logged in as a student') do
 #   visit '/practice_problems'

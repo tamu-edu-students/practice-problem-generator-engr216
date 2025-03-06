@@ -4,7 +4,7 @@ Given('I am on the select problem category page') do
   # Ensure there's at least one question with the desired category exists.
   if Question.where(category: 'Measurement & Error').count.zero?
     q = Question.new(category: 'Measurement & Error', question: 'Sample question for Measurement & Error')
-    q.write_attribute(:answer_choices, ["TBD"])  # use the new column and pass an array
+    q.write_attribute(:answer_choices, ['TBD']) # use the new column and pass an array
     q.save!
   end
   visit practice_problems_path
@@ -26,7 +26,7 @@ Given('I am on the generate problems page') do
                     Question.create!(
                       category: 'Measurement & Error',
                       question: 'Sample question for Measurement & Error',
-                      answer_choices: ['TBD']  # Updated attribute name from "answers" to "answer_choices"
+                      answer_choices: ['TBD'] # Updated attribute name from "answers" to "answer_choices"
                     )
   visit generate_practice_problems_path(category: question_record.category)
 end

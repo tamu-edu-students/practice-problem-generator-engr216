@@ -5,7 +5,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
   describe 'GET #index' do
     # Create a question with a known category.
     # Omit the "answers" attribute to avoid clashing with the association.
-    let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
+    let(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
 
     before do
       get :index
