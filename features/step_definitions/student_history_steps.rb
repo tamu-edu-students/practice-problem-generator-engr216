@@ -1,11 +1,25 @@
 def login_as_teacher
-  @teacher = Teacher.find_or_create_by!(email: "test_teacher@tamu.edu", name: "Test Teacher")
-  visit "/auth/google_oauth2/callback?state=teacher"
+  visit root_path
+  @teacher = Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
+    teacher.name = 'Test Teacher'
+  end
+
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
+                                                                       uid: '123',
+                                                                       provider: 'google_oauth2',
+                                                                       info: {
+                                                                         email: 'test_teacher@tamu.edu',
+                                                                         first_name: 'Test',
+                                                                         last_name: 'Teacher'
+                                                                       }
+                                                                     })
+  visit '/auth/google_oauth2/callback?state=teacher'
 end
 
 Given('I am on the Teacher Dashboard page') do
   login_as_teacher
   visit teacher_dashboard_path
+  # puts "Page content: #{page.body}" # For debugging
 end
 
 When('I click the {string} button') do |button_text|
@@ -17,14 +31,15 @@ Then('I should be brought to the student statistics page') do
 end
 
 Given('I am on the student statistics page') do
-  login_as_teacher
-  @student = Student.find_or_create_by!(email: "test_student@tamu.edu") do |student|
-    student.first_name = "Test"
-    student.last_name = "Student"
-    student.uin = "123456789"
-    student.teacher_id = @teacher.id
+  login_as_teacher 
+  @student = Student.find_or_create_by!(email: 'test_student@tamu.edu') do |student|
+    student.first_name = 'Test'
+    student.last_name = 'Student'
+    student.uin = '123456789'
+    student.teacher_id = @teacher.id 
   end
-  visit teacher_dashboard_student_statistics_path
+  visit teacher_dashboard_student_statistics_path 
+  # puts "Stats page content: #{page.body}"
 end
 
 When('I click on a student’s name') do
@@ -33,14 +48,14 @@ end
 
 Then('I should see a summary of the student\'s past problems') do
   # Create a category and student category statistic instead of question/answer
-  category = Category.find_or_create_by!(name: "Math")
+  category = Category.find_or_create_by!(name: 'Math')
   StudentCategoryStatistic.create!(
     student_id: @student.id,
     category_id: category.id,
     attempts: 2,
     correct_attempts: 1
   )
-  # visit teacher_dashboard_student_statistics_show_path(@student, cache_bust: Time.now.to_i)
+  visit teacher_dashboard_student_statistics_show_path(@student, cache_bust: Time.now.to_i)
   # puts "Page content: #{page.body}" # For debugging
-  expect(page.body).to include("Total problems: 2, Correct: 1, Incorrect: 1")
+  expect(page.body).to include('Total problems: 2, Correct: 1, Incorrect: 1')
 end

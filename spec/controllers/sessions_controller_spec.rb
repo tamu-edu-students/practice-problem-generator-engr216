@@ -2,10 +2,10 @@ require 'rails_helper'
 
 def mock_auth_hash(email)
   OmniAuth::AuthHash.new({
-    provider: 'google_oauth2',
-    uid: '123456',
-    info: { email: email, first_name: 'Test', last_name: 'User' }
-  })
+                           provider: 'google_oauth2',
+                           uid: '123456',
+                           info: { email: email, first_name: 'Test', last_name: 'User' }
+                         })
 end
 
 RSpec.describe SessionsController, type: :controller do
@@ -41,7 +41,7 @@ RSpec.describe SessionsController, type: :controller do
         request.env['omniauth.auth'] = mock_auth_hash('test_student@tamu.edu')
         get :omniauth, params: { state: 'student' }
         created_student = Student.find_by(email: 'test_student@tamu.edu')
-        expect(created_student).not_to be_nil, "Student was not created"
+        expect(created_student).not_to be_nil, 'Student was not created'
         expect(session[:user_id]).to eq(created_student.id)
         expect(session[:user_type]).to eq('student')
         expect(response).to redirect_to(practice_problems_path)
@@ -82,7 +82,7 @@ RSpec.describe SessionsController, type: :controller do
     it 'redirects to root_path with an alert' do
       get :auth_failure, params: { message: 'access_denied' }
       expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq("Authentication failed: Access denied")
+      expect(flash[:alert]).to eq('Authentication failed: Access denied')
     end
   end
 end

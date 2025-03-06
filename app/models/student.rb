@@ -3,7 +3,7 @@ class Student < ApplicationRecord
   # (Mark optional if not every student must have a teacher.)
   belongs_to :teacher, optional: true
   has_many :student_category_statistics, dependent: :destroy
-  
+
   validates :first_name, presence: true
   validates :last_name,  presence: true
   validates :email,      presence: true, uniqueness: true

@@ -4,7 +4,7 @@ module TeacherDashboard
 
     def index
       @students = Student.where(teacher_id: current_teacher.id)
-      Rails.logger.debug "Index - @students: #{@students.inspect}"
+      Rails.logger.debug { "Index - @students: #{@students.inspect}" }
     end
 
     def show
@@ -20,11 +20,11 @@ module TeacherDashboard
     private
 
     def require_teacher_login
-      redirect_to root_path unless session[:user_type] == "teacher"
+      redirect_to root_path unless session[:user_type] == 'teacher'
     end
 
     def current_teacher
-      @current_teacher ||= Teacher.find(session[:user_id]) if session[:user_type] == "teacher"
+      @current_teacher ||= Teacher.find(session[:user_id]) if session[:user_type] == 'teacher'
     end
   end
 end
