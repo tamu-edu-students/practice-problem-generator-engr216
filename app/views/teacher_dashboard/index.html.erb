@@ -1,5 +1,54 @@
-<div class="items-center justify-center text-center">
-    <a href="<%= manage_students_path %>" class="btn btn-sm btn-neutral">Student Management</a>
+<head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
 
-    <a href="<%= teacher_dashboard_student_statistics_path %>" class="btn btn-sm btn-neutral">Student Statistics & History</a>
+<div class="w-full flex flex-col bg-[#9aa8c5] min-h-screen">
+  <!-- Navbar -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50 shadow-lg">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/teacher_dashboard" class="hover:bg-gray-700">Dashboard</a></li>
+          <li><a href="/logout" class="hover:bg-gray-700">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="w-full p-6 pt-20">
+    <h1 class="text-4xl font-bold mb-6 text-black text-center">Teacher Dashboard</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+      <a href="<%= manage_students_path %>" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        Student Management
+      </a>
+      <a href="<%= teacher_dashboard_student_statistics_path %>" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        Student Statistics & History
+      </a>
+      <!-- Placeholder buttons -->
+      <a href="#" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        Section Statistics 
+      </a>
+      <a href="#" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        dummy
+      </a>
+      <a href="#" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        dummy
+      </a>
+      <a href="#" class="btn bg-blue-900 w-full h-40 rounded-xl text-xl text-white hover:bg-blue-700 transition flex items-center justify-center">
+        dummy
+      </a>
+    </div>
+  </div>
 </div>
