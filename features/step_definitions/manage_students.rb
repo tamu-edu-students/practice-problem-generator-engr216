@@ -1,6 +1,6 @@
 Given('I am on the teacher dashboard') do
   Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
-    teacher.name = 'test teacher'
+    teacher.name = 'Test Teacher'
   end
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -8,8 +8,7 @@ Given('I am on the teacher dashboard') do
                                                                        provider: 'google_oauth2',
                                                                        info: {
                                                                          email: 'test_teacher@tamu.edu',
-                                                                         first_name: 'test',
-                                                                         last_name: 'teacher'
+                                                                         first_name: 'Test'
                                                                        }
                                                                      })
   visit '/auth/google_oauth2/callback?state=teacher'
@@ -25,7 +24,7 @@ end
 
 Given('I am on the student management page') do
   Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |teacher|
-    teacher.name = 'test teacher'
+    teacher.name = 'Test Teacher'
   end
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -33,16 +32,16 @@ Given('I am on the student management page') do
                                                                        provider: 'google_oauth2',
                                                                        info: {
                                                                          email: 'test_teacher@tamu.edu',
-                                                                         first_name: 'test',
-                                                                         last_name: 'teacher'
+                                                                         first_name: 'Test',
+                                                                         last_name: 'Teacher'
                                                                        }
                                                                      })
 
   Student.find_or_create_by!(
-    email: 'john.doe@tamu.edu',
+    email: 'john.doe@example.com',
     first_name: 'John',
     last_name: 'Doe',
-    uin: '123456789'
+    uin: 123_456_789
   )
 
   visit '/auth/google_oauth2/callback?state=teacher'
