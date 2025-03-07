@@ -4,7 +4,7 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
-<div class=" w-full flex flex-col bg-[#9aa8c5]">
+<div class="w-full flex flex-col bg-[#9aa8c5]">
   <!-- Navbar -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
     <div class="flex-1">
@@ -25,13 +25,22 @@
     </div>
   </div>
 
-  <!-- Page Content -->
-  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6 mt-16">
-    <h1 class="text-4xl font-bold mb-6 text-black">Manage Students</h1>
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", teacher_dashboard_path, 
+    id: "back-arrow",
+    class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+    style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
 
+  <!-- Title Container with Increased Top Margin -->
+  <div class="w-full mt-28 px-6 flex items-center justify-center">
+    <h1 class="text-4xl font-bold text-black">Manage Students</h1>
+  </div>
+
+  <!-- Page Content -->
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6">
     <!-- Scrollable Table Container -->
     <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
-      <table class="table w-full bg-blue">
+      <table class="table w-full">
         <thead>
           <tr class="text-white border-b border-gray-500">
             <th class="p-2 text-left">Student Name</th>
@@ -44,8 +53,8 @@
             <tr class="border-b border-gray-700">
               <td class="p-3"><%= "#{student.first_name} #{student.last_name}" %></td>
               <td class="p-3"><%= student.uin %></td>
-              <td class="p-3 border-b border-gray-800 h-full">
-                <div class="flex items-center space-x-2 justify-center h-full">
+              <td class="p-3">
+                <div class="flex items-center justify-center space-x-2">
                   <a href="<%= student_path(student) %>" class="btn btn-sm btn-outline">Show</a>
                   <a href="<%= edit_student_path(student) %>" class="btn btn-sm btn-neutral">Edit</a>
                   <%= button_to "Remove", student_path(student), method: :delete, class: "btn btn-sm btn-error", data: { confirm: "Are you sure?" } %>
