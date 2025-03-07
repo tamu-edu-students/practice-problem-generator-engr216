@@ -36,52 +36,71 @@ end
   )
 end
 
-# Seed Questions (Physics)
 physics_categories = {
-  "Mechanics" => [
-    "What is Newton's Second Law of Motion?",
-    "Calculate the net force on a 10 kg object accelerating at 3 m/s².",
-    "Define friction and provide an example in everyday life."
+  "Measurement & Error" => [
+    "What is the difference between systematic and random errors?",
+    "How can precision and accuracy be distinguished in measurements?",
+    "Describe methods to reduce measurement errors in experiments."
   ],
-  "Thermodynamics" => [
-    "State the First Law of Thermodynamics.",
-    "What is entropy and why is it important?",
-    "How does a heat engine convert thermal energy into work?"
+  "Propagation of Error" => [
+    "How do errors propagate in calculations involving addition and subtraction?",
+    "Explain the formula for error propagation in multiplication and division of measured values.",
+    "Provide an example of how error propagation can affect experimental outcomes."
   ],
-  "Electromagnetism" => [
-    "What does Coulomb's Law state about the force between charges?",
-    "Describe the phenomenon of electromagnetic induction.",
-    "How do electric and magnetic fields interact in electromagnetic waves?"
+  "Finite Differences" => [
+    "What is the finite difference method and how is it applied in numerical analysis?",
+    "Compare forward, backward, and central differences in approximating derivatives.",
+    "How can finite differences be used to solve differential equations numerically?"
   ],
-  "Optics" => [
-    "Explain Snell's Law and its relation to refraction.",
-    "How does a convex lens form an image?",
-    "What causes the dispersion of light in a prism?"
+  "Experimental Statistics" => [
+    "What statistical methods are essential for analyzing experimental data?",
+    "How do you determine if a dataset follows a normal distribution?",
+    "Explain the impact of outliers on experimental statistics."
   ],
-  "Quantum Mechanics" => [
-    "What is wave-particle duality?",
-    "State the Heisenberg Uncertainty Principle.",
-    "How does the Schrödinger equation describe quantum states?"
+  "Confidence Intervals" => [
+    "What is a confidence interval and how is it interpreted in the context of experimental data?",
+    "How do you calculate a confidence interval for a mean value?",
+    "Discuss the factors that influence the width of a confidence interval."
   ],
-  "Relativity" => [
-    "What is time dilation in special relativity?",
-    "Explain the equivalence principle in general relativity.",
-    "Interpret the meaning of E=mc²."
+  "Universal Accounting Equation" => [
+    "What is the universal accounting equation and how does it relate to financial analysis?",
+    "Explain the relationship between assets, liabilities, and equity using the universal accounting equation.",
+    "How can the universal accounting equation be applied to assess the financial stability of an engineering project?"
   ],
-  "Acoustics" => [
-    "How is sound intensity measured?",
-    "What is the Doppler Effect and how does it affect sound?",
-    "Explain how sound waves propagate through different mediums."
+  "Particle Statics" => [
+    "What is the principle of particle statics in mechanics?",
+    "How do you analyze forces acting on a particle in equilibrium?",
+    "Provide an example problem involving particle statics and its solution."
   ],
-  "Nuclear Physics" => [
-    "What is nuclear fission and how is it harnessed for energy?",
-    "Describe the process of nuclear fusion in stars.",
-    "How does radioactive decay occur?"
+  "Momentum & Collisions" => [
+    "What is the law of conservation of momentum?",
+    "How do elastic and inelastic collisions differ regarding momentum conservation?",
+    "Describe how impulse relates to momentum in collision scenarios."
   ],
-  "Astrophysics" => [
-    "What defines a black hole?",
-    "Explain the lifecycle of a star from birth to death.",
-    "How do astronomers measure distances to galaxies?"
+  "Rigid Body Statics" => [
+    "What are the conditions necessary for equilibrium in rigid body statics?",
+    "Explain how to determine the center of gravity of a rigid body.",
+    "How do you analyze torque in rigid body statics?"
+  ],
+  "Angular Momentum" => [
+    "Define angular momentum and state the law of its conservation.",
+    "How is angular momentum calculated for a rotating system?",
+    "Discuss the effects of external torques on a system's angular momentum."
+  ],
+  "Harmonic Motion" => [
+    "What defines simple harmonic motion?",
+    "How do amplitude, frequency, and phase influence harmonic motion?",
+    "Explain the energy transformations that occur in a system undergoing harmonic motion."
+  ],
+  "Engineering Ethics" => [
+    "Why is engineering ethics critical in professional practice?",
+    "Discuss a real-world case where ethical considerations impacted an engineering decision.",
+    "How can engineers balance innovation with ethical responsibilities?"
+  ],
+  "Art in Engineering" => [
+    "How does art influence design in engineering projects?",
+    "In what ways can engineering principles enhance artistic expression?",
+    "Discuss examples where art and engineering have successfully integrated."
   ]
 }
 
@@ -93,28 +112,6 @@ physics_categories.each do |category, questions|
     q.save!
   end
 end
-
-categories = [
-  'Measurement & Error',
-  'Propagation of Error',
-  'Finite Differences',
-  'Experimental Statistics',
-  'Confidence Intervals',
-  'Universal Accounting Equation',
-  'Particle Statics',
-  'Momentum & Collisions',
-  'Rigid Body Statics',
-  'Angular Momentum',
-  'Harmonic Motion',
-  'Engineering Ethics',
-  'Art in Engineering'
-]
-
-categories.each do |name|
-  Category.find_or_create_by!(name: name)
-end
-
-puts "Seeded #{Category.count} categories!"
 
 puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"

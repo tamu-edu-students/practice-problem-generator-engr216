@@ -27,7 +27,10 @@ Then('I should be on the practice problems.') do
 end
 
 Given('I am not logged in as a student') do
-  visit('/logout')
+  visit '/logout'
+  if Capybara.current_session.driver.respond_to?(:browser)
+    Capybara.current_session.driver.browser.manage.delete_all_cookies
+  end
 end
 
 When('I navigate to the dashboard link') do
@@ -35,5 +38,8 @@ When('I navigate to the dashboard link') do
 end
 
 Then('I should not be on the problem dashboard') do
-  expect(page).not_to have_content('Select Category')
+  # Verify that the user was redirected (for example, to the root_path)
+  # and thus does not see the dashboard text "Select Category"
+  expect(current_path).not_to eq(practice_problems_path)
+  expect(page).to have_content('You must be logged in as a student')
 end

@@ -28,7 +28,8 @@ Given('I am on the generate problems page') do
                       question: 'Sample question for Measurement & Error',
                       answer_choices: ['TBD'] # Updated attribute name from "answers" to "answer_choices"
                     )
-  visit generate_practice_problems_path(category: question_record.category)
+  # IMPORTANT: Pass the category string under the key `category_id`
+  visit generate_practice_problems_path(category_id: question_record.category)
 end
 
 When('I click generate problem') do
@@ -40,8 +41,15 @@ Then('I should see a problem') do
 end
 
 Given('I have already generated a problem') do
-  # Create the specific category first
-  Category.find_or_create_by!(name: 'Experimental Statistics')
+  # Create a question with the desired category if it doesn't exist.
+  question_record = Question.find_by(category: 'Experimental Statistics') ||
+                    Question.create!(
+                      category: 'Experimental Statistics',
+                      question: 'Sample question for Experimental Statistics',
+                      answer_choices: ['TBD']
+                    )
+  # Instead of using a Category model, set the category as a string.
+  @category = question_record.category
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
                                                                        uid: '123',
@@ -61,7 +69,6 @@ end
 
 Then('I should see a different problem') do
   click_link 'Generate New Problem'
-
   new_problem_text = find('.bg-gray-800').text
   expect(new_problem_text).not_to eq(@current_problem_text)
 end
