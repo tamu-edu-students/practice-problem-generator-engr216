@@ -1,12 +1,48 @@
 <% content_for :title, "Editing student" %>
+<head>
+  <%= stylesheet_link_tag 'manage_students', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
 
-<h1>Editing student</h1>
+<div class="w-full flex flex-col bg-[#9aa8c5]">
+  <!-- Navbar -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-<%= render "form", student: @student %>
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", manage_students_path, 
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
 
-<br>
-
-<div>
-  <%= link_to "Show this student", @student %> |
-  <%= link_to "Back to students", students_path %>
+  <!-- Main Content Container with Extra Top Margin -->
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6 mt-28">
+    <h1 class="text-4xl font-bold text-black mb-6">Editing Student</h1>
+    
+    <!-- Form Container with Black Border and Dark Gray Interior -->
+    <div class="w-full max-w-4xl bg-black shadow-lg rounded-lg p-4">
+      <div class="bg-gray-800 p-6 rounded-lg">
+        <%= render "form", student: @student %>
+        <div class="flex justify-center space-x-4 mt-4">
+          <%= link_to "Show this student", @student, class: "btn btn-outline" %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

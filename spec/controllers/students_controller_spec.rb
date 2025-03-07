@@ -94,7 +94,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'redirects to the student' do
         patch :update, params: { id: student.id, student: new_attributes }
-        expect(response).to redirect_to(student)
+        expect(response).to redirect_to(manage_students_path)
       end
     end
 

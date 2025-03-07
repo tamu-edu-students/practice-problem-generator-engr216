@@ -1,13 +1,19 @@
 # features/step_definitions/generate_problems_steps.rb
 
 Given('I am on the select problem category page') do
-  Category.create!(name: 'Measurement & Error') if Category.count.zero?
+  # Ensure there's at least one question with the desired category exists.
+  if Question.where(category: 'Measurement & Error').count.zero?
+    q = Question.new(category: 'Measurement & Error', question: 'Sample question for Measurement & Error')
+    q.write_attribute(:answer_choices, ['TBD']) # use the new column and pass an array
+    q.save!
+  end
   visit practice_problems_path
 end
 
 When('I select a category') do
-  category = Category.first
-  click_link(category.name)
+  # Assuming your select category page displays categories as links with the category names.
+  category = Question.first.category
+  click_link(category)
 end
 
 Then('I should be on the generate problem page') do
@@ -15,8 +21,14 @@ Then('I should be on the generate problem page') do
 end
 
 Given('I am on the generate problems page') do
-  category = Category.first || Category.create!(name: 'Measurement & Error')
-  visit generate_practice_problems_path(category_id: category.id)
+  # Ensure a question exists with the desired category, then visit the generate page for that category.
+  question_record = Question.find_by(category: 'Measurement & Error') ||
+                    Question.create!(
+                      category: 'Measurement & Error',
+                      question: 'Sample question for Measurement & Error',
+                      answer_choices: ['TBD'] # Updated attribute name from "answers" to "answer_choices"
+                    )
+  visit generate_practice_problems_path(category: question_record.category)
 end
 
 When('I click generate problem') do
