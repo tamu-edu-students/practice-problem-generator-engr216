@@ -37,8 +37,8 @@
         <!-- Teacher Dropdown Row -->
         <li class="flex justify-between items-center border-b border-gray-300 pb-2">
           <span class="font-medium text-gray-700">Link Teacher</span>
-          <%= select_tag :teacher, options_for_select(['Teacher A', 'Teacher B', 'Teacher C']),
-                class: "border border-black-300 rounded px-2 py-1" %>
+          <%= select_tag :teacher, options_for_select(@teachers.presence || [["No Teachers Available", ""]]),
+              class: "border border-black-300 rounded px-2 py-1" %>
         </li>
         <!-- Authenticate Teacher Row with a toggle switch -->
         <li class="flex justify-between items-center border-b border-gray-300 pb-2">
