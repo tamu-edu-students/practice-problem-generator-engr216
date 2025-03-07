@@ -1,3 +1,5 @@
 class SettingsController < ApplicationController
-  def show; end
+  def show
+    @teachers = Teacher.pluck(:name, :id)
+  end
 end
