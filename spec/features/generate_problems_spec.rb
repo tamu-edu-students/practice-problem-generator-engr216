@@ -1,15 +1,15 @@
-# spec/features/generate_problems_spec.rb
 require 'rails_helper'
 
 RSpec.describe 'practice_problems/generate.html.erb', type: :view do
-  let(:category) { Category.create!(name: 'Measurement & Error') }
+  # Use a plain string for category instead of a Category record
+  let(:category) { 'Measurement & Error' }
 
   context 'with a basic question' do
     let(:question) do
       {
         type: 'multiple_choice',
         question: "What is Newton's second law?",
-        choices: ['F = ma', 'E = mc^2', 'P = IV', 'V = IR'],
+        answer_choices: ['F = ma', 'E = mc^2', 'P = IV', 'V = IR'],
         answer: 'F = ma'
       }
     end
@@ -25,7 +25,7 @@ RSpec.describe 'practice_problems/generate.html.erb', type: :view do
     end
 
     it 'displays the category title' do
-      expect(rendered).to have_content("Category: #{category.name}")
+      expect(rendered).to have_content("Category: #{category}")
     end
 
     it 'displays the question text' do
@@ -94,11 +94,11 @@ RSpec.describe 'practice_problems/generate.html.erb', type: :view do
       expect(rendered).to include('Calculate the following statistics')
     end
 
-    it 'has mean input field' do
+    it 'has a mean input field' do
       expect(rendered).to have_css('input[name="mean"]')
     end
 
-    it 'has median input field' do
+    it 'has a median input field' do
       expect(rendered).to have_css('input[name="median"]')
     end
   end

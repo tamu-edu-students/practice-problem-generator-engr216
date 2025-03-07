@@ -1,5 +1,5 @@
 Given('I am on the Experimental Statistics Page') do
-  @category = Category.find_or_create_by(name: 'Experimental Statistics')
+  @category = 'Experimental Statistics'
   visit practice_problems_path
   click_link 'Experimental Statistics'
 end
@@ -25,6 +25,5 @@ Then('I should be given feedback on my answer') do
                      page.has_content?('Incorrect') ||
                      page.has_content?('too small') ||
                      page.has_content?('too large')
-
   expect(feedback_present).to be true
 end

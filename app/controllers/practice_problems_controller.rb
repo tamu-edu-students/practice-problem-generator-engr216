@@ -1,29 +1,31 @@
 class PracticeProblemsController < ApplicationController
+  # List unique category names from the questions table.
   def index
-    @categories = Category.all
+    @categories = Question.distinct.pluck(:category)
     render :index
   end
 
   def generate
-    @category = Category.find(params[:category_id])
+    # Use the category string from the parameters instead of finding a Category object.
+    @category = params[:category_id]
 
-    # use the specific generator for statistics questions
-    if @category.name.downcase == 'experimental statistics'
+    # Use the specific generator for experimental statistics (if applicable)
+    if @category.downcase == 'experimental statistics'
       handle_statistics_problem
     else
       all_questions = ProblemGenerator.new(@category).generate_questions
       @question = pick_question(all_questions)
     end
 
-    # store the current question in the session for validation later
-    # convert to JSON and back to ensure proper serialization
+    # Store the current question in the session for validation later.
     session[:current_question] = @question.to_json
 
     render :generate
   end
 
   def check_answer
-    @category = Category.find(params[:category_id])
+    # Get the category string from params.
+    @category = params[:category_id]
     @question = parse_question_from_session
     @error_message = nil
 
@@ -31,7 +33,7 @@ class PracticeProblemsController < ApplicationController
 
     process_answer_for_question_type and return
 
-    # If not redirected, re-render the form with error message
+    # If not redirected, re-render the form with error message.
     session[:current_question] = @question.to_json
     render :generate
   end
@@ -39,7 +41,7 @@ class PracticeProblemsController < ApplicationController
   private
 
   def handle_statistics_problem
-    # generate questions, check which was used last, set current to the other
+    # Generate questions for experimental statistics.
     generator = StatisticsProblemGenerator.new(@category)
     all_questions = generator.generate_questions
 
@@ -67,12 +69,12 @@ class PracticeProblemsController < ApplicationController
   end
 
   def handle_missing_question
-    redirect_to generate_practice_problems_path(category_id: @category.id)
+    redirect_to generate_practice_problems_path(category_id: @category)
     true
   end
 
   def redirect_to_success
-    redirect_to generate_practice_problems_path(category_id: @category.id, success: true)
+    redirect_to generate_practice_problems_path(category_id: @category, success: true)
     :redirected
   end
 
@@ -84,7 +86,6 @@ class PracticeProblemsController < ApplicationController
                check_data_statistics_answers
              end
 
-    # Return true if redirected, which will cause the calling method to return
     result == :redirected
   end
 

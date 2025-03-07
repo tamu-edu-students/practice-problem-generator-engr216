@@ -3,47 +3,47 @@ require 'rails_helper'
 
 RSpec.describe PracticeProblemsController, type: :controller do
   describe 'GET #index' do
-  # Use let! to ensure the question is created before the request
-  let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
+    # Create a question with a category string so that it appears in the unique list.
+    let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
 
-  before do
-    get :index
+    before do
+      get :index
+    end
+
+    it 'includes the newly created category in assigns(:categories)' do
+      categories = assigns(:categories)
+      expect(categories).to include('Test Category')
+    end
+
+    it 'renders the :index template' do
+      expect(response).to render_template(:index)
+    end
   end
-
-  it 'includes the newly created category in assigns(:categories)' do
-    categories = assigns(:categories).map(&:category)
-    expect(categories).to include('Test Category')
-  end
-
-  it 'renders the :index template' do
-    expect(response).to render_template(:index)
-  end
-end
-
 
   describe 'GET #generate' do
-    let(:category) { Category.create!(name: 'Math') }
+    let(:category) { 'Math' }
     let(:questions) do
       [
-        { question: 'Q1', choices: %w[A B], answer: 'A' },
-        { question: 'Q2', choices: %w[C D], answer: 'C' }
+        { question: 'Q1', answer_choices: %w[A B], answer: 'A' },
+        { question: 'Q2', answer_choices: %w[C D], answer: 'C' }
       ]
     end
 
     let(:problem_generator) { instance_double(ProblemGenerator) }
 
     before do
+      # Expect the generator to be initialized with the category string.
       allow(ProblemGenerator).to receive(:new).with(category).and_return(problem_generator)
     end
 
     context 'when there is no last question in the session' do
       before do
         allow(problem_generator).to receive(:generate_questions).and_return(questions)
-        get :generate, params: { category_id: category.id }
+        get :generate, params: { category_id: category }
       end
 
       it 'picks a random question' do
-        expect(assigns(:question)).to be_in(questions)
+        expect(questions).to include(assigns(:question))
       end
 
       it 'stores the question in the session as JSON' do
@@ -60,7 +60,7 @@ end
       before do
         session[:last_question] = 'Q1'
         allow(problem_generator).to receive(:generate_questions).and_return(questions)
-        get :generate, params: { category_id: category.id }
+        get :generate, params: { category_id: category }
       end
 
       it 'filters out Q1 and picks Q2' do
@@ -81,7 +81,7 @@ end
       before do
         session[:last_question] = 'Q1'
         allow(problem_generator).to receive(:generate_questions).and_return([questions.first])
-        get :generate, params: { category_id: category.id }
+        get :generate, params: { category_id: category }
       end
 
       it 'does NOT filter out Q1 since only one question is available' do
@@ -100,7 +100,7 @@ end
   end
 
   describe 'GET #generate for Experimental Statistics' do
-    let(:category) { Category.create!(name: 'Experimental Statistics') }
+    let(:category) { 'Experimental Statistics' }
     let(:statistics_generator) { instance_double(StatisticsProblemGenerator) }
     let(:prob_question) do
       {
@@ -130,7 +130,7 @@ end
 
     context 'when there is no previous problem type in session' do
       before do
-        get :generate, params: { category_id: category.id }
+        get :generate, params: { category_id: category }
       end
 
       it 'selects a probability problem' do
@@ -149,7 +149,7 @@ end
     context 'when the last problem was probability type' do
       before do
         session[:last_problem_type] = 'probability'
-        get :generate, params: { category_id: category.id }
+        get :generate, params: { category_id: category }
       end
 
       it 'selects a data statistics problem' do
@@ -163,7 +163,7 @@ end
   end
 
   describe 'POST #check_answer with probability questions' do
-    let(:category) { Category.create!(name: 'Experimental Statistics') }
+    let(:category) { 'Experimental Statistics' }
 
     before do
       question = {
@@ -176,23 +176,23 @@ end
     end
 
     it 'redirects to generate with success parameter when answer is correct' do
-      post :check_answer, params: { category_id: category.id, answer: '75.25' }
-      expect(response).to redirect_to(generate_practice_problems_path(category_id: category.id, success: true))
+      post :check_answer, params: { category_id: category, answer: '75.25' }
+      expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
     end
 
     it 'sets an error message when answer is too small' do
-      post :check_answer, params: { category_id: category.id, answer: '50.0' }
+      post :check_answer, params: { category_id: category, answer: '50.0' }
       expect(assigns(:error_message)).to eq('too small')
     end
 
     it 'renders the generate template when answer is wrong' do
-      post :check_answer, params: { category_id: category.id, answer: '50.0' }
+      post :check_answer, params: { category_id: category, answer: '50.0' }
       expect(response).to render_template(:generate)
     end
   end
 
   describe 'POST #check_answer with data statistics questions' do
-    let(:category) { Category.create!(name: 'Experimental Statistics') }
+    let(:category) { 'Experimental Statistics' }
 
     before do
       question = {
@@ -209,20 +209,20 @@ end
     end
 
     it 'redirects to generate with success parameter when all answers are correct' do
-      params = { category_id: category.id, mean: '2.5', median: '2.5' }
+      params = { category_id: category, mean: '2.5', median: '2.5' }
       post :check_answer, params: params
-      expected_path = generate_practice_problems_path(category_id: category.id, success: true)
+      expected_path = generate_practice_problems_path(category_id: category, success: true)
       expect(response).to redirect_to(expected_path)
     end
 
     it 'sets an error message when mean is wrong' do
-      params = { category_id: category.id, mean: '3.0', median: '2.5' }
+      params = { category_id: category, mean: '3.0', median: '2.5' }
       post :check_answer, params: params
       expect(assigns(:error_message)).to include('mean')
     end
 
     it 'renders the generate template when an answer is wrong' do
-      params = { category_id: category.id, mean: '3.0', median: '2.5' }
+      params = { category_id: category, mean: '3.0', median: '2.5' }
       post :check_answer, params: params
       expect(response).to render_template(:generate)
     end

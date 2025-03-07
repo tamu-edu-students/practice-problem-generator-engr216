@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe StatisticsProblemGenerator do
-  let(:category) { instance_double(Category, name: 'Experimental Statistics') }
+  # Use a simple string for the category instead of a Category instance
+  let(:category) { 'Experimental Statistics' }
   let(:generator) { described_class.new(category) }
 
   describe '#generate_questions' do
