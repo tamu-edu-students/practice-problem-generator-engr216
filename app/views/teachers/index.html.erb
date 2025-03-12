@@ -1,0 +1,7 @@
+<h1>Teachers</h1>
+
+<ul>
+  <% @teachers.each do |teacher| %>
+    <li><%= teacher.name %> - <%= teacher.email %></li>
+  <% end %>
+</ul> 

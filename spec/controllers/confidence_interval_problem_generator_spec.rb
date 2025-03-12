@@ -139,4 +139,116 @@ RSpec.describe ConfidenceIntervalProblemGenerator do
       expect(problem[:input_fields].size).to eq(2)
     end
   end
+
+  # Tests for problem generators not currently covered
+  describe 'problem generators' do
+    # Test representative sample of problem generators that likely need coverage
+    %i[generate_car_mileage_problem
+       generate_produce_weight_problem
+       generate_shipping_times_problem
+       generate_manufacturing_diameter_problem
+       generate_phone_call_duration_problem
+       generate_daily_water_usage_problem].each do |method|
+      describe "##{method}" do
+        it 'generates a valid problem with correct structure' do
+          problem = generator.send(method)
+
+          # Verify problem structure
+          expect(problem).to include(:type, :question, :answers, :input_fields)
+          expect(problem[:type]).to eq('confidence_interval')
+          expect(problem[:answers]).to include(:lower_bound, :upper_bound)
+          expect(problem[:input_fields].size).to eq(2)
+
+          # Check that the bounds are reasonable numbers
+          expect(problem[:answers][:lower_bound]).to be_a(Numeric)
+          expect(problem[:answers][:upper_bound]).to be_a(Numeric)
+          expect(problem[:answers][:upper_bound]).to be > problem[:answers][:lower_bound]
+        end
+      end
+    end
+  end
+
+  # Test formatting methods to ensure they generate correct text
+  describe 'question text formatting methods' do
+    # Sample representative text formatters that likely need coverage
+    %i[
+      car_mileage_question_text
+      produce_weight_question_text
+      shipping_times_question_text
+      manufacturing_diameter_question_text
+      phone_call_duration_question_text
+      daily_water_usage_question_text
+    ].each do |method|
+      describe "##{method}" do
+        it 'formats question text with all required elements' do
+          # Sample parameters
+          sample_size = 50
+          sample_mean = 100.0
+          pop_std = 15.0
+          confidence_level = 95
+
+          text = generator.send(method, sample_size, sample_mean, pop_std, confidence_level)
+
+          # Check that the text includes essential elements
+          expect(text).to include(sample_size.to_s)
+          expect(text).to include(sample_mean.to_s) unless method == :daily_water_usage_question_text
+          expect(text).to include(pop_std.to_s) unless method == :daily_water_usage_question_text
+          expect(text).to include("#{confidence_level}%")
+          expect(text).to include('confidence interval')
+        end
+      end
+    end
+  end
+
+  # Test helper methods that might not be covered
+  describe '#build_confidence_interval_problem' do
+    it 'correctly structures the problem data' do
+      question = 'Sample question text'
+      lower = 10.5
+      upper = 20.5
+
+      problem = generator.send(:build_confidence_interval_problem, question, lower, upper)
+
+      expect(problem[:type]).to eq('confidence_interval')
+      expect(problem[:question]).to eq(question)
+      expect(problem[:answers][:lower_bound]).to eq(lower.round(2))
+      expect(problem[:answers][:upper_bound]).to eq(upper.round(2))
+      expect(problem[:input_fields][0][:label]).to eq('Lower Bound')
+      expect(problem[:input_fields][1][:label]).to eq('Upper Bound')
+    end
+  end
+
+  describe '#rounding_instructions' do
+    it 'includes specific rounding instructions' do
+      instructions = generator.send(:rounding_instructions)
+
+      expect(instructions).to include('Round')
+      expect(instructions).to include('decimal places')
+      expect(instructions).to include('Do not include units')
+    end
+  end
+
+  describe '#input_field_data' do
+    it 'returns correctly structured input fields' do
+      fields = generator.send(:input_field_data)
+
+      expect(fields.size).to eq(2)
+      expect(fields[0][:label]).to eq('Lower Bound')
+      expect(fields[0][:key]).to eq('lower_bound')
+      expect(fields[1][:label]).to eq('Upper Bound')
+      expect(fields[1][:key]).to eq('upper_bound')
+    end
+  end
+
+  describe '#answer_data' do
+    it 'correctly formats and rounds the answer data' do
+      lower = 10.555
+      upper = 20.666
+
+      data = generator.send(:answer_data, lower, upper)
+
+      expect(data[:lower_bound]).to eq(10.56)
+      expect(data[:upper_bound]).to eq(20.67)
+    end
+  end
 end
