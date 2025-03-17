@@ -64,12 +64,12 @@ Given('I have already generated a problem') do
 
   click_link 'Experimental Statistics'
   expect(page).to have_content('Question:')
-  @current_problem_text = find('.bg-gray-800').text
+  @current_problem_text = first('.bg-gray-800').text
 end
 
 Then('I should see a different problem') do
   click_link 'Generate New Problem'
-  new_problem_text = find('.bg-gray-800').text
+  new_problem_text = first('.bg-gray-800').text
   expect(new_problem_text).not_to eq(@current_problem_text)
 end
 

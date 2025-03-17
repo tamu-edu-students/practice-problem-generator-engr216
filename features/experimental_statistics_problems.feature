@@ -6,10 +6,10 @@ Feature: Experimental Statistics Problems
 
     Scenario: Generate new Problem
         Given I am on the Experimental Statistics Page
-        When I click the new problem button
+        When I click the new experimental statistics problem button
         Then a new Experimental Statistics problem should be dynamically generated
     Scenario: Answer Submission
         Given I am on the Experimental Statistics Page
-        When I submit an answer 
-        Then I should be given feedback on my answer
+        When I submit an experimental statistics answer
+        Then I should be given feedback on my experimental statistics answer
     

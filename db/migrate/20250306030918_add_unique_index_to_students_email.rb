@@ -1,5 +1,7 @@
-class AddUniqueIndexToStudentsEmail < ActiveRecord::Migration[6.1]
+class AddUniqueIndexToStudentsEmail < ActiveRecord::Migration[8.0]
   def change
-    add_index :students, :email, unique: true
+    unless index_exists?(:students, :email, name: "index_students_on_email")
+      add_index :students, :email, unique: true, name: "index_students_on_email"
+    end
   end
 end
