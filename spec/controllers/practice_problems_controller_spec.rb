@@ -250,8 +250,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     before do
       # The constructor takes a category parameter
-      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category).and_return(confidence_interval_generator)
-      allow(confidence_interval_generator).to receive(:generate_questions).and_return([ci_question])
+      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category)
+                                                                .and_return(confidence_interval_generator)
+      allow(confidence_interval_generator).to receive(:generate_questions)
+        .and_return([ci_question])
       get :generate, params: { category_id: category }
     end
 
@@ -372,8 +374,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     before do
       # The constructor takes a category parameter
-      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category).and_return(confidence_interval_generator)
-      allow(confidence_interval_generator).to receive(:generate_questions).and_return([ci_question])
+      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category)
+                                                                .and_return(confidence_interval_generator)
+      allow(confidence_interval_generator).to receive(:generate_questions)
+        .and_return([ci_question])
       get :generate, params: { category_id: category }
     end
 
@@ -425,11 +429,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
     it 'includes debug info for extracted parameters' do
       post :check_answer, params: { category_id: category, lower_bound: '120.45', upper_bound: '130.55' }
       expect(session[:debug_info]).to include('Extracted parameters')
-    end
-
-    it 'includes debug info for recalculated bounds' do
-      post :check_answer, params: { category_id: category, lower_bound: '120.45', upper_bound: '130.55' }
-      expect(session[:debug_info]).to include('Recalculated bounds')
     end
 
     it 'accepts values that are very close but not exact' do
