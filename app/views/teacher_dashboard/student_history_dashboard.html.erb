@@ -34,7 +34,35 @@
   </div>
 
   <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6">
-    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
+    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6">
+      <!-- Summary Table -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-blue-300 mb-4">Class Performance by Category</h2>
+        <table class="table w-full text-left">
+          <thead>
+            <tr class="text-white border-b border-gray-500">
+              <th class="p-2 text-left">Category</th>
+              <th class="p-2 text-left">Attempted</th>
+              <th class="p-2 text-left">Correct</th>
+              <th class="p-2 text-left">Incorrect</th>
+              <th class="p-2 text-left">Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @category_summaries.each do |category, stats| %>
+              <tr class="border-b border-gray-700">
+                <td class="p-3"><%= category %></td>
+                <td class="p-3"><%= stats[:attempted] %></td>
+                <td class="p-3" style="color: #34d399;"><%= stats[:correct] %></td>
+                <td class="p-3" style="color: #f87171;"><%= stats[:incorrect] %></td>
+                <td class="p-3"><%= stats[:percentage] %>%</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Students Table -->
       <table class="table w-full">
         <thead>
           <tr class="text-white border-b border-gray-500">
