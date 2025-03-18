@@ -14,7 +14,7 @@ class TeacherDashboardController < ApplicationController
 
   def manage_students
     @students = Student.all
-    # @students = current_teacher.students
+    # @students = current_teacher.students # <-- is the correct implementation if we want to limit management to respective students. 
   end
 
   def student_history_dashboard
