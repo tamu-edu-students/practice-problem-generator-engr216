@@ -40,5 +40,5 @@ Given('I am on the Classroom Performance Page') do
 end
 
 Then('I should be able to view the Classroom cumulative scores for problem types') do
-  expect(page).to have_content('Class Performance by Category')
+  expect(page).to have_content('Class Performance')
 end

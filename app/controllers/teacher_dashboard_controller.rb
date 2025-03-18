@@ -17,18 +17,22 @@ class TeacherDashboardController < ApplicationController
 
   def student_history_dashboard
     @students = Student.all
-    @category_summaries = Answer.where(student_email: @students.pluck(:email))
-                                .group(:category)
-                                .select('category,
-                                         COUNT(*) AS attempted,
-                                         SUM(CASE WHEN correctness THEN 1 ELSE 0 END) AS correct,
-                                         SUM(CASE WHEN correctness THEN 0 ELSE 1 END) AS incorrect')
-                                .to_h do |cat|
-                                  percentage = cat.attempted.zero? ? 0 : (cat.correct.to_f / cat.attempted * 100).round(1)
-                                  [cat.category,
-                                   { attempted: cat.attempted, correct: cat.correct, incorrect: cat.incorrect,
-                                     percentage: percentage }]
-                                end
+    @category_summaries = build_category_summaries
+  end
+
+  def build_category_summaries
+    Answer.where(student_email: @students.pluck(:email))
+          .group(:category)
+          .select('category,
+        COUNT(*) AS attempted,
+        SUM(CASE WHEN correctness THEN 1 ELSE 0 END) AS correct,
+        SUM(CASE WHEN correctness THEN 0 ELSE 1 END) AS incorrect')
+          .to_h { |cat| format_category_summary(cat) }
+  end
+
+  def format_category_summary(cat)
+    percentage = cat.attempted.zero? ? 0 : (cat.correct.to_f / cat.attempted * 100).round(1)
+    [cat.category, { attempted: cat.attempted, correct: cat.correct, incorrect: cat.incorrect, percentage: percentage }]
   end
 
   def student_history
