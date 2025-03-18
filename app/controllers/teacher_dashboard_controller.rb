@@ -2,40 +2,47 @@ class TeacherDashboardController < ApplicationController
   before_action :require_teacher
 
   def require_teacher
-    return if session[:user_type] == 'teacher'
+    return if session[:user_type] == 'teacher' && current_teacher
 
     redirect_to login_path
+    nil
   end
 
   def index
-    @students = Student.all
+    @students = current_teacher.students
   end
 
   def manage_students
     @students = Student.all
+    # @students = current_teacher.students
   end
 
   def student_history_dashboard
-    @students = Student.all
+    @all_students = current_teacher.students # All students for class stats
+    @students = @all_students # Filtered students for display
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
-      @students = @students.where("LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR CAST(uin AS TEXT) LIKE ?", 
+      @students = @students.where('LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR CAST(uin AS TEXT) LIKE ?',
                                   search_term, search_term, search_term)
     end
-    @category_summaries = build_category_summaries
-    set_class_stats
+    @category_summaries = build_category_summaries(@all_students) # Use all students
+    class_performance(@all_students) # Use all students
   end
 
   def student_history
-    @student = Student.find_by!(uin: params[:uin])
+    @student = current_teacher.students.find_by!(uin: params[:uin])
     @completed_questions = Answer.where(student_email: @student.email).joins(:question)
     set_student_stats
   end
 
   private
 
-  def build_category_summaries
-    Answer.where(student_email: @students.pluck(:email))
+  def current_teacher
+    @current_teacher ||= Teacher.find_by(id: session[:user_id])
+  end
+
+  def build_category_summaries(students)
+    Answer.where(student_email: students.pluck(:email))
           .group(:category)
           .select('category,
                    COUNT(*) AS attempted,
@@ -49,8 +56,8 @@ class TeacherDashboardController < ApplicationController
     [cat.category, { attempted: cat.attempted, correct: cat.correct, incorrect: cat.incorrect, percentage: percentage }]
   end
 
-  def set_class_stats
-    answers = Answer.where(student_email: @students.pluck(:email))
+  def class_performance(students)
+    answers = Answer.where(student_email: students.pluck(:email))
     @total_completed = {
       attempted: answers.count,
       correct: answers.where(correctness: true).count,

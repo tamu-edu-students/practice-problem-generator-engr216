@@ -40,6 +40,7 @@ end
     email:      Faker::Internet.email,
     uin:        Faker::Number.number(digits: 9).to_i,
     teacher:    assigned_teacher,  # associating the teacher object
+    teacher_id: assigned_teacher.id,
     authenticate: [true, false].sample
   )
 end
