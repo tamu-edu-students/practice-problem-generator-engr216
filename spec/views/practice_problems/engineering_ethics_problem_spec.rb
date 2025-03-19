@@ -35,4 +35,4 @@ RSpec.describe 'practice_problems/engineering_ethics_problem', type: :view do
       expect(rendered).to have_button('Check Answer')
     end
   end
-end 
+end

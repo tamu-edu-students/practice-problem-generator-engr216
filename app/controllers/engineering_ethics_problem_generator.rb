@@ -1,20 +1,20 @@
 class EngineeringEthicsProblemGenerator
   attr_reader :category
-  
+
   def initialize(category)
     @category = category
   end
-  
+
   def generate_questions
     [generate_ethics_problem]
   end
-  
+
   private
-  
+
   def generate_ethics_problem
     # Select a random question from our predefined set
     question_data = ethics_questions.sample
-    
+
     {
       type: 'engineering_ethics',
       question: question_data[:question],
@@ -32,7 +32,7 @@ class EngineeringEthicsProblemGenerator
       ]
     }
   end
-  
+
   def ethics_questions
     [
       {
@@ -77,4 +77,4 @@ class EngineeringEthicsProblemGenerator
       }
     ]
   end
-end 
+end

@@ -1,4 +1,4 @@
-<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
   <%= render 'shared/navbar' %>
   
   <!-- Fixed Floating Back Arrow (Pack Button) -->
@@ -33,11 +33,11 @@
       
       <% if @question[:data_table].present? %>
         <div class="mb-6 overflow-x-auto">
-          <table class="mx-auto border-collapse">
+          <table class="mx-auto border-collapse" style="table-layout: fixed;">
             <% @question[:data_table].each do |row| %>
               <tr>
                 <% row.each do |cell| %>
-                  <td class="border border-gray-500 px-3 py-2 bg-gray-700"><%= cell %></td>
+                  <td class="border border-gray-500 px-3 py-2 bg-gray-700" style="width: 80px; height: 50px; text-align: center;"><%= cell %></td>
                 <% end %>
               </tr>
             <% end %>

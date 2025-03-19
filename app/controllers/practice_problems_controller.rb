@@ -393,7 +393,7 @@ class PracticeProblemsController < ApplicationController
   def check_engineering_ethics_answer
     user_answer = params[:ethics_answer] == 'true'
     correct_answer = @question[:answer]
-    
+
     if user_answer == correct_answer
       redirect_to_success
     else
