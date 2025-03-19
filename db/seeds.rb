@@ -7,11 +7,11 @@ Question.destroy_all
 Answer.destroy_all
 
 
-# Reset SQLite autoincrement during testing in development 
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
+# # Reset SQLite autoincrement during testing in development 
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
 
 # Seed Teachers
 teachers_data = [
