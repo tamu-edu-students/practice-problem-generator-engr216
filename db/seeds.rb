@@ -7,11 +7,11 @@ Question.destroy_all
 Answer.destroy_all
 
 
-# # Reset SQLite autoincrement
-# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
-# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
-# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
-# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
+# Reset SQLite autoincrement during testing in development 
+ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
+ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
+ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
+ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
 
 # Seed Teachers
 teachers_data = [
@@ -32,7 +32,7 @@ teachers = teachers_data.map do |teacher_data|
 end
 
 # Seed Students
-50.times do
+200.times do
   assigned_teacher = teachers.sample
   Student.create!(
     first_name: Faker::Name.first_name,

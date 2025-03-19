@@ -1,93 +1,79 @@
 <head>
-  <%= stylesheet_link_tag 'manage_students', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= stylesheet_link_tag 'student_history_dashboard', media: 'all', 'data-turbolinks-track': 'reload' %>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
-<div class="w-full flex flex-col bg-[#9aa8c5] h-screen overflow-hidden">
-  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50 shadow-lg">
-    <div class="flex-1">
-      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-        Dashboard
-      </a>
-    </div>
-    <div class="flex-none">
-      <div class="dropdown dropdown-end">
-        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-          Account ▼
-        </button>
-        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/logout">Logout</a></li>
+<body>
+  <nav class="p-4 fixed w-full top-0 z-50">
+    <div class="flex justify-between items-center max-w-6xl mx-auto">
+      <a href="/teacher_dashboard" class="px-4 py-2 rounded">Dashboard</a>
+      <div class="relative">
+        <button class="px-4 py-2 rounded">Account ▼</button>
+        <ul class="absolute right-0 mt-2 p-2 rounded shadow w-32 hidden hover:block">
+          <li><a href="/dashboard" class="block p-2">Dashboard</a></li>
+          <li><a href="/logout" class="block p-2">Logout</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </nav>
 
-  <%= link_to "←", teacher_dashboard_path, 
-    id: "back-arrow",
-    class: "fixed left-5 top-24 text-black text-2xl inline-block z-50 hover:text-blue-600 transition",
-    style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  <%= link_to "←", teacher_dashboard_path, class: "back-arrow fixed left-4 top-16 text-2xl z-50" %>
 
-  <div class="flex flex-col items-center w-full text-center pt-24 px-6 pb-6">
-    <div class="w-full max-w-6xl bg-black text-white shadow-lg rounded-lg p-6 flex flex-row gap-6 h-[calc(100vh-14rem)]">
+  <main>
+    <div class="tables-container">
       <!-- Summary Table -->
-      <div class="w-3/5 bg-gray-800 rounded-lg p-4 flex flex-col">
-        <h2 class="text-xl font-semibold text-blue-300 mb-4">Class Performance</h2>
-        <div class="overflow-y-auto h-80">
-          <table class="table w-full text-left">
+      <div class="table-wrapper w-3/5">
+        <h2>Class Performance</h2>
+        <div class="scrollable">
+          <table>
             <thead>
-              <tr class="bg-gray-700 text-white border-b border-gray-500 sticky top-0">
-                <th class="p-2">Category</th>
-                <th class="p-2">Attempted</th>
-                <th class="p-2">Performance</th>
+              <tr>
+                <th>Category</th>
+                <th>Attempted</th>
+                <th>Performance</th>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td class="font-bold">Total Completed</td>
+                <td><%= @total_completed[:attempted] %></td>
+                <td><%= "#{@total_completed[:correct]} / #{@total_completed[:attempted]} - #{@total_completed[:percentage]}%" %></td>
+              </tr>
               <% @category_summaries.each do |category, stats| %>
-                <tr class="border-b border-gray-700 hover:bg-gray-600 transition">
-                  <td class="p-3 break-words"><%= category %></td>
-                  <td class="p-3"><%= stats[:attempted] %></td>
-                  <td class="p-3"><%= "#{stats[:correct]} / #{stats[:attempted]} - #{stats[:percentage]}%" %></td>
+                <tr>
+                  <td><%= category %></td>
+                  <td><%= stats[:attempted] %></td>
+                  <td><%= "#{stats[:correct]} / #{stats[:attempted]} - #{stats[:percentage]}%" %></td>
                 </tr>
               <% end %>
-              <tr class="border-b border-gray-700 font-bold hover:bg-gray-600 transition">
-                <td class="p-3 break-words">Total Completed</td>
-                <td class="p-3"><%= @total_completed[:attempted] %></td>
-                <td class="p-3"><%= "#{@total_completed[:correct]} / #{@total_completed[:attempted]} - #{@total_completed[:percentage]}%" %></td>
-              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Students Table with Search -->
-      <div class="w-2/5 bg-gray-800 rounded-lg p-4 flex flex-col">
-        <h2 class="text-xl font-semibold text-blue-300 mb-4">Students</h2>
-        <!-- Search Section -->
-        <div class="mb-4">
-          <%= form_with url: student_history_dashboard_path, method: :get, local: true, class: "flex gap-2" do %>
-            <%= text_field_tag :search, params[:search], placeholder: "Search by name or UIN", class: "input input-bordered w-full text-white bg-gray-700" %>
-            <%= submit_tag "Search", class: "btn btn-primary" %>
+      <!-- Students Table -->
+      <div class="table-wrapper w-2/5">
+        <h2>Students</h2>
+        <div class="search-form">
+          <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
+            <%= text_field_tag :search, params[:search], placeholder: "Search by name or UIN" %>
+            <%= submit_tag "Search" %>
           <% end %>
         </div>
-        <div class="overflow-y-auto h-80">
-          <table class="table w-full text-left">
+        <div class="scrollable">
+          <table>
             <thead>
-              <tr class="bg-gray-700 text-white border-b border-gray-500 sticky top-0">
-                <th class="p-2">Student Name</th>
-                <th class="p-2">UIN</th>
+              <tr>
+                <th>Student Name</th>
+                <th>UIN</th>
               </tr>
             </thead>
             <tbody>
               <% @students.each do |student| %>
-                <tr class="border-b border-gray-700 hover:bg-gray-600 transition">
-                  <td class="p-3">
-                    <%= link_to "#{student.first_name} #{student.last_name}", 
-                                student_history_path(uin: student.uin), 
-                                class: "text-blue-400 hover:text-blue-600" %>
-                  </td>
-                  <td class="p-3"><%= student.uin %></td>
+                <tr>
+                  <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(uin: student.uin) %></td>
+                  <td><%= student.uin %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -95,5 +81,5 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </main>
+</body>
