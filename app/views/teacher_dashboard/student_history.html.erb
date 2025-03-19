@@ -1,0 +1,68 @@
+<head>
+  <%= stylesheet_link_tag 'student_history', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="container">
+      <a href="/teacher_dashboard">Dashboard</a>
+      <div class="dropdown">
+        <button>Account ▼</button>
+        <ul class="dropdown-content">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Back Arrow -->
+  <%= link_to "←", student_history_dashboard_path, id: "back-arrow", class: "back-arrow" %>
+
+  <!-- Title -->
+  <main>
+    <div class="title">
+      <h1><%= "#{@student.first_name} #{@student.last_name} Statistics & History" %></h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Summary -->
+      <div class="summary">
+        <div class="grid">
+          <p>Attempted: <span><%= @attempted %></span></p>
+          <p>Correct: <span class="correct"><%= @correct %></span></p>
+          <p>Incorrect: <span class="incorrect"><%= @incorrect %></span></p>
+          <p>Percentage Correct: <span><%= @percentage_correct %></span></p>
+        </div>
+      </div>
+
+      <!-- Questions Table -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Question</th>
+              <th>Correctness</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @completed_questions.each do |answer| %>
+              <tr>
+                <td class="break-words"><%= answer.category %></td>
+                <td class="break-words"><%= answer.question_description %></td>
+                <td class="<%= answer.correctness ? 'correctness-yes' : 'correctness-no' %>">
+                  <%= answer.correctness ? 'Yes' : 'No' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>

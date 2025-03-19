@@ -1,3 +1,29 @@
-<div class="items-center justify-center text-center">
-    <a href="<%= manage_students_path %>" class="btn btn-sm btn-neutral">Student Management</a>
-</div>
+<head>
+  <%= stylesheet_link_tag 'teacher_dashboard', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<body class="teacher-dashboard">
+  <!-- Navbar -->
+  <nav>
+    <div class="container">
+      <a href="/teacher_dashboard">Dashboard</a>
+      <div class="dropdown">
+        <button>Account ▼</button>
+        <ul class="dropdown-content">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="button-container">
+      <a href="<%= manage_students_path %>" class="btn">Student Management</a>
+      <a href="<%= student_history_dashboard_path %>" class="btn">Student Problem History</a>
+    </div>
+  </main>
+</body>

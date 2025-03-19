@@ -23,6 +23,9 @@ Rails.application.routes.draw do
   get '/teacher_dashboard', to: 'teacher_dashboard#index', as: :teacher_dashboard
   get 'teacher_dashboard/manage_students', to: 'teacher_dashboard#manage_students', as: :manage_students
 
+  # Teacher View: Student History Routes
+  get 'teacher_dashboard/student_history_dashboard', to:'teacher_dashboard#student_history_dashboard', as: :student_history_dashboard
+  get 'teacher_dashboard/student_history/:uin', to: 'teacher_dashboard#student_history', as: :student_history
   # Practice Problem Dashboard Routes
   # get '/practice_problems', to: 'practice_problem_dashboard#index', as: :practice_problems
 

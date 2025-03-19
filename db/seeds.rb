@@ -4,6 +4,14 @@ require 'faker'
 Student.destroy_all
 Teacher.destroy_all
 Question.destroy_all
+Answer.destroy_all
+
+
+# # Reset SQLite autoincrement during testing in development 
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
+# ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
 
 # Seed Teachers
 teachers_data = [
@@ -24,7 +32,7 @@ teachers = teachers_data.map do |teacher_data|
 end
 
 # Seed Students
-50.times do
+200.times do
   assigned_teacher = teachers.sample
   Student.create!(
     first_name: Faker::Name.first_name,
@@ -32,6 +40,7 @@ end
     email:      Faker::Internet.email,
     uin:        Faker::Number.number(digits: 9).to_i,
     teacher:    assigned_teacher,  # associating the teacher object
+    teacher_id: assigned_teacher.id,
     authenticate: [true, false].sample
   )
 end
@@ -113,6 +122,24 @@ physics_categories.each do |category, questions|
   end
 end
 
+# Seed Answers for Each Student
+Student.all.each do |student|
+  Question.all.sample(rand(10..20)).each do |question| # 10-20 random questions per student
+    Answer.create!(
+      question_id: question.id,
+      category: question.category,
+      question_description: question.question,
+      answer_choices: question.answer_choices,
+      answer: "TBD", # Placeholder
+      correctness: [true, false].sample,
+      student_email: student.email,
+      date_completed: Faker::Date.backward(days: 30),
+      time_spent: "#{rand(1..10)} minutes"
+    )
+  end
+end
+
 puts "Seeded #{Student.count} students!"
 puts "Seeded #{Teacher.count} teachers!"
 puts "Seeded #{Question.count} questions!"
+puts "Seeded #{Answer.count} answers!"
