@@ -1,0 +1,199 @@
+/* student_history.css */
+
+/* Reset defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body and container */
+  body {
+    background-color: #e5e7eb; /* gray-100 */
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    color: #374151; /* gray-700 */
+  }
+  
+  /* Navbar */
+  nav {
+    background-color: #1f2937; /* gray-800 */
+    color: #ffffff; /* white */
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 50;
+  }
+  
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px; /* Matches max-w-6xl */
+    margin: 0 auto;
+  }
+  
+  nav a, nav button {
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+  }
+  
+  nav a:hover, nav button:hover {
+    background-color: #374151; /* gray-700 */
+  }
+  
+  /* Dropdown */
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-content {
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #1f2937; /* gray-800 */
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 8rem; /* Matches w-32 */
+    display: none;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content a {
+    display: block;
+    padding: 0.5rem;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #374151; /* gray-700 */
+  }
+  
+  /* Back arrow */
+  .back-arrow {
+    color: #1f2937; /* gray-800 */
+    font-size: 1.5rem; /* Matches text-2xl */
+    position: fixed;
+    left: 1rem; /* Matches left-4 */
+    top: 4rem; /* Matches top-16 */
+    z-index: 50;
+  }
+  
+  .back-arrow:hover {
+    color: #1d4ed8; /* blue-700 */
+  }
+  
+  /* Main content */
+  main {
+    max-width: 1200px; /* Matches max-w-6xl */
+    margin: 0 auto;
+    padding: 5rem 1rem 1rem; /* Matches pt-20 px-4 */
+  }
+  
+  /* Title */
+  .title {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .title h1 {
+    font-size: 1.5rem; /* Matches text-2xl */
+    font-weight: bold;
+    color: #1f2937; /* gray-800 */
+    background-color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+  }
+  
+  /* Content container */
+  .content {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Summary */
+  .summary {
+    background-color: #d1d5db; /* gray-200 */
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .summary .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    font-size: 1.125rem; /* Matches text-lg */
+  }
+  
+  .summary p {
+    font-weight: 600;
+    color: #1f2937; /* gray-800 */
+  }
+  
+  .summary span {
+    color: #374151; /* gray-700 */
+  }
+  
+  .summary .correct {
+    color: #16a34a; /* green-600 */
+  }
+  
+  .summary .incorrect {
+    color: #dc2626; /* red-600 */
+  }
+  
+  /* Table */
+  table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  
+  thead tr {
+    background-color: #d1d5db; /* gray-200 */
+    color: #1f2937; /* gray-800 */
+  }
+  
+  th, td {
+    padding: 0.5rem;
+  }
+  
+  th:nth-child(1), td:nth-child(1) { width: 25%; } /* Category */
+  th:nth-child(2), td:nth-child(2) { width: 50%; } /* Question */
+  th:nth-child(3), td:nth-child(3) { width: 25%; text-align: center; } /* Correctness */
+  
+  tbody tr {
+    border-bottom: 1px solid #e5e7eb; /* gray-100 */
+  }
+  
+  tbody tr:hover {
+    background-color: #f9fafb; /* gray-50 */
+  }
+  
+  td.break-words {
+    word-break: break-word;
+  }
+  
+  .correctness-yes {
+    color: #16a34a; /* green-600 */
+  }
+  
+  .correctness-no {
+    color: #dc2626; /* red-600 */
+  }
+  
+  /* Scrollable table */
+  .table-container {
+    overflow-x: auto;
+  }
