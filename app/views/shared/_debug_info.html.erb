@@ -1,0 +1,16 @@
+<div class="mt-6 p-4 border border-blue-500 bg-gray-700 text-left">
+  <h3 class="text-lg font-bold mb-2">Debug Information:</h3>
+  <% if defined?(@debug_info) && @debug_info.present? %>
+    <pre class="bg-gray-800 p-2 rounded text-gray-300 text-sm overflow-auto"><%= @debug_info %></pre>
+  <% elsif session[:debug_info].present? %>
+    <pre class="bg-gray-800 p-2 rounded text-gray-300 text-sm overflow-auto"><%= session[:debug_info] %></pre>
+  <% else %>
+    <p>No debug information available.</p>
+    <% if @question.present? %>
+      <div class="mt-2">
+        <h4 class="text-md font-bold">Question Data:</h4>
+        <pre class="bg-gray-800 p-2 rounded text-gray-300 text-sm overflow-auto"><%= JSON.pretty_generate(@question) rescue @question.inspect %></pre>
+      </div>
+    <% end %>
+  <% end %>
+</div> 

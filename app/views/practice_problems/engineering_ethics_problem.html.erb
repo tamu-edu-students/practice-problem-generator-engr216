@@ -1,0 +1,59 @@
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+  <%= render 'shared/navbar' %>
+  
+  <!-- Fixed Floating Back Arrow (Pack Button) -->
+  <%= link_to "←", practice_problems_path, 
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  
+  <!-- Spacer between navbar and content -->
+  <div class="h-24"></div>
+  
+  <!-- Title -->
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black">Category: <%= @category %></h1>
+  </div>
+  
+  <!-- Card for Questions and Answers -->
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
+      <% if @question && @question[:question] %>
+        <h1 class="text-3xl font-bold mb-6">Engineering Ethics Question:</h1>
+        <p class="text-xl mb-6"><%= @question[:question] %></p>
+        <p class="text-md text-gray-300 mb-6"><strong>Is this statement true or false?</strong></p>
+      <% else %>
+        <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
+      <% end %>
+      
+      <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
+        <%= form.hidden_field :category_id, value: @category %>
+        
+        <div class="flex justify-center gap-12 mt-8">
+          <div class="flex items-center space-x-2">
+            <%= form.radio_button :ethics_answer, 'true', id: 'answer_true', class: 'radio radio-primary' %>
+            <label for="answer_true" class="cursor-pointer text-white text-xl">True</label>
+          </div>
+          
+          <div class="flex items-center space-x-2">
+            <%= form.radio_button :ethics_answer, 'false', id: 'answer_false', class: 'radio radio-primary' %>
+            <label for="answer_false" class="cursor-pointer text-white text-xl">False</label>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+      
+      <%= render 'shared/feedback_messages' %>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_practice_problems_path(category_id: @category), class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 

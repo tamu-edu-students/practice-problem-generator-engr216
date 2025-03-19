@@ -12,7 +12,9 @@ class PracticeProblemsController < ApplicationController
     # Store the current question in the session for validation later
     session[:current_question] = @question.to_json
 
-    render :generate
+    # Render the appropriate template based on question type
+    template = determine_template_for_question(@question)
+    render template
   end
 
   def question_for_category
@@ -21,6 +23,8 @@ class PracticeProblemsController < ApplicationController
       handle_statistics_problem
     when 'confidence intervals'
       handle_confidence_interval_problem
+    when 'engineering ethics'
+      handle_engineering_ethics_problem
     else
       handle_default_category
     end
@@ -38,7 +42,8 @@ class PracticeProblemsController < ApplicationController
 
     # If not redirected, re-render the form with error message.
     session[:current_question] = @question.to_json
-    render :generate
+    template = determine_template_for_question(@question)
+    render template
   end
 
   private
@@ -60,6 +65,12 @@ class PracticeProblemsController < ApplicationController
 
   def handle_confidence_interval_problem
     generator = ConfidenceIntervalProblemGenerator.new(@category)
+    questions = generator.generate_questions
+    questions.first
+  end
+
+  def handle_engineering_ethics_problem
+    generator = EngineeringEthicsProblemGenerator.new(@category)
     questions = generator.generate_questions
     questions.first
   end
@@ -98,6 +109,7 @@ class PracticeProblemsController < ApplicationController
     return handle_probability if @question[:type] == 'probability'
     return handle_data_statistics if @question[:type] == 'data_statistics'
     return handle_confidence_interval if @question[:type] == 'confidence_interval'
+    return handle_engineering_ethics if @question[:type] == 'engineering_ethics'
 
     handle_unknown_question_type
   end
@@ -112,6 +124,10 @@ class PracticeProblemsController < ApplicationController
 
   def handle_confidence_interval
     check_confidence_interval_answers == :redirected
+  end
+
+  def handle_engineering_ethics
+    check_engineering_ethics_answer == :redirected
   end
 
   def handle_unknown_question_type
@@ -372,5 +388,30 @@ class PracticeProblemsController < ApplicationController
     }
 
     z_values.fetch(confidence_level, 1.96)
+  end
+
+  def check_engineering_ethics_answer
+    user_answer = params[:ethics_answer] == 'true'
+    correct_answer = @question[:answer]
+    
+    if user_answer == correct_answer
+      redirect_to_success
+    else
+      @error_message = "That's incorrect. The correct answer is #{correct_answer ? 'True' : 'False'}."
+      nil
+    end
+  end
+
+  def determine_template_for_question(question)
+    case question[:type]
+    when 'probability', 'data_statistics'
+      'statistics_problem'
+    when 'confidence_interval'
+      'confidence_interval_problem'
+    when 'engineering_ethics'
+      'engineering_ethics_problem'
+    else
+      'generate' # fallback to the original template
+    end
   end
 end
