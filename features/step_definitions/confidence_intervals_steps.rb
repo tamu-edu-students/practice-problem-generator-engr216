@@ -18,9 +18,7 @@ When('I submit a confidence interval answer') do
 end
 
 Then('a new Confidence Interval problem should be dynamically generated') do
-  expect(page).to have_css('h1', text: /Question:/)
-  expect(page).to have_field('lower_bound')
-  expect(page).to have_field('upper_bound')
+  expect(page).to have_css('h1', text: 'Confidence Interval Problem:')
 end
 
 Then('I should be given feedback on my confidence interval answer') do

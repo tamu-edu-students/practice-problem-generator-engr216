@@ -19,30 +19,11 @@
   <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
     <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
       <% if @question && @question[:question] %>
-        <h1 class="text-3xl font-bold mb-6">Question: 
-          <% if @question[:question].include?("\n") %>
-            <%= @question[:question].split("\n\n").first %>
-            <p class="text-lg mt-4 text-gray-300"><%= @question[:question].split("\n\n").last %></p>
-          <% else %>
-            <%= @question[:question] %>
-          <% end %>
-        </h1>
+        <h1 class="text-3xl font-bold mb-6">Confidence Interval Problem:</h1>
+        <p class="text-xl mb-6"><%= @question[:question] %></p>
+        <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units. Do not use scientific notation.</strong></p>
       <% else %>
         <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
-      <% end %>
-
-      <% if @question[:data_table].present? %>
-        <div class="mb-6 overflow-x-auto">
-          <table class="mx-auto border-collapse">
-            <% @question[:data_table].each do |row| %>
-              <tr>
-                <% row.each do |cell| %>
-                  <td class="border border-gray-500 px-3 py-2 bg-gray-700"><%= cell %></td>
-                <% end %>
-              </tr>
-            <% end %>
-          </table>
-        </div>
       <% end %>
       
       <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
@@ -53,24 +34,9 @@
             <% @question[:input_fields].each do |field| %>
               <div class="flex flex-col items-center">
                 <label class="mb-2 text-xl"><%= field[:label] %></label>
-                <% if field[:type] == 'radio' && field[:options].present? %>
-                  <div class="flex flex-col items-start gap-2">
-                    <% field[:options].each do |option| %>
-                      <div class="flex items-center space-x-2">
-                        <%= form.radio_button field[:key], option[:value], id: "#{field[:key]}_#{option[:value]}", class: "radio radio-primary" %>
-                        <label for="<%= "#{field[:key]}_#{option[:value]}" %>" class="cursor-pointer text-white"><%= option[:label] %></label>
-                      </div>
-                    <% end %>
-                  </div>
-                <% else %>
-                  <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
-                <% end %>
+                <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
               </div>
             <% end %>
-          <% else %>
-            <div class="w-full">
-              <%= form.text_field :answer, class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-64", placeholder: "Enter answer" %>
-            </div>
           <% end %>
         </div>
         
@@ -89,4 +55,4 @@
   </div>
 </div>
 
-<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %>
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 
