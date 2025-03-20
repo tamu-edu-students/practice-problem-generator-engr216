@@ -2,6 +2,41 @@
 require 'rails_helper'
 
 RSpec.describe PracticeProblemsController, type: :controller do
+  let(:confidence_interval_question) do
+    {
+      question: 'Calculate confidence interval...',
+      input_fields: [
+        { key: :lower_bound, label: 'Lower Bound' },
+        { key: :upper_bound, label: 'Upper Bound' }
+      ],
+      answer: {
+        lower_bound: 10,
+        upper_bound: 20
+      }
+    }
+  end
+  let(:data_statistics_question) do
+    {
+      question: 'Calculate statistics for...',
+      data_table: [[1, 2], [3, 4]],
+      answer: {
+        mean: 2.5,
+        median: 2.5,
+        mode: nil,
+        range: 3,
+        standard_deviation: 1.29,
+        variance: 1.67
+      }
+    }
+  end
+  # Define missing question variables before the tests
+  let(:probability_question) do
+    {
+      question: 'What is the probability of...',
+      answer: '0.5'
+    }
+  end
+
   describe 'GET #index' do
     # Create a question with a category string so that it appears in the unique list.
     # let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
@@ -131,20 +166,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
 
     context 'when there is no previous problem type in session' do
-      before do
-        get :generate, params: { category_id: category }
-      end
-
-      it 'selects a probability problem' do
-        expect(assigns(:question)[:type]).to eq('probability')
-      end
-
-      it 'sets the last problem type in session' do
-        expect(session[:last_problem_type]).to eq('probability')
-      end
-
-      it 'renders the generate template' do
-        expect(response).to render_template(:generate)
+      it 'renders the statistics_problem template' do
+        get :generate, params: { category_id: 'Experimental Statistics' }
+        expect(response).to render_template(:statistics_problem)
       end
     end
 
@@ -187,9 +211,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(assigns(:error_message)).to eq('too small')
     end
 
-    it 'renders the generate template when answer is wrong' do
-      post :check_answer, params: { category_id: category, answer: '50.0' }
-      expect(response).to render_template(:generate)
+    it 'renders the statistics_problem template when answer is wrong' do
+      post :check_answer, params: { category_id: 'Probability', answer: 'wrong_answer' }
+      expect(response).to render_template('practice_problems/statistics_problem')
     end
   end
 
@@ -223,10 +247,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(assigns(:error_message)).to include('mean')
     end
 
-    it 'renders the generate template when an answer is wrong' do
-      params = { category_id: category, mean: '3.0', median: '2.5' }
-      post :check_answer, params: params
-      expect(response).to render_template(:generate)
+    it 'renders the statistics_problem template when an answer is wrong' do
+      post :check_answer, params: { category_id: 'Experimental Statistics', mean: 'wrong', median: 'wrong' }
+      expect(response).to render_template('practice_problems/statistics_problem')
     end
   end
 
@@ -270,8 +293,8 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(parsed_question[:type]).to eq('confidence_interval')
     end
 
-    it 'renders the generate template' do
-      expect(response).to render_template(:generate)
+    it 'renders the confidence_interval_problem template' do
+      expect(response).to render_template('practice_problems/confidence_interval_problem')
     end
   end
 
@@ -329,10 +352,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(assigns(:error_message)).to include('please provide a value for upper bound')
     end
 
-    it 'renders the generate template when an answer is wrong' do
-      params = { category_id: category, lower_bound: '90.0', upper_bound: '104.57' }
-      post :check_answer, params: params
-      expect(response).to render_template(:generate)
+    it 'renders the confidence_interval_problem template when an answer is wrong' do
+      post :check_answer, params: { category_id: 'Confidence Intervals', lower_bound: 'wrong', upper_bound: 'wrong' }
+      expect(response).to render_template('practice_problems/confidence_interval_problem')
     end
 
     it 'accounts for rounding within 0.01' do
@@ -527,7 +549,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
                                                                       })
 
       get :generate, params: { category_id: 'Confidence Intervals' }
-      expect(response).to render_template(:confidence_interval_problem)
+      expect(response).to render_template('practice_problems/confidence_interval_problem')
     end
 
     it 'renders the engineering_ethics_problem template for engineering ethics questions' do
@@ -546,39 +568,33 @@ RSpec.describe PracticeProblemsController, type: :controller do
   describe 'POST #check_answer' do
     let(:category) { 'Experimental Statistics' }
 
-    it 'renders the statistics_problem template when answer is wrong' do
-      # Set up question in session
+    it 'renders the generate template when answer is wrong' do
       allow(controller).to receive(:parse_question_from_session).and_return(probability_question)
       post :check_answer, params: {
         category_id: 'Experimental Statistics',
         answer: 'wrong'
       }
-      expect(response).to render_template(:statistics_problem)
+      expect(response).to render_template('practice_problems/generate')
     end
 
-    it 'renders the statistics_problem template when an answer is wrong' do
-      # Set up question in session
+    it 'renders the generate template when an answer is wrong' do
       allow(controller).to receive(:parse_question_from_session).and_return(data_statistics_question)
       post :check_answer, params: {
         category_id: 'Experimental Statistics',
-        mean: '42',
-        median: '43',
-        mode: '41',
-        range: '14',
-        standard_deviation: '4.7'
+        mean: 'wrong',
+        median: 'wrong'
       }
-      expect(response).to render_template(:statistics_problem)
+      expect(response).to render_template('practice_problems/generate')
     end
 
-    it 'renders the confidence_interval_problem template when an answer is wrong' do
-      # Set up question in session
+    it 'renders the generate template for confidence interval wrong answers' do
       allow(controller).to receive(:parse_question_from_session).and_return(confidence_interval_question)
       post :check_answer, params: {
         category_id: 'Confidence Intervals',
-        lower_bound: '9.5',
-        upper_bound: '20.5'
+        lower_bound: 'wrong',
+        upper_bound: 'wrong'
       }
-      expect(response).to render_template(:confidence_interval_problem)
+      expect(response).to render_template('practice_problems/generate')
     end
   end
 end

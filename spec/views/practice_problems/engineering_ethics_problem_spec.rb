@@ -26,8 +26,11 @@ RSpec.describe 'practice_problems/engineering_ethics_problem', type: :view do
       expect(rendered).to have_content('Test ethics question')
     end
 
-    it 'displays radio buttons for True and False' do
+    it 'displays radio button for True' do
       expect(rendered).to have_css('input[type="radio"][value="true"]')
+    end
+
+    it 'displays radio button for False' do
       expect(rendered).to have_css('input[type="radio"][value="false"]')
     end
 
