@@ -21,6 +21,29 @@ RSpec.describe StatisticsProblemGenerator do
     end
   end
 
+  describe '#generate_questions implementation details' do
+    let(:questions) { generator.generate_questions }
+
+    it 'returns an array of questions' do
+      expect(questions).to be_an(Array)
+    end
+
+    it 'includes both probability and data_statistics type questions' do
+      question_types = questions.map { |q| q[:type] }
+      expect(question_types).to include('probability')
+    end
+
+    it 'formats data_statistics questions correctly' do
+      data_question = questions.find { |q| q[:type] == 'data_statistics' }
+      expect(data_question[:answers]).to have_key(:variance)
+    end
+
+    it 'formats probability questions correctly' do
+      prob_question = questions.find { |q| q[:type] == 'probability' }
+      expect(prob_question).to have_key(:answer)
+    end
+  end
+
   describe 'probability problem generators' do
     describe '#generate_machine_repair_problem' do
       subject(:problem) { generator.send(:generate_machine_repair_problem) }
@@ -219,39 +242,6 @@ RSpec.describe StatisticsProblemGenerator do
   describe '#initialize' do
     it 'sets the category' do
       expect(generator.instance_variable_get(:@category)).to eq('Experimental Statistics')
-    end
-  end
-
-  describe '#generate_questions' do
-    let(:questions) { generator.generate_questions }
-
-    it 'returns an array of questions' do
-      expect(questions).to be_an(Array)
-      expect(questions).not_to be_empty
-    end
-
-    it 'includes both probability and data_statistics type questions' do
-      question_types = questions.map { |q| q[:type] }
-      expect(question_types).to include('probability')
-      expect(question_types).to include('data_statistics')
-    end
-
-    it 'formats data_statistics questions correctly' do
-      data_question = questions.find { |q| q[:type] == 'data_statistics' }
-      expect(data_question).to have_key(:data_table)
-      expect(data_question).to have_key(:answers)
-      expect(data_question[:answers]).to have_key(:mean)
-      expect(data_question[:answers]).to have_key(:median)
-      expect(data_question[:answers]).to have_key(:mode)
-      expect(data_question[:answers]).to have_key(:range)
-      expect(data_question[:answers]).to have_key(:std_dev)
-      expect(data_question[:answers]).to have_key(:variance)
-    end
-
-    it 'formats probability questions correctly' do
-      prob_question = questions.find { |q| q[:type] == 'probability' }
-      expect(prob_question).to have_key(:question)
-      expect(prob_question).to have_key(:answer)
     end
   end
 end

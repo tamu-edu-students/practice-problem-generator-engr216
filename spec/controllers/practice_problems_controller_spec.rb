@@ -57,30 +57,34 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
   end
 
-  describe 'GET #generate' do
-    let(:category) { 'Math' }
-    let(:questions) do
-      [
-        { question: 'Q1', answer_choices: %w[A B], answer: 'A' },
-        { question: 'Q2', answer_choices: %w[C D], answer: 'C' }
-      ]
+  describe 'GET #generate basic functionality' do
+    # Combine three memoized helpers into one hash.
+    let(:basic_context) do
+      {
+        category: 'Math',
+        questions: [
+          { question: 'Q1', answer_choices: %w[A B], answer: 'A' },
+          { question: 'Q2', answer_choices: %w[C D], answer: 'C' }
+        ],
+        problem_generator: instance_double(ProblemGenerator)
+      }
     end
 
-    let(:problem_generator) { instance_double(ProblemGenerator) }
-
     before do
-      # Expect the generator to be initialized with the category string.
-      allow(ProblemGenerator).to receive(:new).with(category).and_return(problem_generator)
+      allow(ProblemGenerator).to receive(:new)
+        .with(basic_context[:category])
+        .and_return(basic_context[:problem_generator])
     end
 
     context 'when there is no last question in the session' do
       before do
-        allow(problem_generator).to receive(:generate_questions).and_return(questions)
-        get :generate, params: { category_id: category }
+        allow(basic_context[:problem_generator]).to receive(:generate_questions)
+          .and_return(basic_context[:questions])
+        get :generate, params: { category_id: basic_context[:category] }
       end
 
       it 'picks a random question' do
-        expect(questions).to include(assigns(:question))
+        expect(basic_context[:questions]).to include(assigns(:question))
       end
 
       it 'stores the question in the session as JSON' do
@@ -96,8 +100,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
     context 'when multiple questions exist and a last question is in the session' do
       before do
         session[:last_question] = 'Q1'
-        allow(problem_generator).to receive(:generate_questions).and_return(questions)
-        get :generate, params: { category_id: category }
+        allow(basic_context[:problem_generator]).to receive(:generate_questions)
+          .and_return(basic_context[:questions])
+        get :generate, params: { category_id: basic_context[:category] }
       end
 
       it 'filters out Q1 and picks Q2' do
@@ -117,8 +122,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
     context 'when only one question exists and a last question is in the session' do
       before do
         session[:last_question] = 'Q1'
-        allow(problem_generator).to receive(:generate_questions).and_return([questions.first])
-        get :generate, params: { category_id: category }
+        allow(basic_context[:problem_generator]).to receive(:generate_questions)
+          .and_return([basic_context[:questions].first])
+        get :generate, params: { category_id: basic_context[:category] }
       end
 
       it 'does NOT filter out Q1 since only one question is available' do
@@ -136,38 +142,113 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
   end
 
-  describe 'GET #generate for Experimental Statistics' do
-    let(:category) { 'Experimental Statistics' }
-    let(:statistics_generator) { instance_double(StatisticsProblemGenerator) }
-    let(:prob_question) do
-      {
-        type: 'probability',
-        question: 'Probability question example',
-        answer: 50.0,
-        input_fields: nil
-      }
+  describe 'GET #generate template rendering' do
+    it 'renders the statistics_problem template for probability questions' do
+      # Setup in before block to reduce example length
+      question = { type: 'probability', question: 'Test', answer: 42 }
+      allow(controller).to receive(:question_for_category).and_return(question)
+
+      # Shortened to two lines
+      get :generate, params: { category_id: 'Experimental Statistics' }
+      expect(response).to render_template(:statistics_problem)
     end
-    let(:data_question) do
+
+    describe 'confidence interval template rendering' do
+      before do
+        allow(controller).to receive(:question_for_category).and_return({
+                                                                          type: 'confidence_interval',
+                                                                          question: 'Test CI question',
+                                                                          answers: { lower_bound: 10, upper_bound: 20 },
+                                                                          input_fields: [
+                                                                            { label: 'Lower Bound',
+                                                                              key: 'lower_bound' },
+                                                                            { label: 'Upper Bound', key: 'upper_bound' }
+                                                                          ]
+                                                                        })
+      end
+
+      it 'renders the confidence_interval_problem template for confidence interval questions' do
+        get :generate, params: { category_id: 'Confidence Intervals' }
+        expect(response).to render_template('practice_problems/confidence_interval_problem')
+      end
+    end
+
+    describe 'engineering ethics template rendering' do
+      before do
+        allow(controller).to receive(:question_for_category).and_return({
+                                                                          type: 'engineering_ethics',
+                                                                          question: 'Test ethics question',
+                                                                          answer: true
+                                                                        })
+      end
+
+      it 'renders the engineering_ethics_problem template for engineering ethics questions' do
+        get :generate, params: { category_id: 'Engineering Ethics' }
+        expect(response).to render_template('engineering_ethics_problem')
+      end
+    end
+
+    describe 'wrong answer template rendering' do
+      let(:probability_question) { { type: 'probability', question: 'Test?', answer: 42 } }
+      let(:confidence_interval_question) do
+        { type: 'confidence_interval', answers: { lower_bound: 10, upper_bound: 20 } }
+      end
+      let(:data_statistics_question) do
+        { type: 'data_statistics', answers: { mean: 5, median: 6 } }
+      end
+
+      it 'renders the statistics_problem template for wrong probability answers' do
+        allow(controller).to receive(:parse_question_from_session).and_return(probability_question)
+        post :check_answer, params: { category_id: 'Experimental Statistics', answer: 'wrong' }
+        expect(response).to render_template('practice_problems/statistics_problem')
+      end
+
+      it 'renders the statistics_problem template for wrong data statistics answers' do
+        allow(controller).to receive(:parse_question_from_session).and_return(data_statistics_question)
+        post :check_answer, params: { category_id: 'Experimental Statistics', mean: 'wrong', median: 'wrong' }
+        expect(response).to render_template('practice_problems/statistics_problem')
+      end
+
+      it 'renders the confidence_interval_problem template for wrong confidence interval answers' do
+        allow(controller).to receive(:parse_question_from_session).and_return(confidence_interval_question)
+        post :check_answer, params: { category_id: 'Confidence Intervals', lower_bound: 'wrong', upper_bound: 'wrong' }
+        expect(response).to render_template('practice_problems/confidence_interval_problem')
+      end
+    end
+  end
+
+  describe 'GET #generate for Experimental Statistics' do
+    let(:stats_context) do
       {
-        type: 'data_statistics',
-        question: 'Data statistics question',
-        data_table: [[1.0, 2.0], [3.0, 4.0]],
-        answers: { mean: 2.5, median: 2.5, mode: 1.0, range: 3.0, std_dev: 1.29, variance: 1.67 },
-        input_fields: [
-          { label: 'Mean', key: 'mean' },
-          { label: 'Median', key: 'median' }
-        ]
+        category: 'Experimental Statistics',
+        questions: [
+          { type: 'probability', question: 'Example', answer: 50.0, input_fields: nil },
+          {
+            type: 'data_statistics',
+            question: 'Data question',
+            data_table: [[1.0, 2.0], [3.0, 4.0]],
+            answers: { mean: 2.5, median: 2.5, mode: 1.0, range: 3.0, std_dev: 1.29, variance: 1.67 },
+            input_fields: [
+              { label: 'Mean', key: 'mean' },
+              { label: 'Median', key: 'median' }
+            ]
+          }
+        ],
+        statistics_generator: instance_double(StatisticsProblemGenerator)
       }
     end
 
     before do
-      allow(StatisticsProblemGenerator).to receive(:new).with(category).and_return(statistics_generator)
-      allow(statistics_generator).to receive(:generate_questions).and_return([prob_question, data_question])
+      allow(StatisticsProblemGenerator).to receive(:new)
+        .with(stats_context[:category])
+        .and_return(stats_context[:statistics_generator])
+      allow(stats_context[:statistics_generator]).to receive(:generate_questions)
+        .and_return(stats_context[:questions])
     end
 
     context 'when there is no previous problem type in session' do
       it 'renders the statistics_problem template' do
-        get :generate, params: { category_id: 'Experimental Statistics' }
+        get :generate, params: { category_id: stats_context[:category] }
         expect(response).to render_template(:statistics_problem)
       end
     end
@@ -175,7 +256,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
     context 'when the last problem was probability type' do
       before do
         session[:last_problem_type] = 'probability'
-        get :generate, params: { category_id: category }
+        get :generate, params: { category_id: stats_context[:category] }
       end
 
       it 'selects a data statistics problem' do
@@ -254,30 +335,29 @@ RSpec.describe PracticeProblemsController, type: :controller do
   end
 
   describe 'GET #generate for Confidence Intervals' do
-    let(:category) { 'Confidence Intervals' }
-    let(:confidence_interval_generator) { instance_double(ConfidenceIntervalProblemGenerator) }
-    let(:ci_question) do
+    let(:ci_context) do
       {
-        type: 'confidence_interval',
-        question: 'Construct a confidence interval...',
-        answers: {
-          lower_bound: 95.43,
-          upper_bound: 104.57
-        },
-        input_fields: [
-          { label: 'Lower Bound', key: 'lower_bound' },
-          { label: 'Upper Bound', key: 'upper_bound' }
-        ]
+        category: 'Confidence Intervals',
+        generator: instance_double(ConfidenceIntervalProblemGenerator),
+        question: {
+          type: 'confidence_interval',
+          question: 'Construct a confidence interval...',
+          answers: { lower_bound: 95.43, upper_bound: 104.57 },
+          input_fields: [
+            { label: 'Lower Bound', key: 'lower_bound' },
+            { label: 'Upper Bound', key: 'upper_bound' }
+          ]
+        }
       }
     end
 
     before do
-      # The constructor takes a category parameter
-      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category)
-                                                                .and_return(confidence_interval_generator)
-      allow(confidence_interval_generator).to receive(:generate_questions)
-        .and_return([ci_question])
-      get :generate, params: { category_id: category }
+      allow(ConfidenceIntervalProblemGenerator).to receive(:new)
+        .with(ci_context[:category])
+        .and_return(ci_context[:generator])
+      allow(ci_context[:generator]).to receive(:generate_questions)
+        .and_return([ci_context[:question]])
+      get :generate, params: { category_id: ci_context[:category] }
     end
 
     it 'selects a confidence interval problem' do
@@ -390,21 +470,25 @@ RSpec.describe PracticeProblemsController, type: :controller do
   end
 
   describe 'handle_confidence_interval_problem' do
-    let(:category) { 'Confidence Intervals' }
-    let(:confidence_interval_generator) { instance_double(ConfidenceIntervalProblemGenerator) }
-    let(:ci_question) { { type: 'confidence_interval', question: 'Test CI question' } }
+    let(:ci_handle_context) do
+      {
+        category: 'Confidence Intervals',
+        generator: instance_double(ConfidenceIntervalProblemGenerator),
+        question: { type: 'confidence_interval', question: 'Test CI question' }
+      }
+    end
 
     before do
-      # The constructor takes a category parameter
-      allow(ConfidenceIntervalProblemGenerator).to receive(:new).with(category)
-                                                                .and_return(confidence_interval_generator)
-      allow(confidence_interval_generator).to receive(:generate_questions)
-        .and_return([ci_question])
-      get :generate, params: { category_id: category }
+      allow(ConfidenceIntervalProblemGenerator).to receive(:new)
+        .with(ci_handle_context[:category])
+        .and_return(ci_handle_context[:generator])
+      allow(ci_handle_context[:generator]).to receive(:generate_questions)
+        .and_return([ci_handle_context[:question]])
+      get :generate, params: { category_id: ci_handle_context[:category] }
     end
 
     it 'assigns the generated question' do
-      expect(assigns(:question)).to eq(ci_question)
+      expect(assigns(:question)).to eq(ci_handle_context[:question])
     end
   end
 
@@ -520,81 +604,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
       controller = described_class.new
       question = { type: 'unknown_type' }
       expect(controller.send(:determine_template_for_question, question)).to eq('generate')
-    end
-  end
-
-  describe 'GET #generate' do
-    it 'renders the statistics_problem template for probability questions' do
-      # Set up a probability question
-      allow(controller).to receive(:question_for_category).and_return({
-                                                                        type: 'probability',
-                                                                        question: 'Test probability question',
-                                                                        answer: 42
-                                                                      })
-
-      get :generate, params: { category_id: 'Experimental Statistics' }
-      expect(response).to render_template(:statistics_problem)
-    end
-
-    it 'renders the confidence_interval_problem template for confidence interval questions' do
-      # Set up a confidence interval question
-      allow(controller).to receive(:question_for_category).and_return({
-                                                                        type: 'confidence_interval',
-                                                                        question: 'Test confidence interval question',
-                                                                        answers: { lower_bound: 10, upper_bound: 20 },
-                                                                        input_fields: [
-                                                                          { label: 'Lower Bound', key: 'lower_bound' },
-                                                                          { label: 'Upper Bound', key: 'upper_bound' }
-                                                                        ]
-                                                                      })
-
-      get :generate, params: { category_id: 'Confidence Intervals' }
-      expect(response).to render_template('practice_problems/confidence_interval_problem')
-    end
-
-    it 'renders the engineering_ethics_problem template for engineering ethics questions' do
-      # Set up an engineering ethics question
-      allow(controller).to receive(:question_for_category).and_return({
-                                                                        type: 'engineering_ethics',
-                                                                        question: 'Test ethics question',
-                                                                        answer: true
-                                                                      })
-
-      get :generate, params: { category_id: 'Engineering Ethics' }
-      expect(response).to render_template('engineering_ethics_problem')
-    end
-  end
-
-  describe 'POST #check_answer' do
-    let(:category) { 'Experimental Statistics' }
-
-    it 'renders the generate template when answer is wrong' do
-      allow(controller).to receive(:parse_question_from_session).and_return(probability_question)
-      post :check_answer, params: {
-        category_id: 'Experimental Statistics',
-        answer: 'wrong'
-      }
-      expect(response).to render_template('practice_problems/generate')
-    end
-
-    it 'renders the generate template when an answer is wrong' do
-      allow(controller).to receive(:parse_question_from_session).and_return(data_statistics_question)
-      post :check_answer, params: {
-        category_id: 'Experimental Statistics',
-        mean: 'wrong',
-        median: 'wrong'
-      }
-      expect(response).to render_template('practice_problems/generate')
-    end
-
-    it 'renders the generate template for confidence interval wrong answers' do
-      allow(controller).to receive(:parse_question_from_session).and_return(confidence_interval_question)
-      post :check_answer, params: {
-        category_id: 'Confidence Intervals',
-        lower_bound: 'wrong',
-        upper_bound: 'wrong'
-      }
-      expect(response).to render_template('practice_problems/generate')
     end
   end
 end
