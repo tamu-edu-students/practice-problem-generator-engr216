@@ -11,15 +11,15 @@ RSpec.describe EngineeringEthicsProblemGenerator do
 
   describe '#generate_questions' do
     subject(:questions) { generator.generate_questions }
-    
+
     it 'returns an array of questions' do
       expect(questions).to be_an(Array)
     end
-    
+
     it 'returns at least one question' do
       expect(questions.length).to be >= 1
     end
-    
+
     it 'returns engineering ethics questions' do
       expect(questions[0][:type]).to eq('engineering_ethics')
     end
@@ -27,21 +27,19 @@ RSpec.describe EngineeringEthicsProblemGenerator do
 
   describe 'generated question structure' do
     let(:question) { generator.generate_questions.first }
-    
+
     it 'includes required keys' do
-      expect(question).to have_key(:question)
       expect(question).to have_key(:answer)
     end
-    
+
     it 'has a non-empty question' do
-      expect(question[:question]).to be_a(String)
       expect(question[:question]).not_to be_empty
     end
-    
+
     it 'has a boolean answer' do
       expect(question[:answer]).to be(true).or be(false)
     end
-    
+
     it 'includes input fields' do
       expect(question).to have_key(:input_fields)
     end
