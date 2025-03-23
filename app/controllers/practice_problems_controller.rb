@@ -25,6 +25,8 @@ class PracticeProblemsController < ApplicationController
       handle_confidence_interval_problem
     when 'engineering ethics'
       handle_engineering_ethics_problem
+    when 'finite differences'
+      handle_finite_differences_problem
     else
       handle_default_category
     end
@@ -75,6 +77,11 @@ class PracticeProblemsController < ApplicationController
     questions.first
   end
 
+  def handle_finite_differences_problem
+    problem_generator = FiniteDifferencesProblemGenerator.new(@category)
+    problem_generator.generate_questions.first
+  end
+
   def handle_default_category
     all_questions = ProblemGenerator.new(@category).generate_questions
     pick_question(all_questions)
@@ -106,12 +113,20 @@ class PracticeProblemsController < ApplicationController
   end
 
   def process_answer_for_question_type
-    return handle_probability if @question[:type] == 'probability'
-    return handle_data_statistics if @question[:type] == 'data_statistics'
-    return handle_confidence_interval if @question[:type] == 'confidence_interval'
-    return handle_engineering_ethics if @question[:type] == 'engineering_ethics'
-
-    handle_unknown_question_type
+    case @question[:type]
+    when 'probability'
+      check_probability_answer
+    when 'data_statistics'
+      check_data_statistics_answer
+    when 'confidence_interval'
+      check_confidence_interval_answer
+    when 'engineering_ethics'
+      check_engineering_ethics_answer
+    when 'finite_differences'
+      check_finite_differences_answer
+    else
+      check_generic_answer
+    end
   end
 
   def handle_probability
@@ -402,6 +417,37 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
+  def check_finite_differences_answer
+    if @question[:input_fields]&.size == 1
+      # Single answer problem
+      expected = @question[:answer]
+      user_answer = params[:answer].to_f
+      
+      if (user_answer - expected).abs <= 0.01
+        redirect_to_success
+      else
+        @error_message = "That's incorrect. The answer is #{expected}."
+        nil
+      end
+    else
+      # Multiple answers problem
+      all_correct = true
+      
+      @question[:input_fields].each do |field|
+        key = field[:key].to_sym
+        expected = @question[:parameters][key]
+        
+        if params[key].blank? || (params[key].to_f - expected).abs > 0.01
+          all_correct = false
+          @error_message = "That's incorrect. Check your #{field[:label].downcase} calculation."
+          break
+        end
+      end
+      
+      redirect_to_success if all_correct
+    end
+  end
+
   def determine_template_for_question(question)
     case question[:type]
     when 'probability', 'data_statistics'
@@ -410,6 +456,8 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval_problem'
     when 'engineering_ethics'
       'engineering_ethics_problem'
+    when 'finite_differences'
+      'finite_differences_problem'
     else
       'generate' # fallback to the original template
     end

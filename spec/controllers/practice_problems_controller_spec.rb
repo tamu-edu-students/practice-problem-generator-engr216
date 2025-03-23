@@ -605,5 +605,49 @@ RSpec.describe PracticeProblemsController, type: :controller do
       question = { type: 'unknown_type' }
       expect(controller.send(:determine_template_for_question, question)).to eq('generate')
     end
+
+    it 'returns finite_differences_problem for finite_differences questions' do
+      controller = described_class.new
+      question = { type: 'finite_differences' }
+      expect(controller.send(:determine_template_for_question, question)).to eq('finite_differences_problem')
+    end
+  end
+
+  describe 'finite differences template rendering' do
+    before do
+      allow(controller).to receive(:question_for_category).and_return({
+        type: 'finite_differences',
+        question: 'Test finite differences question',
+        answer: 42
+      })
+    end
+
+    it 'renders the finite_differences_problem template for finite differences questions' do
+      get :generate, params: { category_id: 'Finite Differences' }
+      expect(response).to render_template('finite_differences_problem')
+    end
+  end
+
+  describe 'finite differences answer checking' do
+    let(:finite_diff_question) do
+      { 
+        type: 'finite_differences', 
+        question: 'Test question', 
+        answer: 42,
+        input_fields: [{ label: 'Answer', key: 'answer' }]
+      }
+    end
+
+    it 'redirects to success for correct finite differences answers' do
+      allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
+      post :check_answer, params: { category_id: 'Finite Differences', answer: '42' }
+      expect(response).to redirect_to(success_practice_problems_path)
+    end
+
+    it 'renders the finite_differences_problem template for wrong finite differences answers' do
+      allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
+      post :check_answer, params: { category_id: 'Finite Differences', answer: 'wrong' }
+      expect(response).to render_template('practice_problems/finite_differences_problem')
+    end
   end
 end

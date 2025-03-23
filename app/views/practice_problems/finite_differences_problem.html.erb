@@ -1,0 +1,111 @@
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
+  <%= render 'shared/navbar' %>
+  
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", practice_problems_path, 
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  
+  <div class="h-24"></div>
+  
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black underline">Finite Differences</h1>
+  </div>
+  
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
+      <% if @question && @question[:question] %>
+        <% 
+          question_text = @question[:question]
+          
+          # Find paragraphs by splitting on double newlines
+          paragraphs = question_text.split("\n\n").map(&:strip)
+          
+          # Look for function definitions (usually starts with f(x) or has = sign)
+          main_function = nil
+          instruction_paragraph = nil
+          
+          paragraphs.each_with_index do |para, idx|
+            if para.include?("f(x)") || (para.include?("=") && !para.include?("Round"))
+              main_function = para
+              paragraphs.delete_at(idx)
+              break
+            end
+          end
+          
+          # Find instruction paragraph (usually has "Round your answer")
+          paragraphs.each_with_index do |para, idx|
+            if para.include?("Round your answer")
+              instruction_paragraph = para
+              paragraphs.delete_at(idx)
+              break
+            end
+          end
+          
+          # The remaining paragraphs are the problem statement
+          problem_statement = paragraphs.join("\n\n")
+        %>
+        
+        <div class="text-2xl font-bold mb-6"><%= problem_statement %></div>
+        
+        <% if main_function %>
+          <div class="my-8 text-3xl font-bold"><%= main_function %></div>
+        <% end %>
+        
+        <% if instruction_paragraph %>
+          <div class="text-lg text-gray-300"><%= instruction_paragraph %></div>
+        <% end %>
+      <% else %>
+        <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
+      <% end %>
+      
+      <% if @question[:data_table].present? %>
+        <div class="my-8 overflow-x-auto">
+          <table class="mx-auto border-collapse border-2 border-gray-500" style="table-layout: fixed;">
+            <% @question[:data_table].each do |row| %>
+              <tr>
+                <% row.each do |cell| %>
+                  <td class="border-2 border-gray-500 px-4 py-3 bg-gray-700 text-center" style="min-width: 100px; height: 50px;"><%= cell %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      <% end %>
+      
+      <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
+        <%= form.hidden_field :category_id, value: @category %>
+        
+        <div class="flex flex-wrap justify-center gap-4 mt-8">
+          <% if @question[:input_fields].present? %>
+            <% @question[:input_fields].each do |field| %>
+              <div class="flex flex-col items-center">
+                <label class="mb-2 text-xl"><%= field[:label] %></label>
+                <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="flex flex-col items-center">
+              <label class="mb-2 text-xl">Answer</label>
+              <%= form.text_field :answer, class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-64", placeholder: "Enter answer" %>
+            </div>
+          <% end %>
+        </div>
+        
+        <div class="mt-6">
+          <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+      
+      <%= render 'shared/feedback_messages' %>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_practice_problems_path(category_id: @category), class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 

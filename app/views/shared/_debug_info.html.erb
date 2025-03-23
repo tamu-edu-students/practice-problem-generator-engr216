@@ -13,4 +13,21 @@
       </div>
     <% end %>
   <% end %>
+</div>
+
+<div class="fixed bottom-0 left-0 p-4 bg-gray-800 text-white text-sm z-50 max-w-full overflow-x-auto">
+  <h4 class="font-bold">Debug Info</h4>
+  <% if @question %>
+    <div>Category: <%= @category %></div>
+    <div>Input Fields: <%= @question[:input_fields]&.map { |f| f[:key] }&.join(', ') %></div>
+    
+    <% if @question[:debug_info] %>
+      <div class="text-green-400"><%= @question[:debug_info] %></div>
+    <% else %>
+      <div>Answer: <%= @question[:answer].inspect %></div>
+      <% if @question[:parameters] && @question[:parameters].is_a?(Hash) %>
+        <div>Parameters: <%= @question[:parameters].inspect %></div>
+      <% end %>
+    <% end %>
+  <% end %>
 </div> 
