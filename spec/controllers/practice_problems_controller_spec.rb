@@ -616,10 +616,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
   describe 'finite differences template rendering' do
     before do
       allow(controller).to receive(:question_for_category).and_return({
-        type: 'finite_differences',
-        question: 'Test finite differences question',
-        answer: 42
-      })
+                                                                        type: 'finite_differences',
+                                                                        question: 'Test finite differences question',
+                                                                        answer: 42
+                                                                      })
     end
 
     it 'renders the finite_differences_problem template for finite differences questions' do
@@ -630,24 +630,226 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   describe 'finite differences answer checking' do
     let(:finite_diff_question) do
-      { 
-        type: 'finite_differences', 
-        question: 'Test question', 
+      {
+        type: 'finite_differences',
+        question: 'Test question',
         answer: 42,
-        input_fields: [{ label: 'Answer', key: 'answer' }]
+        input_fields: [{ label: 'Answer', key: 'answer' }],
+        parameters: { answer: 42 }
       }
     end
 
     it 'redirects to success for correct finite differences answers' do
       allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
       post :check_answer, params: { category_id: 'Finite Differences', answer: '42' }
-      expect(response).to redirect_to(success_practice_problems_path)
+      expect(response).to redirect_to(generate_practice_problems_path(category_id: 'Finite Differences', success: true))
     end
 
     it 'renders the finite_differences_problem template for wrong finite differences answers' do
       allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
       post :check_answer, params: { category_id: 'Finite Differences', answer: 'wrong' }
       expect(response).to render_template('practice_problems/finite_differences_problem')
+    end
+
+    # Test the multi-field case also
+    context 'with multiple input fields' do
+      before do
+        # Define the multi-field question
+        multi_field_question = {
+          type: 'finite_differences',
+          question: 'Test multi-field question',
+          answer: nil,
+          input_fields: [
+            { label: 'Forward Difference', key: 'forward_diff' },
+            { label: 'Backward Difference', key: 'backward_diff' },
+            { label: 'Centered Difference', key: 'centered_diff' }
+          ],
+          parameters: {
+            forward_diff: 5.0,
+            backward_diff: 4.5,
+            centered_diff: 4.75
+          }
+        }
+
+        allow(controller).to receive(:parse_question_from_session).and_return(multi_field_question)
+      end
+
+      # Combined params and expected paths to reduce memoized helpers
+      let(:test_data) do
+        {
+          params: {
+            category_id: 'Finite Differences',
+            forward_diff: '5.0',
+            backward_diff: '4.5',
+            centered_diff: '4.75'
+          },
+          success_path: generate_practice_problems_path(
+            category_id: 'Finite Differences',
+            success: true
+          )
+        }
+      end
+
+      it 'redirects on successful submission' do
+        post :check_answer, params: test_data[:params]
+        expect(response).to redirect_to(test_data[:success_path])
+      end
+    end
+  end
+
+  describe 'finite differences functionality' do
+    # Combine question definitions
+    let(:fd_questions) do
+      {
+        single: {
+          type: 'finite_differences',
+          question: 'Test finite differences question',
+          answer: 42,
+          parameters: { x0: 2, h: 0.1 }
+        },
+        multiple: {
+          type: 'finite_differences',
+          question: 'Test finite differences with multiple fields',
+          parameters: {
+            forward: 12.5,
+            backward: 11.8,
+            centered: 12.0
+          },
+          input_fields: [
+            { key: 'forward', label: 'Forward Difference' },
+            { key: 'backward', label: 'Backward Difference' },
+            { key: 'centered', label: 'Centered Difference' }
+          ]
+        }
+      }
+    end
+
+    describe 'template rendering' do
+      it 'renders the finite_differences_problem template for finite differences questions' do
+        allow(controller).to receive(:question_for_category).and_return(fd_questions[:single])
+        get :generate, params: { category_id: 'Finite Differences' }
+        expect(response).to render_template('finite_differences_problem')
+      end
+    end
+
+    describe 'generator setup' do
+      let(:setup_data) do
+        {
+          category: 'Finite Differences',
+          generator: instance_double(FiniteDifferencesProblemGenerator),
+          question: fd_questions[:single]
+        }
+      end
+
+      before do
+        allow(FiniteDifferencesProblemGenerator).to receive(:new)
+          .with(setup_data[:category])
+          .and_return(setup_data[:generator])
+        allow(setup_data[:generator]).to receive(:generate_questions)
+          .and_return([setup_data[:question]])
+      end
+
+      it 'initializes the generator with the correct category' do
+        get :generate, params: { category_id: setup_data[:category] }
+        expect(FiniteDifferencesProblemGenerator).to have_received(:new).with(setup_data[:category])
+      end
+
+      it 'assigns the generated question' do
+        get :generate, params: { category_id: setup_data[:category] }
+        expect(assigns(:question)).to eq(setup_data[:question])
+      end
+    end
+
+    describe 'single answer field correct submission' do
+      before do
+        session[:current_question] = fd_questions[:single].to_json
+        post :check_answer, params: {
+          category_id: 'Finite Differences',
+          answer: '42'
+        }
+      end
+
+      it 'redirects to success path' do
+        expect(response).to redirect_to(
+          generate_practice_problems_path(category_id: 'Finite Differences', success: true)
+        )
+      end
+    end
+
+    describe 'single answer field incorrect submission' do
+      before do
+        session[:current_question] = fd_questions[:single].to_json
+        post :check_answer, params: {
+          category_id: 'Finite Differences',
+          answer: '40'
+        }
+      end
+
+      it 'renders the template' do
+        expect(response).to render_template('finite_differences_problem')
+      end
+
+      it 'sets error message' do
+        expect(assigns(:error_message)).not_to be_nil
+      end
+    end
+
+    describe 'multiple input fields with all correct answers' do
+      before do
+        session[:current_question] = fd_questions[:multiple].to_json
+        post :check_answer, params: {
+          category_id: 'Finite Differences',
+          forward: '12.5',
+          backward: '11.8',
+          centered: '12.0'
+        }
+      end
+
+      it 'redirects to success path' do
+        expect(response).to redirect_to(
+          generate_practice_problems_path(category_id: 'Finite Differences', success: true)
+        )
+      end
+    end
+
+    describe 'multiple input fields with one incorrect answer' do
+      before do
+        session[:current_question] = fd_questions[:multiple].to_json
+        post :check_answer, params: {
+          category_id: 'Finite Differences',
+          forward: '12.5',
+          backward: '10.0', # Incorrect value
+          centered: '12.0'
+        }
+      end
+
+      it 'renders the finite differences template' do
+        expect(response).to render_template('finite_differences_problem')
+      end
+
+      it 'sets error message' do
+        expect(assigns(:error_message)).not_to be_nil
+      end
+    end
+
+    describe 'multiple input fields with missing answer' do
+      before do
+        session[:current_question] = fd_questions[:multiple].to_json
+        post :check_answer, params: {
+          category_id: 'Finite Differences',
+          forward: '12.5',
+          backward: '11.8'
+          # centered is missing
+        }
+      end
+
+      it 'renders the finite differences template' do
+        expect(response).to render_template('finite_differences_problem')
+      end
+
+      it 'sets error message' do
+        expect(assigns(:error_message)).not_to be_nil
+      end
     end
   end
 end

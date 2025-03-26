@@ -17,85 +17,149 @@
     <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
       <% if @question && @question[:question] %>
         <% 
-          question_text = @question[:question]
+          # Split the question text for better formatting
+          full_text = @question[:question]
           
-          # Find paragraphs by splitting on double newlines
-          paragraphs = question_text.split("\n\n").map(&:strip)
+          # Extract instruction/rounding text (usually starts with "Round your answer")
+          instruction_matches = full_text.match(/Round (?:your answer|each answer).+?\..*?Do not use scientific notation\./m)
+          instructions = instruction_matches ? instruction_matches[0] : nil
           
-          # Look for function definitions (usually starts with f(x) or has = sign)
-          main_function = nil
-          instruction_paragraph = nil
-          
-          paragraphs.each_with_index do |para, idx|
-            if para.include?("f(x)") || (para.include?("=") && !para.include?("Round"))
-              main_function = para
-              paragraphs.delete_at(idx)
-              break
-            end
+          # Remove instructions from main text
+          if instructions
+            main_text = full_text.gsub(instructions, '').strip
+          else
+            main_text = full_text
           end
           
-          # Find instruction paragraph (usually has "Round your answer")
-          paragraphs.each_with_index do |para, idx|
-            if para.include?("Round your answer")
-              instruction_paragraph = para
-              paragraphs.delete_at(idx)
-              break
+          # Check if this is a function table problem
+          is_function_table = main_text.include?('f(x-h) =') && main_text.include?('f(x) =') && main_text.include?('f(x+h) =')
+          
+          if is_function_table
+            # Extract the parts of a function table problem
+            intro_text = main_text.split('Given the following function values:').first.strip
+            function_values_text = main_text.scan(/f\(x-h\) = \d+\s+f\(x\) = \d+\s+f\(x\+h\) = \d+/m).first || ""
+            step_size_text = main_text.scan(/Where the step size is h = [\d\.]+/).first || ""
+            
+            remaining_text = main_text.gsub(intro_text, '')
+                                     .gsub('Given the following function values:', '')
+                                     .gsub(function_values_text, '')
+                                     .gsub(step_size_text, '')
+                                     .strip
+            
+            # Extract individual function values
+            f_x_minus_h = function_values_text.scan(/f\(x-h\) = (\d+)/).first&.first || ""
+            f_x = function_values_text.scan(/f\(x\) = (\d+)/).first&.first || ""
+            f_x_plus_h = function_values_text.scan(/f\(x\+h\) = (\d+)/).first&.first || ""
+            
+            h_value = step_size_text.scan(/h = ([\d\.]+)/).first&.first || ""
+            
+            problem_parts = {
+              intro: 'Given the following function values:',
+              f_values: [
+                "f(x-h) = #{f_x_minus_h}",
+                "f(x) = #{f_x}",
+                "f(x+h) = #{f_x_plus_h}"
+              ],
+              step_size: "Where the step size is h = #{h_value}",
+              remaining: remaining_text
+            }
+          else
+            # Extract function definition and equation if present
+            function_matches = main_text.match(/f\(x\)\s*=\s*[^\n]+/)
+            function_def = function_matches ? function_matches[0] : nil
+            
+            # Extract the problem statement (everything before function definition)
+            if function_def
+              parts = main_text.split(function_def)
+              problem_statement = parts[0].strip
+              rest_of_text = parts[1..-1].join(function_def).strip
+            else
+              problem_statement = main_text
+              rest_of_text = ""
             end
           end
-          
-          # The remaining paragraphs are the problem statement
-          problem_statement = paragraphs.join("\n\n")
         %>
         
-        <div class="text-2xl font-bold mb-6"><%= problem_statement %></div>
-        
-        <% if main_function %>
-          <div class="my-8 text-3xl font-bold"><%= main_function %></div>
+        <% if is_function_table %>
+          <!-- Function table problem -->
+          <div class="text-2xl font-bold mb-6"><%= problem_parts[:intro] %></div>
+          
+          <!-- Function values centered -->
+          <div class="text-3xl font-bold mb-6 text-center">
+            <% problem_parts[:f_values].each do |f_value| %>
+              <div class="my-2"><%= f_value %></div>
+            <% end %>
+          </div>
+          
+          <!-- Step size -->
+          <div class="text-2xl font-bold mb-6 text-center"><%= problem_parts[:step_size] %></div>
+          
+          <!-- Remaining problem text -->
+          <% if problem_parts[:remaining].present? %>
+            <div class="text-2xl font-bold mb-8"><%= problem_parts[:remaining] %></div>
+          <% end %>
+        <% else %>
+          <!-- Standard problem format -->
+          <!-- Main problem statement -->
+          <div class="text-2xl font-bold mb-6"><%= problem_statement %></div>
+          
+          <!-- Function definition (if present) -->
+          <% if function_def %>
+            <div class="text-3xl font-bold mb-6 text-center"><%= function_def %></div>
+          <% end %>
+          
+          <!-- Rest of text (other than function definition) -->
+          <% if rest_of_text.present? %>
+            <div class="text-2xl font-bold mb-8"><%= rest_of_text %></div>
+          <% end %>
         <% end %>
         
-        <% if instruction_paragraph %>
-          <div class="text-lg text-gray-300"><%= instruction_paragraph %></div>
+        <!-- Data table (if present) -->
+        <% if @question[:data_table] %>
+          <div class="mb-8 flex justify-center">
+            <table class="border-collapse">
+              <% @question[:data_table].each do |row| %>
+                <tr>
+                  <% row.each do |cell| %>
+                    <td class="border-2 border-gray-500 px-4 py-3 bg-gray-700 text-center" style="min-width: 100px; height: 50px;"><%= cell %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+        
+        <!-- Instruction/rounding notes in smaller gray font -->
+        <% if instructions %>
+          <div class="text-gray-400 text-sm mb-8"><%= instructions %></div>
+        <% end %>
+        
+        <!-- Answer form -->
+        <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
+          <%= form.hidden_field :category_id, value: @category %>
+          
+          <div class="flex flex-wrap justify-center gap-4 mt-8">
+            <% if @question[:input_fields].present? %>
+              <% @question[:input_fields].each do |field| %>
+                <div class="flex flex-col items-center">
+                  <label class="mb-2 text-xl"><%= field[:label] %></label>
+                  <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="flex flex-col items-center">
+                <label class="mb-2 text-xl">Answer</label>
+                <%= form.text_field :answer, class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-64", placeholder: "Enter answer" %>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="mt-6">
+            <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
+          </div>
         <% end %>
       <% else %>
         <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
-      <% end %>
-      
-      <% if @question[:data_table].present? %>
-        <div class="my-8 overflow-x-auto">
-          <table class="mx-auto border-collapse border-2 border-gray-500" style="table-layout: fixed;">
-            <% @question[:data_table].each do |row| %>
-              <tr>
-                <% row.each do |cell| %>
-                  <td class="border-2 border-gray-500 px-4 py-3 bg-gray-700 text-center" style="min-width: 100px; height: 50px;"><%= cell %></td>
-                <% end %>
-              </tr>
-            <% end %>
-          </table>
-        </div>
-      <% end %>
-      
-      <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
-        <%= form.hidden_field :category_id, value: @category %>
-        
-        <div class="flex flex-wrap justify-center gap-4 mt-8">
-          <% if @question[:input_fields].present? %>
-            <% @question[:input_fields].each do |field| %>
-              <div class="flex flex-col items-center">
-                <label class="mb-2 text-xl"><%= field[:label] %></label>
-                <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
-              </div>
-            <% end %>
-          <% else %>
-            <div class="flex flex-col items-center">
-              <label class="mb-2 text-xl">Answer</label>
-              <%= form.text_field :answer, class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-64", placeholder: "Enter answer" %>
-            </div>
-          <% end %>
-        </div>
-        
-        <div class="mt-6">
-          <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
-        </div>
       <% end %>
       
       <%= render 'shared/feedback_messages' %>

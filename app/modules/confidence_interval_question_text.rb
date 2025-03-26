@@ -1,40 +1,41 @@
 # Create a new module to hold all question text formatting methods
 module ConfidenceIntervalQuestionText
   def battery_question_text(sample_size, sample_mean, pop_std, confidence_level)
-    "A company tests #{sample_size} randomly selected batteries " \
-      "and finds that the mean lifetime is #{sample_mean.round(1)} hours. " \
-      "Assume the population standard deviation is #{pop_std.round(1)} hours, " \
+    "A company tests a sample of #{sample_size} batteries " \
+      "and finds that the mean lifetime is #{format_number(sample_mean)} hours. " \
+      "Assume a standard deviation of #{format_number(pop_std)} hours, " \
       'and the lifetimes are approximately normally distributed. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean " \
       'battery lifetime. Provide the lower bound and the upper bound.' \
       "#{rounding_instructions}"
   end
 
   def cereal_question_text(sample_size, sample_mean, pop_std, confidence_level)
-    "A quality control team measures the amount of cereal in #{sample_size} boxes. " \
-      "The sample has a mean fill of #{sample_mean.round(1)} grams. " \
-      "Assume the population standard deviation is #{pop_std.round(1)} grams, " \
+    "A quality control team measures a sample of #{sample_size} boxes of cereal. " \
+      "The sample has a mean fill of #{format_number(sample_mean)} grams. " \
+      "Assume a standard deviation of #{format_number(pop_std)} grams, " \
       'and the fill amounts follow a normal distribution. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean " \
       'fill of cereal boxes. Provide the lower bound and the upper bound.' \
       "#{rounding_instructions}"
   end
 
   def waiting_times_question_text(sample_size, sample_mean, pop_std, confidence_level)
-    "A hospital records wait times for #{sample_size} emergency room patients, " \
-      "with a mean wait time of #{sample_mean.round(1)} minutes. " \
-      "Assuming a population standard deviation of #{pop_std.round(1)} minutes " \
+    "A hospital records wait times for a sample of #{sample_size} customers, " \
+      "with an average wait time of #{format_number(sample_mean)} minutes. " \
+      "Assume a standard deviation of #{format_number(pop_std)} minutes " \
       'and that wait times are normally distributed, ' \
-      "construct a #{confidence_level}% confidence interval for the true mean wait time. " \
+      "construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean wait time. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
   def car_mileage_question_text(sample_size, sample_mean, pop_std, confidence_level)
     "A random sample of #{sample_size} cars is tested for fuel efficiency. " \
-      "The sample shows an average of #{sample_mean.round(1)} miles per gallon. " \
-      "Assume the population standard deviation is #{pop_std.round(1)} miles per gallon " \
+      "The sample shows an average of #{format_number(sample_mean)} miles per gallon. " \
+      "Assume a standard deviation of #{format_number(pop_std)} mpg, " \
       'and that the data are approximately normally distributed. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean fuel efficiency. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the " \
+      'true mean fuel efficiency. ' \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -43,7 +44,7 @@ module ConfidenceIntervalQuestionText
       "finding an average weight of #{sample_mean.round(1)} grams. " \
       "The population standard deviation is #{pop_std.round(1)} grams, " \
       'and the weight is assumed to follow a normal distribution. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean weight. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean weight. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -52,7 +53,7 @@ module ConfidenceIntervalQuestionText
       "the mean delivery time to be #{sample_mean.round(1)} hours. " \
       "Assume the population standard deviation is #{pop_std.round(1)}, " \
       'and delivery times follow a normal distribution. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean delivery time. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean delivery time. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -61,7 +62,7 @@ module ConfidenceIntervalQuestionText
       "obtaining a sample mean diameter of #{sample_mean.round(1)} mm. " \
       "The population standard deviation is #{pop_std.round(1)} mm, " \
       'and the diameters are approximately normally distributed. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean diameter. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean diameter. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -70,7 +71,7 @@ module ConfidenceIntervalQuestionText
       "yielding a mean concentration of #{sample_mean.round(1)} ppm. " \
       "Assume the population standard deviation is #{pop_std.round(1)} ppm, " \
       'and concentrations follow a normal distribution. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean concentration. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean concentration. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -79,7 +80,7 @@ module ConfidenceIntervalQuestionText
       "finding a mean call duration of #{sample_mean.round(1)} seconds. " \
       "The population standard deviation is #{pop_std.round(1)} seconds, " \
       'and durations are assumed to be normally distributed. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean call duration. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the true mean call duration. " \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
   end
 
@@ -88,7 +89,23 @@ module ConfidenceIntervalQuestionText
       "with a sample mean usage of #{sample_mean.round(1)} gallons. " \
       "Assume the population standard deviation is #{pop_std.round(1)} gallons, " \
       'and water usage is normally distributed. ' \
-      "Construct a #{confidence_level}% confidence interval for the true mean daily water usage. " \
+      "Construct a #{format_confidence_level(confidence_level)} confidence interval for the " \
+      'true mean daily water usage. ' \
       "Provide the lower bound and the upper bound.#{rounding_instructions}"
+  end
+
+  def format_confidence_level(confidence_level)
+    "#{confidence_level}%"
+  end
+
+  def rounding_instructions
+    "\n\nRound your answer to two (2) decimal places. Do not include units. Do not use scientific notation."
+  end
+
+  # Helper method to format numbers.
+  # If the number is whole, it returns an integer string; otherwise, it returns one decimal place.
+  def format_number(num)
+    f = num.to_f
+    (f % 1).zero? ? f.to_i.to_s : f.round(1).to_s
   end
 end

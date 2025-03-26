@@ -5,10 +5,10 @@ Feature: Engineering Ethics Problem Generator
 
   Scenario: Generate new Problem
     Given I am on the "Engineering Ethics" page
-    When I click the "new problem" button
+    When I click the engineering ethics new problem button
     Then a new "Engineering Ethics" problem should be dynamically generated
 
   Scenario: Answer Submission
     Given I am on the "Engineering Ethics" page
-    When I submit an answer
+    When I submit an engineering ethics answer
     Then I should receive feedback on my answer
