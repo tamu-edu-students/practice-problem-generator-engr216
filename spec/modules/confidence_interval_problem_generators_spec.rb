@@ -80,7 +80,6 @@ RSpec.describe ConfidenceIntervalProblemGenerators do
       end
 
       # Deterministic test values
-      # rubocop:disable Metrics/MethodLength
       def value_for_range(range)
         # Use predefined values for each range to ensure deterministic testing
         range_map = {
@@ -115,7 +114,6 @@ RSpec.describe ConfidenceIntervalProblemGenerators do
 
         range_map[range] || range.to_a.first
       end
-      # rubocop:enable Metrics/MethodLength
 
       # Methods we need to override for deterministic testing
       def rand(range)
