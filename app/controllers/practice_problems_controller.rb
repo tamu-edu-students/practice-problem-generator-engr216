@@ -25,6 +25,8 @@ class PracticeProblemsController < ApplicationController
       handle_confidence_interval_problem
     when 'engineering ethics'
       handle_engineering_ethics_problem
+    when 'universal accounting equation'
+      handle_universal_account_equations_problem
     else
       handle_default_category
     end
@@ -75,6 +77,12 @@ class PracticeProblemsController < ApplicationController
     questions.first
   end
 
+  def handle_universal_account_equations_problem
+    generator = UniversalAccountEquationsProblemGenerator.new(@category)
+    questions = generator.generate_questions
+    questions.first
+  end
+
   def handle_default_category
     all_questions = ProblemGenerator.new(@category).generate_questions
     pick_question(all_questions)
@@ -110,6 +118,7 @@ class PracticeProblemsController < ApplicationController
     return handle_data_statistics if @question[:type] == 'data_statistics'
     return handle_confidence_interval if @question[:type] == 'confidence_interval'
     return handle_engineering_ethics if @question[:type] == 'engineering_ethics'
+    return handle_universal_account_equations if @question[:type] == 'universal_account_equations'
 
     handle_unknown_question_type
   end
@@ -128,6 +137,10 @@ class PracticeProblemsController < ApplicationController
 
   def handle_engineering_ethics
     check_engineering_ethics_answer == :redirected
+  end
+
+  def handle_universal_account_equations
+    check_universal_account_equations_answer == :redirected
   end
 
   def handle_unknown_question_type
@@ -402,6 +415,19 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
+  def check_universal_account_equations_answer
+    user_answer = params[:answer].to_f
+    correct_answer = @question[:answer]
+
+    if (user_answer - correct_answer).abs <= 0.01
+      redirect_to_success
+    else
+      direction = user_answer < correct_answer ? 'too low' : 'too high'
+      @error_message = "That's incorrect. Your answer is #{direction} (correct answer: #{correct_answer})"
+      nil
+    end
+  end
+
   def determine_template_for_question(question)
     case question[:type]
     when 'probability', 'data_statistics'
@@ -410,6 +436,8 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval_problem'
     when 'engineering_ethics'
       'engineering_ethics_problem'
+    when 'universal_account_equations'
+      'universal_account_equations_problem'
     else
       'generate' # fallback to the original template
     end
