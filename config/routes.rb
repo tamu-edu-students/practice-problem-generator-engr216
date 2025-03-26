@@ -43,4 +43,8 @@ Rails.application.routes.draw do
     end
   end
 
+  # Add these routes if they don't exist already
+  get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics', as: :engineering_ethics_problems
+  get 'practice_problems/finite_differences', to: 'practice_problems#finite_differences', as: :finite_differences_problems
+
 end

@@ -18,16 +18,15 @@ class PracticeProblemsController < ApplicationController
   end
 
   def question_for_category
-    case @category.downcase
-    when 'experimental statistics'
-      handle_statistics_problem
-    when 'confidence intervals'
-      handle_confidence_interval_problem
-    when 'engineering ethics'
-      handle_engineering_ethics_problem
-    else
-      handle_default_category
-    end
+    question_handlers = {
+      'experimental statistics' => :handle_statistics_problem,
+      'confidence intervals' => :handle_confidence_interval_problem,
+      'engineering ethics' => :handle_engineering_ethics_problem,
+      'finite differences' => :handle_finite_differences_problem
+    }
+
+    handler = question_handlers[@category.downcase]
+    handler ? send(handler) : handle_default_category
   end
 
   def check_answer
@@ -75,6 +74,11 @@ class PracticeProblemsController < ApplicationController
     questions.first
   end
 
+  def handle_finite_differences_problem
+    problem_generator = FiniteDifferencesProblemGenerator.new(@category)
+    problem_generator.generate_questions.first
+  end
+
   def handle_default_category
     all_questions = ProblemGenerator.new(@category).generate_questions
     pick_question(all_questions)
@@ -106,12 +110,16 @@ class PracticeProblemsController < ApplicationController
   end
 
   def process_answer_for_question_type
-    return handle_probability if @question[:type] == 'probability'
-    return handle_data_statistics if @question[:type] == 'data_statistics'
-    return handle_confidence_interval if @question[:type] == 'confidence_interval'
-    return handle_engineering_ethics if @question[:type] == 'engineering_ethics'
+    question_type_handlers = {
+      'probability' => :handle_probability,
+      'data_statistics' => :handle_data_statistics,
+      'confidence_interval' => :handle_confidence_interval,
+      'engineering_ethics' => :handle_engineering_ethics,
+      'finite_differences' => :handle_finite_differences
+    }
 
-    handle_unknown_question_type
+    handler = question_type_handlers[@question[:type]]
+    handler ? send(handler) : handle_unknown_question_type
   end
 
   def handle_probability
@@ -128,6 +136,10 @@ class PracticeProblemsController < ApplicationController
 
   def handle_engineering_ethics
     check_engineering_ethics_answer == :redirected
+  end
+
+  def handle_finite_differences
+    check_finite_differences_answer == :redirected
   end
 
   def handle_unknown_question_type
@@ -402,16 +414,78 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
-  def determine_template_for_question(question)
-    case question[:type]
-    when 'probability', 'data_statistics'
-      'statistics_problem'
-    when 'confidence_interval'
-      'confidence_interval_problem'
-    when 'engineering_ethics'
-      'engineering_ethics_problem'
+  def check_finite_differences_answer
+    if @question[:input_fields].present?
+      handle_multiple_input_fields
     else
-      'generate' # fallback to the original template
+      handle_single_answer
     end
+  end
+
+  def handle_multiple_input_fields
+    # Ensure parameters exist
+    @question[:parameters] ||= {}
+
+    check_individual_fields
+  end
+
+  def check_individual_fields
+    all_correct = true
+
+    @question[:input_fields].each do |field|
+      result = check_input_field(field)
+      unless result == :correct
+        all_correct = false
+        break
+      end
+    end
+
+    redirect_to_success if all_correct
+  end
+
+  def check_input_field(field)
+    key = field[:key].to_sym
+
+    unless @question[:parameters].key?(key)
+      @error_message = "Missing parameter definition for #{field[:label]}"
+      return :error
+    end
+
+    validate_field_value(field, key)
+  end
+
+  def validate_field_value(field, key)
+    expected_value = @question[:parameters][key].to_f
+    user_value = params[field[:key]].to_f
+
+    return :correct if (user_value - expected_value).abs <= 0.01
+
+    direction = user_value < expected_value ? 'too low' : 'too high'
+    @error_message = "your #{field[:label].downcase} is #{direction} (correct answer: #{expected_value})"
+    :error
+  end
+
+  def handle_single_answer
+    user_answer = params[:answer].to_f
+    correct_answer = @question[:answer].to_f
+
+    if (user_answer - correct_answer).abs < 0.01
+      redirect_to_success
+    else
+      @error_message = user_answer < correct_answer ? 'too small' : 'too large'
+      nil
+    end
+  end
+
+  def determine_template_for_question(question)
+    template_map = {
+      'probability' => 'statistics_problem',
+      'data_statistics' => 'statistics_problem',
+      'confidence_interval' => 'confidence_interval_problem',
+      'engineering_ethics' => 'engineering_ethics_problem',
+      'finite_differences' => 'finite_differences_problem'
+    }
+
+    template_map[question[:type]] || 'generate' # fallback to the original template
   end
 end
