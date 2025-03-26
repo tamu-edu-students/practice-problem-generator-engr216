@@ -22,7 +22,8 @@ class PracticeProblemsController < ApplicationController
       'experimental statistics' => :handle_statistics_problem,
       'confidence intervals' => :handle_confidence_interval_problem,
       'engineering ethics' => :handle_engineering_ethics_problem,
-      'finite differences' => :handle_finite_differences_problem
+      'finite differences' => :handle_finite_differences_problem,
+      'universal accounting equation' => :handle_universal_account_equations_problem
     }
 
     handler = question_handlers[@category.downcase]
@@ -74,6 +75,12 @@ class PracticeProblemsController < ApplicationController
     questions.first
   end
 
+  def handle_universal_account_equations_problem
+    generator = UniversalAccountEquationsProblemGenerator.new(@category)
+    questions = generator.generate_questions
+    questions.first
+  end
+
   def handle_finite_differences_problem
     problem_generator = FiniteDifferencesProblemGenerator.new(@category)
     problem_generator.generate_questions.first
@@ -115,7 +122,8 @@ class PracticeProblemsController < ApplicationController
       'data_statistics' => :handle_data_statistics,
       'confidence_interval' => :handle_confidence_interval,
       'engineering_ethics' => :handle_engineering_ethics,
-      'finite_differences' => :handle_finite_differences
+      'finite_differences' => :handle_finite_differences,
+      'universal_account_equations' => :handle_universal_account_equations
     }
 
     handler = question_type_handlers[@question[:type]]
@@ -140,6 +148,10 @@ class PracticeProblemsController < ApplicationController
 
   def handle_finite_differences
     check_finite_differences_answer == :redirected
+  end
+
+  def handle_universal_account_equations
+    check_universal_account_equations_answer == :redirected
   end
 
   def handle_unknown_question_type
@@ -414,6 +426,19 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
+  def check_universal_account_equations_answer
+    user_answer = params[:answer].to_f
+    correct_answer = @question[:answer]
+
+    if (user_answer - correct_answer).abs <= 0.01
+      redirect_to_success
+    else
+      direction = user_answer < correct_answer ? 'too low' : 'too high'
+      @error_message = "That's incorrect. Your answer is #{direction} (correct answer: #{correct_answer})"
+      nil
+    end
+  end
+
   def check_finite_differences_answer
     if @question[:input_fields].present?
       handle_multiple_input_fields
@@ -483,7 +508,8 @@ class PracticeProblemsController < ApplicationController
       'data_statistics' => 'statistics_problem',
       'confidence_interval' => 'confidence_interval_problem',
       'engineering_ethics' => 'engineering_ethics_problem',
-      'finite_differences' => 'finite_differences_problem'
+      'finite_differences' => 'finite_differences_problem',
+      'universal_account_equations' => 'universal_account_equations_problem'
     }
 
     template_map[question[:type]] || 'generate' # fallback to the original template
