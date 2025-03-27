@@ -43,7 +43,7 @@ class SessionsController < ApplicationController
 
     return root_path unless valid_email_domain?(email)
 
-    student = find_or_create_student(email)
+    student = find_or_create_student(auth)
     return root_path unless student
 
     student_session_set(student)
@@ -60,9 +60,26 @@ class SessionsController < ApplicationController
     redirect_to root_path, alert: t('sessions.invalid_domain')
   end
 
-  def find_or_create_student(email)
-    Student.find_or_create_by(email: email)
+  def find_or_create_student(auth)
+    email = auth.info.email
+    Rails.logger.debug "[OAuth] Attempting to find or create student with email: #{email}"
+    Rails.logger.debug "[OAuth] Auth Info: #{auth.info.to_h}"
+  
+    student = Student.find_or_create_by(email: email) do |student|
+      student.first_name = auth.info.first_name
+      student.last_name = auth.info.last_name
+      student.uin = 100000000  # => "000000000"
+    end
+  
+    if student.persisted?
+      Rails.logger.debug "[OAuth] Student persisted successfully: #{student.inspect}"
+    else
+      Rails.logger.error "[OAuth] Student failed to persist: #{student.errors.full_messages.join(', ')}"
+    end
+  
+    student
   end
+  
 
   def redirect_login_failed
     redirect_to root_path, alert: t('sessions.login_failed')

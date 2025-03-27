@@ -2,6 +2,14 @@ class PracticeProblemsController < ApplicationController
   # List unique category names from the questions table.
   def index
     @categories = Question.distinct.pluck(:category)
+
+
+    @student = Student.find_by(id: session[:user_id])
+    @prompt_for_uin = @student&.uin == 100000000
+    puts "Session User ID: #{session[:user_id]}"
+    puts "Student UIN: #{@student&.uin}"
+    @teachers = Teacher.all
+
     render :index
   end
 
@@ -415,3 +423,4 @@ class PracticeProblemsController < ApplicationController
     end
   end
 end
+

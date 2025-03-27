@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   resources :students
   resources :teachers
 
+  # Update student UIN + teacher
+  post '/update_uin', to: 'students#update_uin', as: :update_uin
+
   # Redirecting after successful login
   get '/auth/google_oauth2/callback', to: 'sessions#omniauth'
   get '/logout', to: 'sessions#logout', as: 'logout'

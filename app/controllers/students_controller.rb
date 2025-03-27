@@ -56,6 +56,22 @@ class StudentsController < ApplicationController
     end
   end
 
+  
+  def update_uin
+    student = Student.find_by(id: session[:user_id])
+    new_uin = params[:uin]
+    teacher_id = params[:teacher_id]
+
+    if student && new_uin =~ /^\d{9}$/ && teacher_id.present?
+      student.update(uin: new_uin, teacher_id: teacher_id)
+      flash[:notice] = "UIN and teacher updated successfully."
+    else
+      flash[:alert] = "Invalid UIN or missing teacher."
+    end
+
+    redirect_to practice_problems_path
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -68,3 +84,5 @@ class StudentsController < ApplicationController
     params.expect(student: %i[first_name last_name email uin teacher teacher_id authenticate])
   end
 end
+
+
