@@ -46,6 +46,13 @@ Rails.application.routes.draw do
       post 'check_answer'
     end
   end
+  resources :harmonic_motion_problems, only: [] do
+    collection do
+      get 'generate'
+      post 'check_answer'
+    end
+  end
+  
 
   # Add these routes if they don't exist already
   get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics', as: :engineering_ethics_problems
