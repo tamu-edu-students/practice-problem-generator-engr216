@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength, Layout/LineLength
 class PracticeProblemsController < ApplicationController
   # List unique category names from the questions table.
   def index
@@ -7,14 +8,43 @@ class PracticeProblemsController < ApplicationController
 
   def generate
     @category = params[:category_id]
+
+    # If the category is Measurement & Error, redirect to its dedicated controller.
+    redirect_to generate_measurements_and_error_problems_path and return if measurement_and_error_category?(@category)
+
     @question = question_for_category
 
-    # Store the current question in the session for validation later
+    # Store the current question in the session for validation later.
     session[:current_question] = @question.to_json
 
-    # Render the appropriate template based on question type
+    # Render the appropriate template based on question type.
     template = determine_template_for_question(@question)
     render template
+  end
+
+  def check_answer
+    @category = params[:category_id]
+
+    # Redirect Measurement & Error submissions to the dedicated controller.
+    redirect_to generate_measurements_and_error_problems_path and return if measurement_and_error_category?(@category)
+
+    @question = parse_question_from_session
+    @error_message = nil
+
+    handle_missing_question and return unless @question
+
+    process_answer_for_question_type and return
+
+    session[:current_question] = @question.to_json
+    template = determine_template_for_question(@question)
+    render template
+  end
+
+  private
+
+  # Helper: return true if the category is for Measurement & Error.
+  def measurement_and_error_category?(category)
+    category.to_s.downcase.include?('measurement')
   end
 
   def question_for_category
@@ -29,24 +59,6 @@ class PracticeProblemsController < ApplicationController
     handler = question_handlers[@category.downcase]
     handler ? send(handler) : handle_default_category
   end
-
-  def check_answer
-    # Get the category string from params.
-    @category = params[:category_id]
-    @question = parse_question_from_session
-    @error_message = nil
-
-    handle_missing_question and return unless @question
-
-    process_answer_for_question_type and return
-
-    # If not redirected, re-render the form with error message.
-    session[:current_question] = @question.to_json
-    template = determine_template_for_question(@question)
-    render template
-  end
-
-  private
 
   def handle_statistics_problem
     generator = StatisticsProblemGenerator.new(@category)
@@ -190,24 +202,17 @@ class PracticeProblemsController < ApplicationController
     answers = @question[:answers]
     initialize_debug_info
 
-    # Handle blank inputs
     return handle_blank_inputs if blank_input_present?
 
-    # Extract parameters and calculate expected bounds
     extract_and_log_problem_parameters if @question[:question].present?
-
-    # Compare user answers with expected answers
     check_confidence_bounds(answers)
-
-    # Store debug info and check for success
     session[:debug_info] = @debug_info
     redirect_to_success if @error_message.nil?
   end
 
   def initialize_debug_info
     @debug_info = "Debug Information:\n"
-    @debug_info += "- Your inputs: Lower bound=#{params[:lower_bound].inspect}, " \
-                   "Upper bound=#{params[:upper_bound].inspect}\n"
+    @debug_info += "- Your inputs: Lower bound=#{params[:lower_bound].inspect}, Upper bound=#{params[:upper_bound].inspect}\n"
   end
 
   def blank_input_present?
@@ -222,7 +227,6 @@ class PracticeProblemsController < ApplicationController
   end
 
   def handle_blank_inputs
-    # This just returns nil to exit the main method
     nil
   end
 
@@ -244,7 +248,6 @@ class PracticeProblemsController < ApplicationController
   def check_bound(bound_key, expected_value)
     user_value = params[bound_key].to_f
     diff = (user_value - expected_value).abs.round(2)
-
     return nil if diff <= 0.01
 
     direction = user_value < expected_value ? 'too low' : 'too high'
@@ -252,7 +255,6 @@ class PracticeProblemsController < ApplicationController
   end
 
   def extract_and_log_problem_parameters
-    # First check if we have parameters directly from the question data
     if parameter_data_available?
       log_parameters_from_question_data
       calculate_bounds_from_parameters
@@ -271,9 +273,7 @@ class PracticeProblemsController < ApplicationController
 
   def log_parameters_from_question_data
     params = @question[:parameters]
-    @debug_info += "- Parameters from question data: sample_size=#{params[:sample_size]}, "
-    @debug_info += "sample_mean=#{params[:sample_mean]}, pop_std=#{params[:pop_std]}, "
-    @debug_info += "confidence=#{params[:confidence_level]}%\n"
+    @debug_info += "- Parameters from question data: sample_size=#{params[:sample_size]}, sample_mean=#{params[:sample_mean]}, pop_std=#{params[:pop_std]}, confidence=#{params[:confidence_level]}%\n"
   end
 
   def calculate_bounds_from_parameters
@@ -305,7 +305,6 @@ class PracticeProblemsController < ApplicationController
     }
   end
 
-  # Define constants at class level
   SAMPLE_SIZE_PATTERNS = [
     /(\d+)\s+water samples/,
     /(\d+)\s+randomly selected batteries/,
@@ -331,12 +330,10 @@ class PracticeProblemsController < ApplicationController
     /mean\s+usage\s+of\s+([\d.]+)/
   ].freeze
 
-  # Extract sample size using patterns defined as constants
   def extract_sample_size
     match_with_patterns(SAMPLE_SIZE_PATTERNS)
   end
 
-  # Extract sample mean using patterns defined as constants
   def extract_sample_mean
     match_with_patterns(SAMPLE_MEAN_PATTERNS)
   end
@@ -360,9 +357,7 @@ class PracticeProblemsController < ApplicationController
   end
 
   def log_extracted_parameters(params)
-    @debug_info += "- Extracted parameters: sample_size=#{params[:sample_size]}, "
-    @debug_info += "sample_mean=#{params[:sample_mean]}, pop_std=#{params[:pop_std]}, "
-    @debug_info += "confidence=#{params[:confidence_level]}%\n"
+    @debug_info += "- Extracted parameters: sample_size=#{params[:sample_size]}, sample_mean=#{params[:sample_mean]}, pop_std=#{params[:pop_std]}, confidence=#{params[:confidence_level]}%\n"
   end
 
   def calculate_bounds_from_extracted(params)
@@ -370,16 +365,13 @@ class PracticeProblemsController < ApplicationController
 
     z_value = get_z_value(params[:confidence_level])
     margin_error = calculate_margin_of_error(params, z_value)
-
     calc_lower = (params[:sample_mean] - margin_error).round(2)
     calc_upper = (params[:sample_mean] + margin_error).round(2)
-
     log_calculated_bounds(calc_lower, calc_upper)
   end
 
   def all_parameters_present?(params)
-    params[:sample_size] && params[:sample_mean] &&
-      params[:pop_std] && params[:confidence_level]
+    params[:sample_size] && params[:sample_mean] && params[:pop_std] && params[:confidence_level]
   end
 
   def calculate_margin_of_error(params, z_value)
@@ -404,20 +396,13 @@ class PracticeProblemsController < ApplicationController
   end
 
   def get_z_value(confidence_level)
-    z_values = {
-      90 => 1.645,
-      95 => 1.96,
-      98 => 2.33,
-      99 => 2.575
-    }
-
+    z_values = { 90 => 1.645, 95 => 1.96, 98 => 2.33, 99 => 2.575 }
     z_values.fetch(confidence_level, 1.96)
   end
 
   def check_engineering_ethics_answer
     user_answer = params[:ethics_answer] == 'true'
     correct_answer = @question[:answer]
-
     if user_answer == correct_answer
       redirect_to_success
     else
@@ -515,3 +500,4 @@ class PracticeProblemsController < ApplicationController
     template_map[question[:type]] || 'generate' # fallback to the original template
   end
 end
+# rubocop:enable Metrics/ClassLength, Layout/LineLength
