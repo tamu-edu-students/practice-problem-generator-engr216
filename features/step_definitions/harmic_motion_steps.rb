@@ -21,9 +21,6 @@ When('I submit a Harmonic Motion answer') do
   click_button 'Check Answer'
 end
 
-
-
-
 Then('a new Harmonic Motion problem should be dynamically generated') do
   expect(page).to have_content('Harmonic Motion Question:')
 end
