@@ -1,3 +1,5 @@
+# rubocop:disable Layout/LineLength, Naming/VariableNumber, Metrics/MethodLength, Metrics/AbcSize
+
 class MeasurementsAndErrorProblemGenerator
   attr_reader :category
 
@@ -189,3 +191,4 @@ class MeasurementsAndErrorProblemGenerator
                                             })
   end
 end
+# rubocop:enable Layout/LineLength, Naming/VariableNumber, Metrics/MethodLength, Metrics/AbcSize

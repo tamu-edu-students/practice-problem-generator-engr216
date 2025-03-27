@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength, Layout/LineLength
 class PracticeProblemsController < ApplicationController
   # List unique category names from the questions table.
   def index
@@ -499,3 +500,4 @@ class PracticeProblemsController < ApplicationController
     template_map[question[:type]] || 'generate' # fallback to the original template
   end
 end
+# rubocop:enable Metrics/ClassLength, Layout/LineLength
