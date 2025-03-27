@@ -62,24 +62,23 @@ class SessionsController < ApplicationController
 
   def find_or_create_student(auth)
     email = auth.info.email
-    Rails.logger.debug "[OAuth] Attempting to find or create student with email: #{email}"
-    Rails.logger.debug "[OAuth] Auth Info: #{auth.info.to_h}"
-  
-    student = Student.find_or_create_by(email: email) do |student|
-      student.first_name = auth.info.first_name
-      student.last_name = auth.info.last_name
-      student.uin = 100000000  # => "000000000"
+    Rails.logger.debug { "[OAuth] Attempting to find or create student with email: #{email}" }
+    Rails.logger.debug { "[OAuth] Auth Info: #{auth.info.to_h}" }
+
+    student = Student.find_or_create_by(email: email) do |s|
+      s.first_name = auth.info.first_name
+      s.last_name = auth.info.last_name
+      s.uin = 100_000_000
     end
-  
+
     if student.persisted?
-      Rails.logger.debug "[OAuth] Student persisted successfully: #{student.inspect}"
+      Rails.logger.debug { "[OAuth] Student persisted successfully: #{student.inspect}" }
     else
       Rails.logger.error "[OAuth] Student failed to persist: #{student.errors.full_messages.join(', ')}"
     end
-  
+
     student
   end
-  
 
   def redirect_login_failed
     redirect_to root_path, alert: t('sessions.login_failed')

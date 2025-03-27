@@ -3,11 +3,10 @@ class PracticeProblemsController < ApplicationController
   def index
     @categories = Question.distinct.pluck(:category)
 
-
     @student = Student.find_by(id: session[:user_id])
-    @prompt_for_uin = @student&.uin == 100000000
-    puts "Session User ID: #{session[:user_id]}"
-    puts "Student UIN: #{@student&.uin}"
+    @prompt_for_uin = @student&.uin == 100_000_000
+    Rails.logger.debug { "Session User ID: #{session[:user_id]}" }
+    Rails.logger.debug { "Student UIN: #{@student&.uin}" }
     @teachers = Teacher.all
 
     render :index
@@ -423,4 +422,3 @@ class PracticeProblemsController < ApplicationController
     end
   end
 end
-

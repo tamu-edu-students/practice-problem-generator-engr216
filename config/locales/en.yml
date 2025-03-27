@@ -34,6 +34,10 @@ en:
     updated: "Student was successfully updated."
     destroyed: "Student was successfully destroyed."
     logged_in: "You are logged in as a student."
+    update_uin:
+      success: "UIN and teacher updated successfully."
+      error: "Invalid UIN or missing teacher."
+      not_found: "Selected teacher not found."
   teacher:
     logged_in: "You are logged in as a teacher."
   sessions:
