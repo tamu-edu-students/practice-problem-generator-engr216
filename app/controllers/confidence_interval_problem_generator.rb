@@ -17,14 +17,21 @@ class ConfidenceIntervalProblemGenerator
 
   # Generate a random confidence interval problem
   def generate_confidence_interval_problem
-    generators = %i[
+    # Get a generator method name from our list
+    generator_name = generator_list.sample
+
+    # Call the generator method
+    send(:"generate_#{generator_name}_problem")
+  end
+
+  # Get the list of available generator methods
+  def generator_list
+    %i[
       battery_lifetime cereal_box_fill waiting_times
       car_mileage produce_weight shipping_times
       manufacturing_diameter concentration
       phone_call_duration daily_water_usage
     ]
-
-    send(:"generate_#{generators.sample}_problem")
   end
 
   # Calculate confidence interval based on statistical parameters

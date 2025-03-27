@@ -1,0 +1,175 @@
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
+  <%= render 'shared/navbar' %>
+  
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", practice_problems_path, 
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  
+  <div class="h-24"></div>
+  
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black underline">Finite Differences</h1>
+  </div>
+  
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
+      <% if @question && @question[:question] %>
+        <% 
+          # Split the question text for better formatting
+          full_text = @question[:question]
+          
+          # Extract instruction/rounding text (usually starts with "Round your answer")
+          instruction_matches = full_text.match(/Round (?:your answer|each answer).+?\..*?Do not use scientific notation\./m)
+          instructions = instruction_matches ? instruction_matches[0] : nil
+          
+          # Remove instructions from main text
+          if instructions
+            main_text = full_text.gsub(instructions, '').strip
+          else
+            main_text = full_text
+          end
+          
+          # Check if this is a function table problem
+          is_function_table = main_text.include?('f(x-h) =') && main_text.include?('f(x) =') && main_text.include?('f(x+h) =')
+          
+          if is_function_table
+            # Extract the parts of a function table problem
+            intro_text = main_text.split('Given the following function values:').first.strip
+            function_values_text = main_text.scan(/f\(x-h\) = \d+\s+f\(x\) = \d+\s+f\(x\+h\) = \d+/m).first || ""
+            step_size_text = main_text.scan(/Where the step size is h = [\d\.]+/).first || ""
+            
+            remaining_text = main_text.gsub(intro_text, '')
+                                     .gsub('Given the following function values:', '')
+                                     .gsub(function_values_text, '')
+                                     .gsub(step_size_text, '')
+                                     .strip
+            
+            # Extract individual function values
+            f_x_minus_h = function_values_text.scan(/f\(x-h\) = (\d+)/).first&.first || ""
+            f_x = function_values_text.scan(/f\(x\) = (\d+)/).first&.first || ""
+            f_x_plus_h = function_values_text.scan(/f\(x\+h\) = (\d+)/).first&.first || ""
+            
+            h_value = step_size_text.scan(/h = ([\d\.]+)/).first&.first || ""
+            
+            problem_parts = {
+              intro: 'Given the following function values:',
+              f_values: [
+                "f(x-h) = #{f_x_minus_h}",
+                "f(x) = #{f_x}",
+                "f(x+h) = #{f_x_plus_h}"
+              ],
+              step_size: "Where the step size is h = #{h_value}",
+              remaining: remaining_text
+            }
+          else
+            # Extract function definition and equation if present
+            function_matches = main_text.match(/f\(x\)\s*=\s*[^\n]+/)
+            function_def = function_matches ? function_matches[0] : nil
+            
+            # Extract the problem statement (everything before function definition)
+            if function_def
+              parts = main_text.split(function_def)
+              problem_statement = parts[0].strip
+              rest_of_text = parts[1..-1].join(function_def).strip
+            else
+              problem_statement = main_text
+              rest_of_text = ""
+            end
+          end
+        %>
+        
+        <% if is_function_table %>
+          <!-- Function table problem -->
+          <div class="text-2xl font-bold mb-6"><%= problem_parts[:intro] %></div>
+          
+          <!-- Function values centered -->
+          <div class="text-3xl font-bold mb-6 text-center">
+            <% problem_parts[:f_values].each do |f_value| %>
+              <div class="my-2"><%= f_value %></div>
+            <% end %>
+          </div>
+          
+          <!-- Step size -->
+          <div class="text-2xl font-bold mb-6 text-center"><%= problem_parts[:step_size] %></div>
+          
+          <!-- Remaining problem text -->
+          <% if problem_parts[:remaining].present? %>
+            <div class="text-2xl font-bold mb-8"><%= problem_parts[:remaining] %></div>
+          <% end %>
+        <% else %>
+          <!-- Standard problem format -->
+          <!-- Main problem statement -->
+          <div class="text-2xl font-bold mb-6"><%= problem_statement %></div>
+          
+          <!-- Function definition (if present) -->
+          <% if function_def %>
+            <div class="text-3xl font-bold mb-6 text-center"><%= function_def %></div>
+          <% end %>
+          
+          <!-- Rest of text (other than function definition) -->
+          <% if rest_of_text.present? %>
+            <div class="text-2xl font-bold mb-8"><%= rest_of_text %></div>
+          <% end %>
+        <% end %>
+        
+        <!-- Data table (if present) -->
+        <% if @question[:data_table] %>
+          <div class="mb-8 flex justify-center">
+            <table class="border-collapse">
+              <% @question[:data_table].each do |row| %>
+                <tr>
+                  <% row.each do |cell| %>
+                    <td class="border-2 border-gray-500 px-4 py-3 bg-gray-700 text-center" style="min-width: 100px; height: 50px;"><%= cell %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+        
+        <!-- Instruction/rounding notes in smaller gray font -->
+        <% if instructions %>
+          <div class="text-gray-400 text-sm mb-8"><%= instructions %></div>
+        <% end %>
+        
+        <!-- Answer form -->
+        <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
+          <%= form.hidden_field :category_id, value: @category %>
+          
+          <div class="flex flex-wrap justify-center gap-4 mt-8">
+            <% if @question[:input_fields].present? %>
+              <% @question[:input_fields].each do |field| %>
+                <div class="flex flex-col items-center">
+                  <label class="mb-2 text-xl"><%= field[:label] %></label>
+                  <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="flex flex-col items-center">
+                <label class="mb-2 text-xl">Answer</label>
+                <%= form.text_field :answer, class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-64", placeholder: "Enter answer" %>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="mt-6">
+            <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
+          </div>
+        <% end %>
+      <% else %>
+        <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
+      <% end %>
+      
+      <%= render 'shared/feedback_messages' %>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_practice_problems_path(category_id: @category), class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 

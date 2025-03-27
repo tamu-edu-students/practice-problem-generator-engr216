@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   resources :students
   resources :teachers
 
+  # Routes for Measurements & Error Problems
+  get 'measurements_and_error_problems/generate', to: 'measurements_and_error_problems#generate', as: :generate_measurements_and_error_problems
+  post 'measurements_and_error_problems/check_answer', to: 'measurements_and_error_problems#check_answer', as: :check_measurements_and_error_answer
+
   # Redirecting after successful login
   get '/auth/google_oauth2/callback', to: 'sessions#omniauth'
   get '/logout', to: 'sessions#logout', as: 'logout'
@@ -42,5 +46,16 @@ Rails.application.routes.draw do
       post 'check_answer'
     end
   end
+  resources :harmonic_motion_problems, only: [] do
+    collection do
+      get 'generate'
+      post 'check_answer'
+    end
+  end
+  
+
+  # Add these routes if they don't exist already
+  get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics', as: :engineering_ethics_problems
+  get 'practice_problems/finite_differences', to: 'practice_problems#finite_differences', as: :finite_differences_problems
 
 end
