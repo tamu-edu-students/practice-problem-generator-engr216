@@ -25,6 +25,72 @@
 
   <!-- Add DaisyUI CDN -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.0/dist/full.css" rel="stylesheet">
+  
+  <!-- Custom CSS for Math Formatting -->
+  <style>
+    .fraction {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+      margin: 0 0.2em;
+    }
+    .fraction .numerator, .fraction .denominator {
+      display: block;
+      line-height: 1.2;
+    }
+    .fraction .numerator {
+      border-bottom: 1px solid;
+      padding: 0 3px;
+    }
+    .fraction .denominator {
+      padding: 0 3px;
+    }
+    .math-fraction {
+      white-space: nowrap;
+      color: #e2e8f0; /* text-gray-200 */
+    }
+    sup, sub {
+      font-size: 0.75em;
+      line-height: 0;
+      position: relative;
+    }
+    sup {
+      vertical-align: super;
+    }
+    sub {
+      vertical-align: sub;
+    }
+    
+    /* Improved square root styling */
+    .sqrt {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      padding-left: 0.6em;
+    }
+    .sqrt:before {
+      content: "√";
+      position: absolute;
+      left: 0;
+      top: -0.1em;
+      font-size: 1.2em;
+    }
+    .sqrt-content {
+      display: inline-block;
+      border-top: 1px solid currentColor;
+      padding: 0 0.1em;
+    }
+    
+    /* Double square root (for nested square roots) */
+    .sqrt .sqrt {
+      margin-left: 0.2em;
+    }
+    .sqrt .sqrt:before {
+      content: "√";
+      font-size: 1em;
+      left: -0.4em;
+    }
+  </style>
 </head>
 
 <body class="min-h-screen w-full">

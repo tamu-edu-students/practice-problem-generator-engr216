@@ -852,4 +852,66 @@ RSpec.describe PracticeProblemsController, type: :controller do
       end
     end
   end
+
+  context 'with propagation of error category' do
+    let(:category) { 'propagation of error' }
+    let(:generator) { instance_double("ErrorPropagationProblemGenerator") }
+    let(:question) do
+      {
+        type: 'propagation of error',
+        question: 'Test question',
+        answer: '0.123',
+        input_fields: [{ label: 'Answer', key: 'answer', type: 'text' }]
+      }
+    end
+
+    before do
+      allow(ErrorPropagationProblemGenerator).to receive(:new).with(category).and_return(generator)
+      allow(generator).to receive(:generate_questions).and_return([question])
+    end
+
+    describe 'GET #generate' do
+      it 'generates an error propagation problem' do
+        get :generate, params: { category_id: category }
+        expect(assigns(:question)).to eq(question)
+        expect(response).to render_template('propagation_of_error_problem')
+      end
+    end
+
+    describe 'POST #check_answer' do
+      before do
+        session[:current_question] = question.to_json
+      end
+
+      context 'with correct answer' do
+        it 'renders the page with success parameter' do
+          post :check_answer, params: { category_id: category, answer: '0.123' }
+          expect(response).to render_template('propagation_of_error_problem')
+          expect(assigns(:question)).to eq(question)
+        end
+      end
+
+      context 'with close answer (within 5%)' do
+        it 'renders the page with success parameter' do
+          post :check_answer, params: { category_id: category, answer: '0.126' }
+          expect(response).to render_template('propagation_of_error_problem')
+          expect(assigns(:question)).to eq(question)
+        end
+      end
+
+      context 'with incorrect answer' do
+        it 'sets error message when too small' do
+          post :check_answer, params: { category_id: category, answer: '0.090' }
+          expect(assigns(:error_message)).to eq('too small')
+          expect(response).to render_template('propagation_of_error_problem')
+        end
+
+        it 'sets error message when too large' do
+          post :check_answer, params: { category_id: category, answer: '0.150' }
+          expect(assigns(:error_message)).to eq('too large')
+          expect(response).to render_template('propagation_of_error_problem')
+        end
+      end
+    end
+  end
 end
