@@ -57,7 +57,8 @@ class PracticeProblemsController < ApplicationController
       'confidence intervals' => :handle_confidence_interval_problem,
       'engineering ethics' => :handle_engineering_ethics_problem,
       'finite differences' => :handle_finite_differences_problem,
-      'universal accounting equation' => :handle_universal_account_equations_problem
+      'universal accounting equation' => :handle_universal_account_equations_problem,
+      'momentum & collisions' => :handle_collision_problem
     }
     handler = handlers[@category.downcase]
     handler ? send(handler) : handle_default_category
@@ -94,6 +95,11 @@ class PracticeProblemsController < ApplicationController
 
   def handle_finite_differences_problem
     generator = FiniteDifferencesProblemGenerator.new(@category)
+    generator.generate_questions.first
+  end
+
+  def handle_collision_problem
+    generator = CollisionProblemGenerator.new(@category)
     generator.generate_questions.first
   end
 
@@ -134,7 +140,8 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval' => :handle_confidence_interval,
       'engineering_ethics' => :handle_engineering_ethics,
       'finite_differences' => :handle_finite_differences,
-      'universal_account_equations' => :handle_universal_account_equations
+      'universal_account_equations' => :handle_universal_account_equations,
+      'momentum & collisions' => :handle_collisions
     }
     handler = handlers[@question[:type]]
     handler ? send(handler) : handle_unknown_question_type
@@ -167,6 +174,40 @@ class PracticeProblemsController < ApplicationController
   def handle_unknown_question_type
     @error_message = "Unknown question type: #{@question[:type]}"
     false
+  end
+
+  def handle_collisions
+    user_answer = params[:answer].to_f
+    correct_answer = @question[:answer]
+
+    if correct_answer.is_a?(Hash)
+      all_correct = correct_answer.all? do |key, value|
+        user_value = params[key].to_f
+        (user_value - value).abs <= 0.01
+      end
+      if all_correct
+        redirect_to_success
+        return :redirected
+      else
+        @error_message = 'One or more answers are incorrect. Please check your inputs.'
+      end
+    else
+      # Force string to float conversion and handle potential errors
+      begin
+        correct_answer_float = Float(correct_answer.to_s)
+        difference = (user_answer - correct_answer_float).abs
+        if difference <= 0.01
+          redirect_to_success
+          return :redirected
+        else
+          direction = user_answer < correct_answer_float ? 'too low' : 'too high'
+          @error_message = "Your answer is #{direction} (correct answer: #{correct_answer_float})."
+        end
+      rescue StandardError => e
+        @error_message = 'There was an error processing your answer. Please try again.'
+      end
+    end
+    nil
   end
 
   def check_probability_answer
@@ -483,6 +524,7 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval' => 'confidence_interval_problem',
       'engineering_ethics' => 'engineering_ethics_problem',
       'finite_differences' => 'finite_differences_problem',
+      'momentum & collisions' => 'collision_problem',
       'universal_account_equations' => 'universal_account_equations_problem'
     }
     template_map[question[:type]] || 'generate'
