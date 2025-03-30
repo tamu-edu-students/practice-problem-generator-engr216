@@ -116,51 +116,88 @@ class CollisionProblemGenerator
   end
 
   # Calculate the answer based on the problem parameters
-  def calculate_answer(question_text, *args)
-    case question_text
-    when /bullet moving at/
-      bullet_mass, bullet_initial_speed, bullet_final_speed, block_mass = args
-      initial_momentum = calculate_momentum(bullet_mass, bullet_initial_speed)
-      final_momentum = calculate_momentum(bullet_mass, bullet_final_speed)
-      block_velocity = (initial_momentum - final_momentum) / block_mass
-      block_velocity.round(2)
-    when /elastic collision with an initially stationary hydrogen atom/
-      mass_ratio = args[0]
-      # For elastic collision, energy transfer percentage
-      (4.0 * mass_ratio / ((1 + mass_ratio)**2) * 100).round(2)
-    when /soccer ball with mass/
-      ball1_mass, ball2_mass, drop_height = args
-      velocity = Math.sqrt(2 * 9.8 * drop_height)
-      final_velocity = calculate_final_velocity_elastic_obj1(ball1_mass, velocity, ball2_mass, 0)
-      ((final_velocity**2) / (2 * 9.8)).round(2)
-    when /cars stick together/
-      car1_mass, car1_speed, car2_mass, car2_speed = args
-      calculate_final_velocity_perfectly_inelastic(car1_mass, car1_speed, car2_mass, car2_speed).round(2)
-    when /pool ball of mass/
-      _, initial_speed, angle = args
-      (initial_speed * Math.sin(angle * Math::PI / 180)).round(2)
-    when /pendulum bob is released/
-      pendulum1_mass, pendulum2_mass, pendulum1_height = args
-      velocity = Math.sqrt(2 * 9.8 * pendulum1_height / 100)
-      final_velocity = calculate_final_velocity_elastic_obj2(pendulum1_mass, velocity, pendulum2_mass, 0)
-      ((final_velocity**2) / (2 * 9.8) * 100).round(2)
-    when /frictionless horizontal surface/
-      puck1_mass, puck1_speed, puck2_mass = args
-      final_velocity1 = calculate_final_velocity_elastic_obj1(puck1_mass, puck1_speed, puck2_mass, 0)
-      final_velocity2 = calculate_final_velocity_elastic_obj2(puck1_mass, puck1_speed, puck2_mass, 0)
-      { puck1: final_velocity1.round(2), puck2: final_velocity2.round(2) }
-    when /projectile traveling horizontally/
-      projectile_mass, target_mass, projectile_speed = args
-      velocity = calculate_final_velocity_perfectly_inelastic(projectile_mass, projectile_speed, target_mass, 0)
-      ((velocity**2) / (2 * 9.8)).round(2)
-    when /dropped onto a/
-      _, _, initial_height, restitution = args
-      velocity = Math.sqrt(2 * 9.8 * initial_height)
-      final_velocity = restitution * velocity
-      ((final_velocity**2) / (2 * 9.8)).round(2)
-    else
-      0.0
-    end
+  def calculate_answer(question_text, *)
+    # Map patterns to handler methods
+    handlers = {
+      /bullet moving at/ => :calculate_bullet_block_collision,
+      /elastic collision with an initially stationary hydrogen atom/ => :calculate_hydrogen_atom_collision,
+      /soccer ball with mass/ => :calculate_soccer_ball_collision,
+      /cars stick together/ => :calculate_car_collision,
+      /pool ball of mass/ => :calculate_pool_ball_collision,
+      /pendulum bob is released/ => :calculate_pendulum_collision,
+      /frictionless horizontal surface/ => :calculate_puck_collision,
+      /projectile traveling horizontally/ => :calculate_projectile_collision,
+      /dropped onto a/ => :calculate_falling_object_collision
+    }
+
+    # Find the matching handler
+    handler_method = handlers.find { |pattern, _| question_text.match?(pattern) }&.last
+
+    # Call the handler or return default
+    handler_method ? send(handler_method, *) : 0.0
+  end
+
+  # Helper method for calculating velocity from height
+  def calculate_velocity_from_height(height, height_in_cm: false)
+    g = 9.8
+    height_meters = height_in_cm ? height / 100.0 : height
+    Math.sqrt(2 * g * height_meters)
+  end
+
+  # Helper method for calculating height from velocity
+  def calculate_height_from_velocity(velocity, return_in_cm: false)
+    g = 9.8
+    height = (velocity**2) / (2 * g)
+    return_in_cm ? height * 100 : height
+  end
+
+  # Individual problem handlers
+  def calculate_bullet_block_collision(bullet_mass, bullet_initial_speed, bullet_final_speed, block_mass)
+    initial_momentum = calculate_momentum(bullet_mass, bullet_initial_speed)
+    final_momentum = calculate_momentum(bullet_mass, bullet_final_speed)
+    block_velocity = (initial_momentum - final_momentum) / block_mass
+    block_velocity.round(2)
+  end
+
+  def calculate_hydrogen_atom_collision(mass_ratio)
+    (4.0 * mass_ratio / ((1 + mass_ratio)**2) * 100).round(2)
+  end
+
+  def calculate_soccer_ball_collision(ball1_mass, ball2_mass, drop_height)
+    velocity = calculate_velocity_from_height(drop_height)
+    final_velocity = calculate_final_velocity_elastic_obj1(ball1_mass, velocity, ball2_mass, 0)
+    calculate_height_from_velocity(final_velocity).round(2)
+  end
+
+  def calculate_car_collision(car1_mass, car1_speed, car2_mass, car2_speed)
+    calculate_final_velocity_perfectly_inelastic(car1_mass, car1_speed, car2_mass, car2_speed).round(2)
+  end
+
+  def calculate_pool_ball_collision(_, initial_speed, angle)
+    (initial_speed * Math.sin(angle * Math::PI / 180)).round(2)
+  end
+
+  def calculate_pendulum_collision(pendulum1_mass, pendulum2_mass, pendulum1_height)
+    velocity = calculate_velocity_from_height(pendulum1_height, true)
+    final_velocity = calculate_final_velocity_elastic_obj2(pendulum1_mass, velocity, pendulum2_mass, 0)
+    calculate_height_from_velocity(final_velocity, true).round(2)
+  end
+
+  def calculate_puck_collision(puck1_mass, puck1_speed, puck2_mass)
+    final_velocity1 = calculate_final_velocity_elastic_obj1(puck1_mass, puck1_speed, puck2_mass, 0)
+    final_velocity2 = calculate_final_velocity_elastic_obj2(puck1_mass, puck1_speed, puck2_mass, 0)
+    { puck1: final_velocity1.round(2), puck2: final_velocity2.round(2) }
+  end
+
+  def calculate_projectile_collision(projectile_mass, target_mass, projectile_speed)
+    velocity = calculate_final_velocity_perfectly_inelastic(projectile_mass, projectile_speed, target_mass, 0)
+    calculate_height_from_velocity(velocity).round(2)
+  end
+
+  def calculate_falling_object_collision(_, _, initial_height, restitution)
+    velocity = calculate_velocity_from_height(initial_height)
+    final_velocity = restitution * velocity
+    calculate_height_from_velocity(final_velocity).round(2)
   end
 
   # Format parameters for storing with the problem

@@ -1,4 +1,4 @@
-# rubocop:disable RSpec/MultipleDescribes, RSpec/MultipleExpectations
+# rubocop:disable RSpec/MultipleDescribes
 
 require 'rails_helper'
 
@@ -133,4 +133,4 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
   end
 end
 
-# rubocop:enable RSpec/MultipleDescribes, RSpec/MultipleExpectations
+# rubocop:enable RSpec/MultipleDescribes

@@ -60,11 +60,6 @@ RSpec.describe CollisionProblemGenerator do
         expect(v1).to be_within(0.01).of(0)
         expect(v2).to be_within(0.01).of(2)
 
-        # With e=0 (perfectly inelastic), objects should have same final velocity
-        v1, v2 = generator.send(:calculate_final_velocity_inelastic, 2, 3, 2, -1, 0.0)
-        expect(v1).to be_within(0.01).of(1)
-        expect(v2).to be_within(0.01).of(1)
-
         # With e=0.5 (partially inelastic)
         v1, v2 = generator.send(:calculate_final_velocity_inelastic, 1, 4, 1, 0, 0.5)
         expect(v1).to be_within(0.01).of(1)

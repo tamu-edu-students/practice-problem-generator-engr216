@@ -177,37 +177,54 @@ class PracticeProblemsController < ApplicationController
   end
 
   def handle_collisions
-    user_answer = params[:answer].to_f
     correct_answer = @question[:answer]
 
     if correct_answer.is_a?(Hash)
-      all_correct = correct_answer.all? do |key, value|
-        user_value = params[key].to_f
-        (user_value - value).abs <= 0.01
-      end
-      if all_correct
+      handle_multi_value_collision
+    else
+      handle_single_value_collision
+    end
+  end
+
+  def handle_multi_value_collision
+    correct_answer = @question[:answer]
+    all_correct = correct_answer.all? do |key, value|
+      user_value = params[key].to_f
+      (user_value - value).abs <= 0.01
+    end
+
+    if all_correct
+      redirect_to_success
+      :redirected
+    else
+      @error_message = 'One or more answers are incorrect. Please check your inputs.'
+      nil
+    end
+  end
+
+  def handle_single_value_collision
+    user_answer = params[:answer].to_f
+    correct_answer = @question[:answer]
+
+    begin
+      correct_answer_float = Float(correct_answer.to_s)
+      difference = (user_answer - correct_answer_float).abs
+
+      if difference <= 0.01
         redirect_to_success
         return :redirected
       else
-        @error_message = 'One or more answers are incorrect. Please check your inputs.'
+        set_direction_error_message(user_answer, correct_answer_float)
       end
-    else
-      # Force string to float conversion and handle potential errors
-      begin
-        correct_answer_float = Float(correct_answer.to_s)
-        difference = (user_answer - correct_answer_float).abs
-        if difference <= 0.01
-          redirect_to_success
-          return :redirected
-        else
-          direction = user_answer < correct_answer_float ? 'too low' : 'too high'
-          @error_message = "Your answer is #{direction} (correct answer: #{correct_answer_float})."
-        end
-      rescue StandardError => e
-        @error_message = 'There was an error processing your answer. Please try again.'
-      end
+    rescue StandardError
+      @error_message = 'There was an error processing your answer. Please try again.'
     end
     nil
+  end
+
+  def set_direction_error_message(user_answer, correct_answer)
+    direction = user_answer < correct_answer ? 'too low' : 'too high'
+    @error_message = "Your answer is #{direction} (correct answer: #{correct_answer})."
   end
 
   def check_probability_answer
