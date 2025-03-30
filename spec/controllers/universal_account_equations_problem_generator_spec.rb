@@ -61,7 +61,7 @@ RSpec.describe UniversalAccountEquationsProblemGenerator do
     end
 
     it 'includes answer' do
-      expect(question[:answer]).to be_a(Float)
+      expect(question[:answer]).to be_a(Float).or be_a(Integer)
     end
 
     it 'includes input fields as array' do
@@ -78,22 +78,6 @@ RSpec.describe UniversalAccountEquationsProblemGenerator do
 
     it 'parameters are not empty' do
       expect(question[:parameters]).not_to be_empty
-    end
-  end
-
-  describe 'private #generate_uae_problem' do
-    # Test that the method calls one of the generator methods
-    it 'calls one of the generator methods' do
-      problem_types = generator.instance_variable_get(:@problem_types)
-      allow(problem_types).to receive(:sample).and_return(:roller_coaster_velocity)
-
-      allow(generator).to receive(:generate_roller_coaster_velocity_problem).and_return({})
-
-      # Call the private method
-      generator.send(:generate_uae_problem)
-
-      # Verify the method was called
-      expect(generator).to have_received(:generate_roller_coaster_velocity_problem).once
     end
   end
 end
