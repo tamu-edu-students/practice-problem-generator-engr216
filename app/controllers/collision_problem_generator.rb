@@ -138,14 +138,14 @@ class CollisionProblemGenerator
   end
 
   # Helper method for calculating velocity from height
-  def calculate_velocity_from_height(height, height_in_cm: false)
+  def calculate_velocity_from_height(height, height_in_cm)
     g = 9.8
     height_meters = height_in_cm ? height / 100.0 : height
     Math.sqrt(2 * g * height_meters)
   end
 
   # Helper method for calculating height from velocity
-  def calculate_height_from_velocity(velocity, return_in_cm: false)
+  def calculate_height_from_velocity(velocity, return_in_cm)
     g = 9.8
     height = (velocity**2) / (2 * g)
     return_in_cm ? height * 100 : height
@@ -164,9 +164,9 @@ class CollisionProblemGenerator
   end
 
   def calculate_soccer_ball_collision(ball1_mass, ball2_mass, drop_height)
-    velocity = calculate_velocity_from_height(drop_height)
+    velocity = calculate_velocity_from_height(drop_height, false)
     final_velocity = calculate_final_velocity_elastic_obj1(ball1_mass, velocity, ball2_mass, 0)
-    calculate_height_from_velocity(final_velocity).round(2)
+    calculate_height_from_velocity(final_velocity, false).round(2)
   end
 
   def calculate_car_collision(car1_mass, car1_speed, car2_mass, car2_speed)
@@ -191,13 +191,13 @@ class CollisionProblemGenerator
 
   def calculate_projectile_collision(projectile_mass, target_mass, projectile_speed)
     velocity = calculate_final_velocity_perfectly_inelastic(projectile_mass, projectile_speed, target_mass, 0)
-    calculate_height_from_velocity(velocity).round(2)
+    calculate_height_from_velocity(velocity, false).round(2)
   end
 
   def calculate_falling_object_collision(_, _, initial_height, restitution)
-    velocity = calculate_velocity_from_height(initial_height)
+    velocity = calculate_velocity_from_height(initial_height, false)
     final_velocity = restitution * velocity
-    calculate_height_from_velocity(final_velocity).round(2)
+    calculate_height_from_velocity(final_velocity, false).round(2)
   end
 
   # Format parameters for storing with the problem
