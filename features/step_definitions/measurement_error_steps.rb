@@ -1,14 +1,9 @@
-Given('I am on the {string} page') do |page_name|
-  case page_name
-  when 'Measurement & Error'
-    # Ensure that this URL renders the measurement & error view.
-    visit generate_practice_problems_path(category_id: 'Measurements and Error')
-  else
-    visit root_path
-  end
+Given('I am on the measurement and error page') do
+  # Ensure that this URL renders the measurement & error view.
+  visit generate_practice_problems_path(category_id: 'Measurements and Error')
 end
 
-When('I click the {string} button') do |button_text|
+When('I click the measurement error {string} button') do |button_text|
   click_link_or_button button_text
 end
 
@@ -26,7 +21,7 @@ When('I select a measurement answer and submit the form') do
   click_button 'Check Answer'
 end
 
-Then('a new {string} problem should be dynamically generated') do |_category|
+Then('a new measurement error problem should be dynamically generated') do
   # The view should display a header like "Error and Measurement Question:"
   expect(page).to have_content('Error and Measurement Question:')
 end

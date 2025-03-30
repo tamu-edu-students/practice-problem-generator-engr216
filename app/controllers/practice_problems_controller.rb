@@ -13,7 +13,7 @@ class PracticeProblemsController < ApplicationController
     return redirect_to(generate_harmonic_motion_problems_path) if harmonic_motion_category?(@category)
 
     @question = question_for_category
-    
+
     # For error propagation questions, store the COMPLETE question including explanation
     if @question[:type] == 'propagation of error'
       session[:current_question] = @question.to_json
@@ -27,7 +27,7 @@ class PracticeProblemsController < ApplicationController
         field_label: @question[:field_label]
       }.to_json
     end
-    
+
     render determine_template_for_question(@question)
   end
 
@@ -134,25 +134,25 @@ class PracticeProblemsController < ApplicationController
   def parse_question_from_session
     if session[:current_question]
       question_data = JSON.parse(session[:current_question], symbolize_names: true)
-      
+
       # For error propagation, regenerate the complete question with the same seed
       if question_data[:type] == 'propagation of error' && session[:error_propagation_seed]
         # Store original answer to preserve the exact same question
         original_answer = question_data[:answer]
-        
+
         Random.srand(session[:error_propagation_seed])
         generator = ErrorPropagationProblemGenerator.new(@category)
         @question = generator.generate_questions.first
-        
+
         # Verify we got the same question by checking the answer
         if @question[:answer] != original_answer
           # If answers don't match, there's a randomness issue - fall back to original
           return question_data
         end
-        
+
         return @question
       end
-      
+
       return question_data
     end
     nil
@@ -169,11 +169,10 @@ class PracticeProblemsController < ApplicationController
     if @question && @question[:type] == 'propagation of error'
       params[:success] = true
       render determine_template_for_question(@question)
-      :redirected
     else
       redirect_to(generate_practice_problems_path(category_id: @category, success: true))
-      :redirected
     end
+    :redirected
   end
 
   def process_answer_for_question_type
@@ -286,6 +285,12 @@ class PracticeProblemsController < ApplicationController
   end
 
   def check_confidence_bounds(answers)
+    # Return early if answers is nil
+    unless answers
+      @error_message = 'No answers provided. Please try generating a new problem.'
+      return
+    end
+
     @error_message = check_lower_bound(answers[:lower_bound])
     return if @error_message
 
@@ -544,32 +549,49 @@ class PracticeProblemsController < ApplicationController
   end
 
   def check_error_propagation_answer
-    # Make sure we have the complete question data
-    if @question[:type] == 'propagation of error' && !@question[:explanation]
-      # Re-fetch the question data with full details
-      Random.srand(session[:error_propagation_seed]) if session[:error_propagation_seed]
-      generator = ErrorPropagationProblemGenerator.new(@category)
-      @question = generator.generate_questions.first
-    end
-    
+    ensure_complete_question_data
     user_ans = params[:answer].to_f
     correct = @question[:answer].to_f
-    
-    # For percentage answers (fractional error problems)
-    if @question[:field_label] && @question[:field_label].include?('%')
-      if (user_ans - correct).abs < 0.2
-        redirect_to_success
-      else
-        @error_message = user_ans < correct ? 'too small' : 'too large'
-        nil
-      end
-    # For normal uncertainty values
-    elsif (user_ans - correct).abs < correct * 0.05
+
+    if percentage_problem?
+      check_percentage_answer(user_ans, correct)
+    else
+      check_standard_answer(user_ans, correct)
+    end
+  end
+
+  def ensure_complete_question_data
+    return unless @question[:type] == 'propagation of error' && !@question[:explanation]
+
+    # Re-fetch the question data with full details
+    Random.srand(session[:error_propagation_seed]) if session[:error_propagation_seed]
+    generator = ErrorPropagationProblemGenerator.new(@category)
+    @question = generator.generate_questions.first
+  end
+
+  def percentage_problem?
+    @question[:field_label]&.include?('%')
+  end
+
+  def check_percentage_answer(user_ans, correct)
+    if (user_ans - correct).abs < 0.2
       redirect_to_success
     else
-      @error_message = user_ans < correct ? 'too small' : 'too large'
-      nil
+      set_error_message_for_answer(user_ans, correct)
     end
+  end
+
+  def check_standard_answer(user_ans, correct)
+    if (user_ans - correct).abs < correct * 0.05
+      redirect_to_success
+    else
+      set_error_message_for_answer(user_ans, correct)
+    end
+  end
+
+  def set_error_message_for_answer(user_ans, correct)
+    @error_message = user_ans < correct ? 'too small' : 'too large'
+    nil
   end
 end
 # rubocop:enable Metrics/ClassLength, Layout/LineLength

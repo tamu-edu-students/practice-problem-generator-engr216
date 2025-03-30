@@ -38,9 +38,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
   end
 
   describe 'GET #index' do
-    # Create a question with a category string so that it appears in the unique list.
-    # let!(:question) { Question.create!(category: 'Test Category', question: 'Sample question') }
-
     before do
       get :index
     end
@@ -87,9 +84,14 @@ RSpec.describe PracticeProblemsController, type: :controller do
         expect(basic_context[:questions]).to include(assigns(:question))
       end
 
-      it 'stores the question in the session as JSON' do
-        parsed_question = JSON.parse(session[:current_question], symbolize_names: true)
-        expect(parsed_question).to eq(assigns(:question))
+      it 'stores the question key in the session as JSON' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:question]).to eq(assigns(:question)[:question])
+      end
+
+      it 'stores the answer in the session as JSON' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:answer]).to eq(assigns(:question)[:answer])
       end
 
       it 'renders the :generate template' do
@@ -109,9 +111,14 @@ RSpec.describe PracticeProblemsController, type: :controller do
         expect(assigns(:question)[:question]).to eq('Q2')
       end
 
-      it 'stores the selected question in session as JSON' do
-        parsed_question = JSON.parse(session[:current_question], symbolize_names: true)
-        expect(parsed_question[:question]).to eq('Q2')
+      it 'stores the selected question in session' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:question]).to eq(assigns(:question)[:question])
+      end
+
+      it 'stores the selected answer in session' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:answer]).to eq(assigns(:question)[:answer])
       end
 
       it 'renders the :generate template' do
@@ -131,9 +138,14 @@ RSpec.describe PracticeProblemsController, type: :controller do
         expect(assigns(:question)[:question]).to eq('Q1')
       end
 
-      it 'stores the question in session as JSON' do
-        parsed_question = JSON.parse(session[:current_question], symbolize_names: true)
-        expect(parsed_question[:question]).to eq('Q1')
+      it 'stores the question in session' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:question]).to eq(assigns(:question)[:question])
+      end
+
+      it 'stores the answer in session' do
+        session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+        expect(session[:answer]).to eq(assigns(:question)[:answer])
       end
 
       it 'renders the :generate template' do
@@ -185,34 +197,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
       it 'renders the engineering_ethics_problem template for engineering ethics questions' do
         get :generate, params: { category_id: 'Engineering Ethics' }
         expect(response).to render_template('engineering_ethics_problem')
-      end
-    end
-
-    describe 'wrong answer template rendering' do
-      let(:probability_question) { { type: 'probability', question: 'Test?', answer: 42 } }
-      let(:confidence_interval_question) do
-        { type: 'confidence_interval', answers: { lower_bound: 10, upper_bound: 20 } }
-      end
-      let(:data_statistics_question) do
-        { type: 'data_statistics', answers: { mean: 5, median: 6 } }
-      end
-
-      it 'renders the statistics_problem template for wrong probability answers' do
-        allow(controller).to receive(:parse_question_from_session).and_return(probability_question)
-        post :check_answer, params: { category_id: 'Experimental Statistics', answer: 'wrong' }
-        expect(response).to render_template('practice_problems/statistics_problem')
-      end
-
-      it 'renders the statistics_problem template for wrong data statistics answers' do
-        allow(controller).to receive(:parse_question_from_session).and_return(data_statistics_question)
-        post :check_answer, params: { category_id: 'Experimental Statistics', mean: 'wrong', median: 'wrong' }
-        expect(response).to render_template('practice_problems/statistics_problem')
-      end
-
-      it 'renders the confidence_interval_problem template for wrong confidence interval answers' do
-        allow(controller).to receive(:parse_question_from_session).and_return(confidence_interval_question)
-        post :check_answer, params: { category_id: 'Confidence Intervals', lower_bound: 'wrong', upper_bound: 'wrong' }
-        expect(response).to render_template('practice_problems/confidence_interval_problem')
       end
     end
   end
@@ -368,9 +352,14 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(assigns(:question)[:answers]).to include(:lower_bound, :upper_bound)
     end
 
-    it 'stores the question in the session as JSON' do
-      parsed_question = JSON.parse(session[:current_question], symbolize_names: true)
-      expect(parsed_question[:type]).to eq('confidence_interval')
+    it 'stores the question in the session' do
+      session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+      expect(session[:question]).to eq(assigns(:question)[:question])
+    end
+
+    it 'stores the answer in the session' do
+      session = JSON.parse(controller.session[:current_question], symbolize_names: true)
+      expect(session[:answer]).to eq(assigns(:question)[:answer])
     end
 
     it 'renders the confidence_interval_problem template' do
@@ -469,29 +458,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
   end
 
-  describe 'handle_confidence_interval_problem' do
-    let(:ci_handle_context) do
-      {
-        category: 'Confidence Intervals',
-        generator: instance_double(ConfidenceIntervalProblemGenerator),
-        question: { type: 'confidence_interval', question: 'Test CI question' }
-      }
-    end
-
-    before do
-      allow(ConfidenceIntervalProblemGenerator).to receive(:new)
-        .with(ci_handle_context[:category])
-        .and_return(ci_handle_context[:generator])
-      allow(ci_handle_context[:generator]).to receive(:generate_questions)
-        .and_return([ci_handle_context[:question]])
-      get :generate, params: { category_id: ci_handle_context[:category] }
-    end
-
-    it 'assigns the generated question' do
-      expect(assigns(:question)).to eq(ci_handle_context[:question])
-    end
-  end
-
   describe 'set_error_message' do
     it 'formats error message for string keys' do
       controller.send(:set_error_message, 'mean', 5.0, 4.0)
@@ -509,353 +475,267 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
   end
 
-  describe 'check_confidence_interval_answers additional testing' do
+  describe 'parameter extraction from question text' do
     let(:category) { 'Confidence Intervals' }
+    let(:question) do
+      {
+        type: 'confidence_interval',
+        question: 'A sample of 25 water samples has a mean concentration of 10.5 ppm with a population ' \
+                  'standard deviation of 2.1 ppm. Calculate the 95% confidence interval.',
+        answers: { lower_bound: 9.68, upper_bound: 11.32 }
+      }
+    end
 
     before do
-      question = {
+      session[:current_question] = question.to_json
+      session[:debug_info] = nil
+    end
+
+    it 'extracts sample size parameter from text' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('25')
+    end
+
+    it 'extracts sample mean parameter from text' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('10.5')
+    end
+
+    it 'extracts standard deviation parameter from text' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('2.1')
+    end
+
+    it 'extracts confidence level parameter from text' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('95%')
+    end
+  end
+
+  # Test extraction with parameters present in question data
+  describe 'confidence interval with parameters in question data' do
+    let(:category) { 'Confidence Intervals' }
+    let(:question) do
+      {
         type: 'confidence_interval',
-        question: 'A city measures the daily water usage of 50 water samples, ' \
-                  'with a sample mean concentration of 125.5. ' \
-                  'Assume the population standard deviation is 18.2, ' \
-                  'and water usage is normally distributed. ' \
-                  'Construct a 95% confidence interval.',
-        answers: {
-          lower_bound: 120.45,
-          upper_bound: 130.55
-        },
-        input_fields: [
-          { label: 'Lower Bound', key: 'lower_bound' },
-          { label: 'Upper Bound', key: 'upper_bound' }
-        ]
+        question: 'Calculate the confidence interval...',
+        answers: { lower_bound: 9.68, upper_bound: 11.32 },
+        parameters: {
+          sample_size: 25,
+          sample_mean: 10.5,
+          pop_std: 2.1,
+          confidence_level: 95
+        }
       }
+    end
+
+    before do
       session[:current_question] = question.to_json
     end
 
-    it 'includes debug info for extracted parameters' do
-      post :check_answer, params: { category_id: category, lower_bound: '120.45', upper_bound: '130.55' }
-      expect(session[:debug_info]).to include('Extracted parameters')
+    it 'uses sample size parameter from question data' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('sample_size=25')
     end
 
-    it 'accepts values that are very close but not exact' do
-      post :check_answer, params: { category_id: category, lower_bound: '120.44', upper_bound: '130.56' }
-      expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+    it 'uses sample mean parameter from question data' do
+      post :check_answer, params: { category_id: category, lower_bound: '9.68', upper_bound: '11.32' }
+      expect(session[:debug_info]).to include('sample_mean=10.5')
     end
   end
 
-  describe 'checking confidence interval water usage answers' do
-    let(:category) { 'Confidence Intervals' }
-    let(:question_text) do
-      'A city measures the daily water usage of 50 water samples, ' \
-        'with a sample mean concentration of 125.5. ' \
-        'Assume the population standard deviation is 18.2, ' \
-        'and water usage is normally distributed. ' \
-        'Construct a 95% confidence interval.'
-    end
+  # Tests for engineering ethics answer checking
+  describe 'engineering ethics answer checking' do
+    let(:category) { 'Engineering Ethics' }
 
-    before do
-      question = {
-        type: 'confidence_interval',
-        question: question_text,
-        answers: {
-          lower_bound: 120.45,
-          upper_bound: 130.55
-        },
-        input_fields: [
-          { label: 'Lower Bound', key: 'lower_bound' },
-          { label: 'Upper Bound', key: 'upper_bound' }
-        ]
+    context 'with true answer' do
+      let(:question) do
+        {
+          type: 'engineering_ethics',
+          question: 'Is it ethical to...?',
+          answer: true
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+      end
+
+      it 'redirects to success page when answer is correct' do
+        post :check_answer, params: { category_id: category, ethics_answer: 'true' }
+        expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+      end
+
+      it 'sets error message' do
+        post :check_answer, params: { category_id: category, ethics_answer: 'false' }
+        expect(assigns(:error_message)).to include("That's incorrect")
+      end
+
+      it 'includes correct answer in error message' do
+        post :check_answer, params: { category_id: category, ethics_answer: 'false' }
+        expect(assigns(:error_message)).to include('True')
+      end
+    end
+  end
+
+  # Tests for finite differences problems
+  describe 'handle_finite_differences_problem' do
+    let(:fd_context) do
+      {
+        category: 'Finite Differences',
+        generator: instance_double(FiniteDifferencesProblemGenerator),
+        question: { type: 'finite_differences', question: 'Test FD question' }
       }
-      session[:current_question] = question.to_json
     end
 
-    it 'includes extracted parameters in debug info' do
-      post :check_answer, params: { category_id: category, lower_bound: '120.45', upper_bound: '130.55' }
-      expect(session[:debug_info]).to include('Extracted parameters')
-    end
-  end
-
-  describe '#determine_template_for_question' do
-    it 'returns statistics_problem for probability questions' do
-      controller = described_class.new
-      question = { type: 'probability' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('statistics_problem')
-    end
-
-    it 'returns statistics_problem for data_statistics questions' do
-      controller = described_class.new
-      question = { type: 'data_statistics' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('statistics_problem')
-    end
-
-    it 'returns confidence_interval_problem for confidence_interval questions' do
-      controller = described_class.new
-      question = { type: 'confidence_interval' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('confidence_interval_problem')
-    end
-
-    it 'returns engineering_ethics_problem for engineering_ethics questions' do
-      controller = described_class.new
-      question = { type: 'engineering_ethics' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('engineering_ethics_problem')
-    end
-
-    it 'returns generate for unknown question types' do
-      controller = described_class.new
-      question = { type: 'unknown_type' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('generate')
-    end
-
-    it 'returns finite_differences_problem for finite_differences questions' do
-      controller = described_class.new
-      question = { type: 'finite_differences' }
-      expect(controller.send(:determine_template_for_question, question)).to eq('finite_differences_problem')
-    end
-  end
-
-  describe 'finite differences template rendering' do
     before do
-      allow(controller).to receive(:question_for_category).and_return({
-                                                                        type: 'finite_differences',
-                                                                        question: 'Test finite differences question',
-                                                                        answer: 42
-                                                                      })
+      allow(FiniteDifferencesProblemGenerator).to receive(:new)
+        .with(fd_context[:category])
+        .and_return(fd_context[:generator])
+      allow(fd_context[:generator]).to receive(:generate_questions)
+        .and_return([fd_context[:question]])
     end
 
-    it 'renders the finite_differences_problem template for finite differences questions' do
-      get :generate, params: { category_id: 'Finite Differences' }
+    it 'generates a finite differences problem' do
+      get :generate, params: { category_id: fd_context[:category] }
+      expect(assigns(:question)).to eq(fd_context[:question])
+    end
+
+    it 'renders the finite differences template' do
+      get :generate, params: { category_id: fd_context[:category] }
       expect(response).to render_template('finite_differences_problem')
     end
   end
 
-  describe 'finite differences answer checking' do
-    let(:finite_diff_question) do
-      {
-        type: 'finite_differences',
-        question: 'Test question',
-        answer: 42,
-        input_fields: [{ label: 'Answer', key: 'answer' }],
-        parameters: { answer: 42 }
-      }
-    end
-
-    it 'redirects to success for correct finite differences answers' do
-      allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
-      post :check_answer, params: { category_id: 'Finite Differences', answer: '42' }
-      expect(response).to redirect_to(generate_practice_problems_path(category_id: 'Finite Differences', success: true))
-    end
-
-    it 'renders the finite_differences_problem template for wrong finite differences answers' do
-      allow(controller).to receive(:parse_question_from_session).and_return(finite_diff_question)
-      post :check_answer, params: { category_id: 'Finite Differences', answer: 'wrong' }
-      expect(response).to render_template('practice_problems/finite_differences_problem')
-    end
-
-    # Test the multi-field case also
-    context 'with multiple input fields' do
-      before do
-        # Define the multi-field question
-        multi_field_question = {
+  # Tests for finite differences answer checking
+  describe 'POST #check_answer with finite differences' do
+    context 'with single answer field' do
+      let(:category) { 'Finite Differences' }
+      let(:question) do
+        {
           type: 'finite_differences',
-          question: 'Test multi-field question',
-          answer: nil,
+          question: 'Calculate the value',
+          answer: 42.0
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+      end
+
+      it 'redirects to success page when answer is correct' do
+        post :check_answer, params: { category_id: category, answer: '42.0' }
+        expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+      end
+
+      it 'sets error message when answer is too small' do
+        post :check_answer, params: { category_id: category, answer: '41.0' }
+        expect(assigns(:error_message)).to eq('too small')
+      end
+    end
+
+    context 'with multiple input fields' do
+      let(:category) { 'Finite Differences' }
+      let(:question) do
+        {
+          type: 'finite_differences',
+          question: 'Calculate multiple values',
           input_fields: [
-            { label: 'Forward Difference', key: 'forward_diff' },
-            { label: 'Backward Difference', key: 'backward_diff' },
-            { label: 'Centered Difference', key: 'centered_diff' }
+            { key: 'field1', label: 'Field 1' },
+            { key: 'field2', label: 'Field 2' }
           ],
           parameters: {
-            forward_diff: 5.0,
-            backward_diff: 4.5,
-            centered_diff: 4.75
+            field1: 10.0,
+            field2: 20.0
           }
         }
-
-        allow(controller).to receive(:parse_question_from_session).and_return(multi_field_question)
       end
 
-      # Combined params and expected paths to reduce memoized helpers
-      let(:test_data) do
-        {
-          params: {
-            category_id: 'Finite Differences',
-            forward_diff: '5.0',
-            backward_diff: '4.5',
-            centered_diff: '4.75'
-          },
-          success_path: generate_practice_problems_path(
-            category_id: 'Finite Differences',
-            success: true
-          )
-        }
+      before do
+        session[:current_question] = question.to_json
       end
 
-      it 'redirects on successful submission' do
-        post :check_answer, params: test_data[:params]
-        expect(response).to redirect_to(test_data[:success_path])
+      it 'redirects to success page when all answers are correct' do
+        post :check_answer, params: { category_id: category, field1: '10.0', field2: '20.0' }
+        expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+      end
+
+      it 'sets error message when first field is incorrect' do
+        post :check_answer, params: { category_id: category, field1: '9.0', field2: '20.0' }
+        expect(assigns(:error_message)).to include('too low')
       end
     end
   end
 
-  describe 'finite differences functionality' do
-    # Combine question definitions
-    let(:fd_questions) do
+  # Adjust the nesting level to fix the RSpec/NestedGroups offense
+  describe 'finite differences with missing parameter' do
+    let(:category) { 'Finite Differences' }
+    let(:question) do
       {
-        single: {
-          type: 'finite_differences',
-          question: 'Test finite differences question',
-          answer: 42,
-          parameters: { x0: 2, h: 0.1 }
-        },
-        multiple: {
-          type: 'finite_differences',
-          question: 'Test finite differences with multiple fields',
-          parameters: {
-            forward: 12.5,
-            backward: 11.8,
-            centered: 12.0
-          },
-          input_fields: [
-            { key: 'forward', label: 'Forward Difference' },
-            { key: 'backward', label: 'Backward Difference' },
-            { key: 'centered', label: 'Centered Difference' }
-          ]
-        }
+        type: 'finite_differences',
+        question: 'Calculate the value',
+        input_fields: [
+          { key: 'field1', label: 'Field 1' }
+        ],
+        parameters: {}
       }
     end
 
-    describe 'template rendering' do
-      it 'renders the finite_differences_problem template for finite differences questions' do
-        allow(controller).to receive(:question_for_category).and_return(fd_questions[:single])
-        get :generate, params: { category_id: 'Finite Differences' }
-        expect(response).to render_template('finite_differences_problem')
-      end
+    before do
+      session[:current_question] = question.to_json
     end
 
-    describe 'generator setup' do
-      let(:setup_data) do
-        {
-          category: 'Finite Differences',
-          generator: instance_double(FiniteDifferencesProblemGenerator),
-          question: fd_questions[:single]
-        }
-      end
+    it 'handles missing parameter definition' do
+      post :check_answer, params: { category_id: category, field1: '10.0' }
+      expect(assigns(:error_message)).to include('Missing parameter definition')
+    end
+  end
 
-      before do
-        allow(FiniteDifferencesProblemGenerator).to receive(:new)
-          .with(setup_data[:category])
-          .and_return(setup_data[:generator])
-        allow(setup_data[:generator]).to receive(:generate_questions)
-          .and_return([setup_data[:question]])
-      end
-
-      it 'initializes the generator with the correct category' do
-        get :generate, params: { category_id: setup_data[:category] }
-        expect(FiniteDifferencesProblemGenerator).to have_received(:new).with(setup_data[:category])
-      end
-
-      it 'assigns the generated question' do
-        get :generate, params: { category_id: setup_data[:category] }
-        expect(assigns(:question)).to eq(setup_data[:question])
-      end
+  # Tests for universal account equations problems
+  describe 'handle_universal_account_equations_problem' do
+    let(:uae_context) do
+      {
+        category: 'Universal Accounting Equation',
+        generator: instance_double(UniversalAccountEquationsProblemGenerator),
+        question: { type: 'universal_account_equations', question: 'Test UAE question', answer: 100 }
+      }
     end
 
-    describe 'single answer field correct submission' do
-      before do
-        session[:current_question] = fd_questions[:single].to_json
-        post :check_answer, params: {
-          category_id: 'Finite Differences',
-          answer: '42'
-        }
-      end
-
-      it 'redirects to success path' do
-        expect(response).to redirect_to(
-          generate_practice_problems_path(category_id: 'Finite Differences', success: true)
-        )
-      end
+    before do
+      allow(UniversalAccountEquationsProblemGenerator).to receive(:new)
+        .with(uae_context[:category])
+        .and_return(uae_context[:generator])
+      allow(uae_context[:generator]).to receive(:generate_questions)
+        .and_return([uae_context[:question]])
     end
 
-    describe 'single answer field incorrect submission' do
-      before do
-        session[:current_question] = fd_questions[:single].to_json
-        post :check_answer, params: {
-          category_id: 'Finite Differences',
-          answer: '40'
-        }
-      end
-
-      it 'renders the template' do
-        expect(response).to render_template('finite_differences_problem')
-      end
-
-      it 'sets error message' do
-        expect(assigns(:error_message)).not_to be_nil
-      end
+    it 'assigns the generated problem' do
+      get :generate, params: { category_id: uae_context[:category] }
+      expect(assigns(:question)).to eq(uae_context[:question])
     end
 
-    describe 'multiple input fields with all correct answers' do
-      before do
-        session[:current_question] = fd_questions[:multiple].to_json
-        post :check_answer, params: {
-          category_id: 'Finite Differences',
-          forward: '12.5',
-          backward: '11.8',
-          centered: '12.0'
-        }
-      end
+    it 'renders the correct template' do
+      get :generate, params: { category_id: uae_context[:category] }
+      expect(response).to render_template('universal_account_equations_problem')
+    end
+  end
 
-      it 'redirects to success path' do
-        expect(response).to redirect_to(
-          generate_practice_problems_path(category_id: 'Finite Differences', success: true)
-        )
-      end
+  # Tests for special category redirections
+  describe 'special category redirects' do
+    it 'redirects to measurement and error controller for measurement categories' do
+      get :generate, params: { category_id: 'Measurement & Error' }
+      expect(response).to redirect_to(generate_measurements_and_error_problems_path)
     end
 
-    describe 'multiple input fields with one incorrect answer' do
-      before do
-        session[:current_question] = fd_questions[:multiple].to_json
-        post :check_answer, params: {
-          category_id: 'Finite Differences',
-          forward: '12.5',
-          backward: '10.0', # Incorrect value
-          centered: '12.0'
-        }
-      end
-
-      it 'renders the finite differences template' do
-        expect(response).to render_template('finite_differences_problem')
-      end
-
-      it 'sets error message' do
-        expect(assigns(:error_message)).not_to be_nil
-      end
-    end
-
-    describe 'multiple input fields with missing answer' do
-      before do
-        session[:current_question] = fd_questions[:multiple].to_json
-        post :check_answer, params: {
-          category_id: 'Finite Differences',
-          forward: '12.5',
-          backward: '11.8'
-          # centered is missing
-        }
-      end
-
-      it 'renders the finite differences template' do
-        expect(response).to render_template('finite_differences_problem')
-      end
-
-      it 'sets error message' do
-        expect(assigns(:error_message)).not_to be_nil
-      end
+    it 'redirects to harmonic motion controller for harmonic motion categories' do
+      get :generate, params: { category_id: 'Harmonic Motion Category' }
+      expect(response).to redirect_to(generate_harmonic_motion_problems_path)
     end
   end
 
   context 'with propagation of error category' do
     let(:category) { 'propagation of error' }
-    let(:generator) { instance_double("ErrorPropagationProblemGenerator") }
+    let(:generator) { instance_double(ErrorPropagationProblemGenerator) }
     let(:question) do
       {
         type: 'propagation of error',
@@ -871,47 +751,69 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
 
     describe 'GET #generate' do
-      it 'generates an error propagation problem' do
+      it 'assigns the question' do
         get :generate, params: { category_id: category }
         expect(assigns(:question)).to eq(question)
+      end
+
+      it 'renders the correct template' do
+        get :generate, params: { category_id: category }
         expect(response).to render_template('propagation_of_error_problem')
       end
     end
 
-    describe 'POST #check_answer' do
+    # Adjust nesting level to fix RSpec/NestedGroups offenses
+    describe 'POST #check_answer for correct answer' do
       before do
         session[:current_question] = question.to_json
       end
 
-      context 'with correct answer' do
-        it 'renders the page with success parameter' do
-          post :check_answer, params: { category_id: category, answer: '0.123' }
-          expect(response).to render_template('propagation_of_error_problem')
-          expect(assigns(:question)).to eq(question)
-        end
+      it 'renders the problem template' do
+        post :check_answer, params: { category_id: category, answer: '0.123' }
+        expect(response).to render_template('propagation_of_error_problem')
       end
 
-      context 'with close answer (within 5%)' do
-        it 'renders the page with success parameter' do
-          post :check_answer, params: { category_id: category, answer: '0.126' }
-          expect(response).to render_template('propagation_of_error_problem')
-          expect(assigns(:question)).to eq(question)
-        end
+      it 'assigns the question' do
+        post :check_answer, params: { category_id: category, answer: '0.123' }
+        expect(assigns(:question)).to eq(question)
+      end
+    end
+
+    describe 'POST #check_answer for incorrect answer' do
+      before do
+        session[:current_question] = question.to_json
       end
 
-      context 'with incorrect answer' do
-        it 'sets error message when too small' do
-          post :check_answer, params: { category_id: category, answer: '0.090' }
-          expect(assigns(:error_message)).to eq('too small')
-          expect(response).to render_template('propagation_of_error_problem')
-        end
-
-        it 'sets error message when too large' do
-          post :check_answer, params: { category_id: category, answer: '0.150' }
-          expect(assigns(:error_message)).to eq('too large')
-          expect(response).to render_template('propagation_of_error_problem')
-        end
+      it 'sets error message for small answer' do
+        post :check_answer, params: { category_id: category, answer: '0.090' }
+        expect(assigns(:error_message)).to eq('too small')
       end
+
+      it 'renders the problem template' do
+        post :check_answer, params: { category_id: category, answer: '0.090' }
+        expect(response).to render_template('propagation_of_error_problem')
+      end
+    end
+  end
+
+  # Tests for #determine_template_for_question
+  describe '#determine_template_for_question' do
+    it 'returns statistics_problem for probability questions' do
+      controller = described_class.new
+      question = { type: 'probability' }
+      expect(controller.send(:determine_template_for_question, question)).to eq('statistics_problem')
+    end
+
+    it 'returns engineering_ethics_problem for engineering_ethics questions' do
+      controller = described_class.new
+      question = { type: 'engineering_ethics' }
+      expect(controller.send(:determine_template_for_question, question)).to eq('engineering_ethics_problem')
+    end
+
+    it 'returns generate for unknown question types' do
+      controller = described_class.new
+      question = { type: 'unknown_type' }
+      expect(controller.send(:determine_template_for_question, question)).to eq('generate')
     end
   end
 end

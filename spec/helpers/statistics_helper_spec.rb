@@ -1,52 +1,58 @@
 require 'rails_helper'
 
 RSpec.describe StatisticsHelper, type: :helper do
-  describe '#pnorm' do
-    it 'returns 0.5 for z-score of 0' do
-      expect(described_class.pnorm(0)).to be_within(0.0001).of(0.5)
+  describe '.pnorm' do
+    it 'returns 0.0 when z-score is less than -10' do
+      expect(described_class.pnorm(-11)).to eq(0.0)
     end
 
-    it 'returns close to 0.025 for z-score of -1.96' do
-      expect(described_class.pnorm(-1.96)).to be_within(0.005).of(0.025)
+    it 'returns 1.0 when z-score is greater than 10' do
+      expect(described_class.pnorm(11)).to eq(1.0)
     end
 
-    it 'returns close to 0.975 for z-score of 1.96' do
-      expect(described_class.pnorm(1.96)).to be_within(0.005).of(0.975)
-    end
-
-    it 'returns close to 1 for very large z-score' do
-      expect(described_class.pnorm(10)).to be_within(0.0001).of(1.0)
-    end
-
-    it 'returns close to 0 for very small z-score' do
-      expect(described_class.pnorm(-10)).to be_within(0.0001).of(0.0)
+    it 'calculates normal CDF for values within range' do
+      # For z=1, CDF ≈ 0.8413
+      expect(described_class.pnorm(1)).to be_within(0.0001).of(0.8413)
     end
   end
 
   describe '#mean' do
-    it 'calculates the mean of an array' do
-      expect(helper.mean([1, 2, 3, 4, 5])).to eq(3.0)
+    it 'returns nil for empty array' do
+      expect(helper.mean([])).to be_nil
     end
 
-    it 'returns nil for an empty array' do
-      expect(helper.mean([])).to be_nil
+    it 'calculates mean correctly' do
+      expect(helper.mean([1, 2, 3, 4, 5])).to eq(3.0)
     end
   end
 
   describe '#variance' do
-    it 'calculates the variance of an array' do
-      expect(helper.variance([1, 2, 3, 4, 5])).to be_within(0.01).of(2.0)
+    it 'returns 0.0 when array has 0 elements' do
+      expect(helper.variance([])).to eq(0.0)
     end
 
-    it 'handles single-element arrays' do
+    it 'returns 0.0 when array has 1 element' do
       expect(helper.variance([5])).to eq(0.0)
+    end
+
+    it 'calculates variance correctly' do
+      # Variance of [1, 2, 3, 4, 5] = 2.0
+      expect(helper.variance([1, 2, 3, 4, 5])).to be_within(0.0001).of(2.0)
     end
   end
 
   describe '#standard_deviation' do
-    it 'calculates the standard deviation from variance' do
-      allow(helper).to receive(:variance).with([1, 2, 3, 4, 5]).and_return(2.0)
-      expect(helper.standard_deviation([1, 2, 3, 4, 5])).to be_within(0.01).of(1.414)
+    it 'returns 0.0 when array has 0 elements' do
+      expect(helper.standard_deviation([])).to eq(0.0)
+    end
+
+    it 'returns 0.0 when array has 1 element' do
+      expect(helper.standard_deviation([5])).to eq(0.0)
+    end
+
+    it 'calculates standard deviation correctly' do
+      # Std dev of [1, 2, 3, 4, 5] = √2 ≈ 1.4142
+      expect(helper.standard_deviation([1, 2, 3, 4, 5])).to be_within(0.0001).of(1.4142)
     end
   end
 end

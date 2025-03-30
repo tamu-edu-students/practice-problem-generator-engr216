@@ -1,5 +1,3 @@
-# rubocop:disable Layout/LineLength
-
 class ErrorPropagationProblemGenerator
   attr_reader :category
 
@@ -10,33 +8,33 @@ class ErrorPropagationProblemGenerator
   # Returns an array containing one randomly selected question
   def generate_questions
     # For fractional error problems
-    fractional_methods = [
-      :kinetic_energy_fractional_problem,
-      :gravitational_force_fractional_problem,
-      :velocity_fractional_problem,
-      :circular_area_problem,
-      :spring_potential_energy_problem,
-      :yo_yo_problem
+    fractional_methods = %i[
+      kinetic_energy_fractional_problem
+      gravitational_force_fractional_problem
+      velocity_fractional_problem
+      circular_area_problem
+      spring_potential_energy_problem
+      yo_yo_problem
     ]
-    
+
     # For absolute uncertainty problems
-    absolute_methods = [
-      :pendulum_period_problem,
-      :projectile_range_problem
+    absolute_methods = %i[
+      pendulum_period_problem
+      projectile_range_problem
     ]
-    
+
     # Choose whether to use a fractional or absolute method
     all_methods = rand > 0.5 ? fractional_methods : absolute_methods
-    
+
     # Pick a random method
     method_name = all_methods.sample
-    
+
     # Call the method on the module directly
     problem_data = ErrorPropagationProblemGenerators.send(method_name)
-    
+
     # Convert to our standardized question format
     question = generate_problem_from_data(problem_data)
-    
+
     [question]
   end
 
@@ -78,5 +76,3 @@ class ErrorPropagationProblemGenerator
     end
   end
 end
-
-# rubocop:enable Layout/LineLength 

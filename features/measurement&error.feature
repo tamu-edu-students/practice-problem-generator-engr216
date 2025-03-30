@@ -4,12 +4,12 @@ Feature: Measurement & Error Problem Generator
   So that I can practice measurement and error
 
   Scenario: Generate new Problem
-    Given I am on the "Measurement & Error" page
-    When I click the "Generate New Problem" button
-    Then a new "Measurement & Error" problem should be dynamically generated
+    Given I am on the measurement and error page
+    When I click the measurement error "Generate New Problem" button
+    Then a new measurement error problem should be dynamically generated
 
   Scenario: Answer Submission
-    Given I am on the "Measurement & Error" page
+    Given I am on the measurement and error page
     When I select a measurement answer and submit the form
     Then I should receive measurement feedback
 

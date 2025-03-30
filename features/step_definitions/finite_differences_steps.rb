@@ -1,4 +1,4 @@
-Given('I am on the "Finite Differences" page') do
+Given('I am on the Finite Differences problem page') do
   visit generate_practice_problems_path(category_id: 'Finite Differences')
   expect(page).to have_content('Finite Differences')
 end
@@ -8,12 +8,15 @@ When('I click the finite differences new problem button') do
   click_link('Generate New Problem') if has_link?('Generate New Problem')
 end
 
-Then('a new "Finite Differences" problem should be dynamically generated') do
+Then('a new finite differences problem should be generated') do
   expect(page).to have_content('Finite Differences')
   expect(page).to have_css('.question-card') if has_css?('.question-card')
 end
 
 When('I submit a finite differences answer') do
+  # Generate a new problem first to ensure we have content
+  step 'I click the finite differences new problem button'
+
   # For a numeric answer
   fill_in('answer', with: '2.5') if has_field?('answer')
 
