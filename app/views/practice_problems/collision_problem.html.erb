@@ -1,4 +1,4 @@
-<%# Universal Account Equations Problem Template %>
+<%# Collision Problem Template %>
 <div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
   <%= render 'shared/navbar' %>
   
@@ -20,7 +20,7 @@
   <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
     <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
       <% if @question && @question[:question] %>
-        <h1 class="text-3xl font-bold mb-6">Universal Accounting Equation Problem:</h1>
+        <h1 class="text-3xl font-bold mb-6">Collision Problem:</h1>
         <p class="text-xl mb-6"><%= @question[:question] %></p>
         <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units. Do not use scientific notation.</strong></p>
       <% else %>
