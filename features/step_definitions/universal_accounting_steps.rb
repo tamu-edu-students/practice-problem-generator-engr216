@@ -1,4 +1,4 @@
-Given('I am on the "Universal Accounting Equation" page') do
+Given('I am on the "Universal Accounting Equation" page for UAE') do
   visit generate_practice_problems_path(category_id: 'Universal Accounting Equation')
 end
 
@@ -8,15 +8,12 @@ end
 
 When('I submit an answer for Universal Accounting Equation') do
   # Find input fields and fill them with test values
-  page.all('input[type="text"]').find_each do |input|
-    input.fill_in(with: '100.00')
-  end
-
+  fill_in 'answer', with: '42'
   click_button 'Check Answer'
 end
 
-Then('a new "Universal Accounting Equation" problem should be dynamically generated') do
-  expect(page).to have_css('h1', text: 'Universal Account Equations Problem:')
+Then('a new "Universal Accounting Equation" problem should be dynamically generated for UAE') do
+  expect(page).to have_css('h1', text: 'Universal Accounting Equation Problem:')
 end
 
 Then('I should receive feedback on my answer for Universal Accounting Equation') do

@@ -70,7 +70,6 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
   end
 
   before do
-    # Instead of allow_any_instance_of, we stub the constructor on the class.
     allow(MeasurementsAndErrorProblemGenerator).to receive(:new)
       .and_return(instance_double(
                     MeasurementsAndErrorProblemGenerator,
