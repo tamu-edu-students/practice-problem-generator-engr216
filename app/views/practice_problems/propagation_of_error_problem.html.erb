@@ -1,0 +1,131 @@
+<%# Propagation of Error Problem Template %>
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
+  <%= render 'shared/navbar' %>
+  
+  <!-- Fixed Floating Back Arrow (Pack Button) -->
+  <%= link_to "←", practice_problems_path, 
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  
+  <!-- Spacer between navbar and content -->
+  <div class="h-24"></div>
+  
+  <!-- Title -->
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black">Category: <%= @category %></h1>
+  </div>
+  
+  <!-- Card for Questions and Answers -->
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
+      <% if @question && @question[:question] %>
+        <h1 class="text-3xl font-bold mb-6">Propagation of Error Practice Problem</h1>
+        
+        <!-- Question text with improved mathematical formatting -->
+        <p class="text-xl mb-6"><%= @question[:question].gsub(" Provide your answer as a percentage rounded to one decimal place.", "").html_safe %></p>
+        
+        <!-- Small grey instructions text -->
+        <% if @question[:field_label]&.include?('%') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to one decimal place. Do not include units.</strong></p>
+        <% elsif @question[:field_label]&.include?('area') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units.</strong></p>
+        <% elsif @question[:field_label]&.include?('volume') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units.</strong></p>
+        <% elsif @question[:field_label]&.include?('density') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to three decimal places. Do not include units.</strong></p>
+        <% elsif @question[:question]&.include?('one decimal place') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to one decimal place. Do not include units.</strong></p>
+        <% elsif @question[:question]&.include?('two decimal places') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units.</strong></p>
+        <% elsif @question[:question]&.include?('three decimal places') %>
+          <p class="text-md text-gray-300 mb-6"><strong>Round your answer to three decimal places. Do not include units.</strong></p>
+        <% else %>
+          <% precision = (@question[:answer].to_s.split('.')[1] || "").length %>
+          <% if precision == 0 %>
+            <p class="text-md text-gray-300 mb-6"><strong>Enter your answer as a whole number. Do not include units.</strong></p>
+          <% elsif precision == 1 %>
+            <p class="text-md text-gray-300 mb-6"><strong>Round your answer to one decimal place. Do not include units.</strong></p>
+          <% elsif precision == 2 %>
+            <p class="text-md text-gray-300 mb-6"><strong>Round your answer to two decimal places. Do not include units.</strong></p>
+          <% else %>
+            <p class="text-md text-gray-300 mb-6"><strong>Round your answer to three decimal places. Do not include units.</strong></p>
+          <% end %>
+        <% end %>
+        
+        <% if @question[:data_table].present? %>
+          <div class="overflow-x-auto mb-6">
+            <table class="table-auto w-full bg-gray-700 border border-gray-600">
+              <thead>
+                <tr>
+                  <% @question[:data_table][:headers].each do |header| %>
+                    <th class="px-4 py-2 border-b border-gray-600"><%= header %></th>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <% @question[:data_table][:rows].each do |row| %>
+                  <tr>
+                    <% row.each do |cell| %>
+                      <td class="px-4 py-2 border-b border-gray-600"><%= cell %></td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      <% else %>
+        <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
+      <% end %>
+      
+      <% if !params[:success] %>
+        <%= form_with url: check_answer_practice_problems_path, method: :post, local: true do |form| %>
+          <%= form.hidden_field :category_id, value: @category %>
+          
+          <div class="flex flex-wrap justify-center gap-4 mt-6">
+            <% if @question[:input_fields].present? %>
+              <% @question[:input_fields].each do |field| %>
+                <div class="flex flex-col items-center">
+                  <label class="mb-2 text-xl"><%= field[:label] %></label>
+                  <% if field[:type] == 'text' %>
+                    <%= form.text_field field[:key], class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40", placeholder: "Enter answer" %>
+                  <% elsif field[:type] == 'radio' %>
+                    <div class="flex flex-col items-start gap-2">
+                      <% field[:options].each do |option| %>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-700">
+                          <%= form.radio_button field[:key], option[:value], class: "radio" %>
+                          <span><%= option[:label] %></span>
+                        </label>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+          
+          <div class="mt-6">
+            <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer" %>
+          </div>
+        <% end %>
+      <% end %>
+      
+      <%= render 'shared/feedback_messages' %>
+      
+      <% if params[:success] && @question && @question[:explanation] %>
+        <div class="mt-6 p-4 border border-blue-500 bg-gray-700 text-left">
+          <h3 class="font-semibold mb-2">Explanation:</h3>
+          <div class="whitespace-pre-line"><%= @question[:explanation].html_safe %></div>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_practice_problems_path(category_id: @category), class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 

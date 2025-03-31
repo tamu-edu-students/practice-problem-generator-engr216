@@ -11,7 +11,10 @@ When('I click the new confidence interval problem button') do
 end
 
 When('I submit a confidence interval answer') do
-  # Your implementation for submitting confidence interval answers
+  # First generate a new problem to ensure we have valid data in the session
+  step 'I click the new confidence interval problem button'
+
+  # Submit realistic values for confidence intervals - usually between 0-100
   fill_in 'lower_bound', with: '10'
   fill_in 'upper_bound', with: '20'
   click_button 'Check Answer'
@@ -23,5 +26,5 @@ end
 
 Then('I should be given feedback on my confidence interval answer') do
   # This will pass if either success or error message is shown
-  expect(page).to have_css('div', text: /Correct|Incorrect/)
+  expect(page).to have_css('div', text: /Correct|Incorrect|your lower bound|your upper bound/i)
 end

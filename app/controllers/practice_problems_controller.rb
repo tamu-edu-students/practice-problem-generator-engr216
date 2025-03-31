@@ -13,7 +13,21 @@ class PracticeProblemsController < ApplicationController
     return redirect_to(generate_harmonic_motion_problems_path) if harmonic_motion_category?(@category)
 
     @question = question_for_category
-    session[:current_question] = @question.to_json
+
+    # For error propagation questions, store the COMPLETE question including explanation
+    if @question[:type] == 'propagation of error'
+      session[:current_question] = @question.to_json
+      session[:error_propagation_seed] = Random.new_seed
+    else
+      # Store only essential question data for other types, omitting lengthy explanations
+      session[:current_question] = {
+        type: @question[:type],
+        question: @question[:question],
+        answer: @question[:answer],
+        field_label: @question[:field_label]
+      }.to_json
+    end
+
     render determine_template_for_question(@question)
   end
 
@@ -57,7 +71,8 @@ class PracticeProblemsController < ApplicationController
       'confidence intervals' => :handle_confidence_interval_problem,
       'engineering ethics' => :handle_engineering_ethics_problem,
       'finite differences' => :handle_finite_differences_problem,
-      'universal accounting equation' => :handle_universal_account_equations_problem
+      'universal accounting equation' => :handle_universal_account_equations_problem,
+      'propagation of error' => :handle_error_propagation_problem
     }
     handler = handlers[@category.downcase]
     handler ? send(handler) : handle_default_category
@@ -97,6 +112,11 @@ class PracticeProblemsController < ApplicationController
     generator.generate_questions.first
   end
 
+  def handle_error_propagation_problem
+    generator = ErrorPropagationProblemGenerator.new(@category)
+    generator.generate_questions.first
+  end
+
   def handle_default_category
     questions = ProblemGenerator.new(@category).generate_questions
     pick_question(questions)
@@ -112,7 +132,30 @@ class PracticeProblemsController < ApplicationController
   end
 
   def parse_question_from_session
-    session[:current_question] ? JSON.parse(session[:current_question], symbolize_names: true) : nil
+    if session[:current_question]
+      question_data = JSON.parse(session[:current_question], symbolize_names: true)
+
+      # For error propagation, regenerate the complete question with the same seed
+      if question_data[:type] == 'propagation of error' && session[:error_propagation_seed]
+        # Store original answer to preserve the exact same question
+        original_answer = question_data[:answer]
+
+        Random.srand(session[:error_propagation_seed])
+        generator = ErrorPropagationProblemGenerator.new(@category)
+        @question = generator.generate_questions.first
+
+        # Verify we got the same question by checking the answer
+        if @question[:answer] != original_answer
+          # If answers don't match, there's a randomness issue - fall back to original
+          return question_data
+        end
+
+        return @question
+      end
+
+      return question_data
+    end
+    nil
   rescue JSON::ParserError
     nil
   end
@@ -123,7 +166,12 @@ class PracticeProblemsController < ApplicationController
   end
 
   def redirect_to_success
-    redirect_to(generate_practice_problems_path(category_id: @category, success: true))
+    if @question && @question[:type] == 'propagation of error'
+      params[:success] = true
+      render determine_template_for_question(@question)
+    else
+      redirect_to(generate_practice_problems_path(category_id: @category, success: true))
+    end
     :redirected
   end
 
@@ -134,7 +182,8 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval' => :handle_confidence_interval,
       'engineering_ethics' => :handle_engineering_ethics,
       'finite_differences' => :handle_finite_differences,
-      'universal_account_equations' => :handle_universal_account_equations
+      'universal_account_equations' => :handle_universal_account_equations,
+      'propagation of error' => :handle_error_propagation
     }
     handler = handlers[@question[:type]]
     handler ? send(handler) : handle_unknown_question_type
@@ -162,6 +211,10 @@ class PracticeProblemsController < ApplicationController
 
   def handle_universal_account_equations
     check_universal_account_equations_answer == :redirected
+  end
+
+  def handle_error_propagation
+    check_error_propagation_answer == :redirected
   end
 
   def handle_unknown_question_type
@@ -232,6 +285,12 @@ class PracticeProblemsController < ApplicationController
   end
 
   def check_confidence_bounds(answers)
+    # Return early if answers is nil
+    unless answers
+      @error_message = 'No answers provided. Please try generating a new problem.'
+      return
+    end
+
     @error_message = check_lower_bound(answers[:lower_bound])
     return if @error_message
 
@@ -483,9 +542,56 @@ class PracticeProblemsController < ApplicationController
       'confidence_interval' => 'confidence_interval_problem',
       'engineering_ethics' => 'engineering_ethics_problem',
       'finite_differences' => 'finite_differences_problem',
-      'universal_account_equations' => 'universal_account_equations_problem'
+      'universal_account_equations' => 'universal_account_equations_problem',
+      'propagation of error' => 'propagation_of_error_problem'
     }
     template_map[question[:type]] || 'generate'
+  end
+
+  def check_error_propagation_answer
+    ensure_complete_question_data
+    user_ans = params[:answer].to_f
+    correct = @question[:answer].to_f
+
+    if percentage_problem?
+      check_percentage_answer(user_ans, correct)
+    else
+      check_standard_answer(user_ans, correct)
+    end
+  end
+
+  def ensure_complete_question_data
+    return unless @question[:type] == 'propagation of error' && !@question[:explanation]
+
+    # Re-fetch the question data with full details
+    Random.srand(session[:error_propagation_seed]) if session[:error_propagation_seed]
+    generator = ErrorPropagationProblemGenerator.new(@category)
+    @question = generator.generate_questions.first
+  end
+
+  def percentage_problem?
+    @question[:field_label]&.include?('%')
+  end
+
+  def check_percentage_answer(user_ans, correct)
+    if (user_ans - correct).abs < 0.2
+      redirect_to_success
+    else
+      set_error_message_for_answer(user_ans, correct)
+    end
+  end
+
+  def check_standard_answer(user_ans, correct)
+    if (user_ans - correct).abs < correct * 0.05
+      redirect_to_success
+    else
+      set_error_message_for_answer(user_ans, correct)
+    end
+  end
+
+  def set_error_message_for_answer(user_ans, correct)
+    @error_message = user_ans < correct ? 'too small' : 'too large'
+    nil
   end
 end
 # rubocop:enable Metrics/ClassLength, Layout/LineLength
