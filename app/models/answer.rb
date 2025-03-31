@@ -1,5 +1,5 @@
 class Answer < ApplicationRecord
-  belongs_to :question
+  belongs_to :question, optional: true
   serialize :answer_choices, coder: YAML
 
   validates :question_description, presence: true

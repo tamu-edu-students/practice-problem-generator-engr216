@@ -35,6 +35,9 @@ class PracticeProblemsController < ApplicationController
       }.to_json
     end
 
+    # Record the time when the problem was generated
+    session[:problem_start_time] = Time.current.to_s
+
     render determine_template_for_question(@question)
   end
 
@@ -179,6 +182,8 @@ class PracticeProblemsController < ApplicationController
   end
 
   def redirect_to_success
+    save_answer_to_database(true)
+
     if @question && @question[:type] == 'propagation of error'
       params[:success] = true
       render determine_template_for_question(@question)
@@ -258,6 +263,7 @@ class PracticeProblemsController < ApplicationController
       :redirected
     else
       @error_message = 'One or more answers are incorrect. Please check your inputs.'
+      save_answer_to_database(false)
       nil
     end
   end
@@ -285,6 +291,7 @@ class PracticeProblemsController < ApplicationController
   def set_direction_error_message(user_answer, correct_answer)
     direction = user_answer < correct_answer ? 'too low' : 'too high'
     @error_message = "Your answer is #{direction} (correct answer: #{correct_answer})."
+    save_answer_to_database(false)
   end
 
   def check_probability_answer
@@ -294,12 +301,14 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
     else
       @error_message = user_ans < correct ? 'too small' : 'too large'
+      save_answer_to_database(false)
       nil
     end
   end
 
   def check_data_statistics_answers
     answers = @question[:answers]
+
     all_correct = answers.each_key.all? do |key|
       next true if params[key].blank?
 
@@ -325,7 +334,12 @@ class PracticeProblemsController < ApplicationController
     extract_and_log_problem_parameters if @question[:question].present?
     check_confidence_bounds(answers)
     session[:debug_info] = @debug_info
-    redirect_to_success if @error_message.nil?
+    if @error_message.nil?
+      redirect_to_success
+    else
+      save_answer_to_database(false)
+      nil
+    end
   end
 
   def initialize_debug_info
@@ -508,6 +522,7 @@ class PracticeProblemsController < ApplicationController
     direction = user_value < expected_value ? 'low' : 'high'
     key_str = key.to_s.humanize.downcase
     @error_message = "your #{key_str} is too #{direction} (correct answer: #{expected_value})"
+    save_answer_to_database(false)
   end
 
   def answer_incorrect?(key, expected_value)
@@ -529,6 +544,7 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
     else
       @error_message = "That's incorrect. The correct answer is #{correct_answer ? 'True' : 'False'}."
+      save_answer_to_database(false)
       nil
     end
   end
@@ -541,6 +557,7 @@ class PracticeProblemsController < ApplicationController
     else
       direction = user_answer < correct_answer ? 'too low' : 'too high'
       @error_message = "That's incorrect. Your answer is #{direction} (correct answer: #{correct_answer})"
+      save_answer_to_database(false)
       nil
     end
   end
@@ -567,7 +584,11 @@ class PracticeProblemsController < ApplicationController
         break
       end
     end
-    redirect_to_success if all_correct
+    if all_correct
+      redirect_to_success
+    else
+      save_answer_to_database(false)
+    end
   end
 
   def check_input_field(field)
@@ -596,6 +617,7 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
     else
       @error_message = user_answer < correct_answer ? 'too small' : 'too large'
+      save_answer_to_database(false)
       nil
     end
   end
@@ -656,7 +678,98 @@ class PracticeProblemsController < ApplicationController
   end
 
   def set_error_message_for_answer(user_ans, correct)
+    save_answer_to_database(false)
     @error_message = user_ans < correct ? 'too small' : 'too large'
+    nil
+  end
+
+  def save_answer_to_database(is_correct)
+    Rails.logger.debug { "Saving answer to database: correct=#{is_correct}" }
+
+    student = Student.find_by(id: session[:user_id])
+    if student
+      Rails.logger.debug { "Student found: #{student.email}" }
+    else
+      Rails.logger.debug { "No student found with ID: #{session[:user_id]}" }
+      return # Don't save if no student is logged in
+    end
+
+    # Calculate time spent on the problem
+    time_spent = nil
+    if session[:problem_start_time]
+      begin
+        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+        Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
+      rescue StandardError => e
+        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
+      end
+    else
+      Rails.logger.debug { 'No problem start time available' }
+    end
+
+    # Get user's answer based on the question type
+    user_answer = extract_user_answer
+    Rails.logger.debug { "Extracted user answer: #{user_answer}" }
+
+    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
+
+    # Create and save the answer record
+    answer = Answer.create(
+      question_id: nil,
+      category: @category,
+      question_description: @question[:question],
+      answer_choices: extract_answer_choices,
+      answer: user_answer,
+      correctness: is_correct,
+      student_email: student.email,
+      date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
+      time_spent: time_spent
+    )
+    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+
+    if answer.save
+      # Success
+    else
+      Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.inspect}" }
+    end
+
+    Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
+  end
+
+  def extract_user_answer
+    case @question[:type]
+    when 'probability', 'universal_account_equations'
+      params[:answer].to_s
+    when 'data_statistics'
+      params.select { |k, v| @question[:answers]&.key?(k.to_sym) && v.present? }.to_json
+    when 'confidence_interval'
+      { lower_bound: params[:lower_bound], upper_bound: params[:upper_bound] }.to_json
+    when 'engineering_ethics'
+      params[:ethics_answer].to_s # Convert boolean to string
+    when 'propagation of error'
+      params[:answer].to_s
+    when 'momentum & collisions'
+      if @question[:answer].is_a?(Hash)
+        params.select { |k, v| @question[:answer].key?(k.to_sym) && v.present? }.to_json
+      else
+        params[:answer].to_s
+      end
+    when 'finite_differences'
+      if @question[:input_fields].present?
+        params.select { |k, _v| @question[:input_fields].any? { |f| f[:key] == k } }.to_json
+      else
+        params[:answer].to_s
+      end
+    else
+      params[:answer].to_s
+    end
+  end
+
+  def extract_answer_choices
+    return '[]' unless @question[:answer_choices]
+
+    @question[:answer_choices].to_json
+  rescue StandardError
     nil
   end
 end

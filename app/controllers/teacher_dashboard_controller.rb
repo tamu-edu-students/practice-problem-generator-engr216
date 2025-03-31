@@ -30,9 +30,38 @@ class TeacherDashboardController < ApplicationController
   end
 
   def student_history
-    @student = current_teacher.students.find_by!(uin: params[:uin])
-    @completed_questions = Answer.where(student_email: @student.email).joins(:question)
-    set_student_stats
+    # Verify the current user is a teacher
+    @teacher = Teacher.find_by(id: session[:user_id])
+
+    unless @teacher
+      redirect_to login_path, alert: 'You must be logged in as a teacher to view student history.'
+      return
+    end
+
+    # Get the requested student by ID or email parameter
+    student_id = params[:uin]
+    student_email = params[:student_email]
+
+    if student_id
+      @student = Student.find_by(uin: student_id)
+    elsif student_email
+      @student = Student.find_by(email: student_email)
+    end
+
+    unless @student
+      redirect_to teacher_dashboard_path, alert: 'Student not found.'
+      return
+    end
+
+    # Fetch all answers for this student
+    @completed_questions = Answer.where(student_email: @student.email)
+                                 .order(created_at: :desc)
+
+    # Calculate statistics
+    @attempted = @completed_questions.count
+    @correct = @completed_questions.where(correctness: true).count
+    @incorrect = @attempted - @correct
+    @percentage_correct = @attempted.positive? ? ((@correct.to_f / @attempted) * 100).round(2) : 0
   end
 
   private

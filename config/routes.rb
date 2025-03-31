@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  get "history/show"
+  # get "history/show"
   root to: redirect("/login")
+  get 'history', to: 'history#show', as: 'student_history2'
+  
 
   # Login routes
   get "login", to: "pages#login"

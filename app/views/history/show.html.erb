@@ -1,71 +1,78 @@
-<!-- app/views/history/index.html.erb -->
-<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
-  <!-- Navbar (Fixed at Top) -->
-  <div class="navbar bg-black text-white px-6 w-full fixed top-0">
-    <!-- Left: Problem Select Button -->
-    <div class="flex-1">
-      <%= link_to "Problem Select", practice_problems_path, class: "btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition" %>
-    </div>
-    <!-- Right: Account Dropdown -->
-    <div class="flex-none">
-      <div class="dropdown dropdown-end">
-        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-          Account ▼
-        </button>
-        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/settings">Settings</a></li>
+<head>
+  <%= stylesheet_link_tag 'student_history', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="container">
+      <a href="/practice_problems">Problem Select</a>
+      <div class="dropdown">
+        <button>Account ▼</button>
+        <ul class="dropdown-content">
+          <li><a href="/">Dashboard</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>
     </div>
-  </div>
-  
-  <!-- Spacer between navbar and content -->
-  <div class="h-24"></div>
-  
-  <!-- History Content -->
-  <div class="flex flex-col items-center justify-center flex-grow w-full text-center">
-    <div class="max-w-3xl mx-auto p-5 font-sans bg-white shadow-md rounded-lg">
-      <h1 class="text-2xl mb-4">History</h1>
-  
-      <!-- Main T-Chart Wrapper -->
-      <div class="border border-gray-300 rounded overflow-hidden">
-        <!-- Header row -->
-        <div class="flex font-bold bg-gray-100 border-b border-gray-300 divide-x divide-gray-300">
-          <div class="flex-1 py-3 px-4">Problems</div>
-          <div class="flex-1 py-3 px-4">Answers</div>
+  </nav>
+
+  <!-- Title -->
+  <main>
+    <div class="title">
+      <h1>My Practice History</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Summary -->
+      <div class="summary">
+        <div class="grid">
+          <p>Attempted: <span><%= @attempted %></span></p>
+          <p>Correct: <span class="correct"><%= @correct %></span></p>
+          <p>Incorrect: <span class="incorrect"><%= @incorrect %></span></p>
+          <p>Percentage Correct: <span><%= @percentage_correct %>%</span></p>
         </div>
-  
-        <!-- Row 1: Problem #1 -->
-        <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
-          <div class="flex-1 py-3 px-4">Problem #1: Projectile Motion</div>
-          <div class="flex-1 py-3 px-4">
-            45 degrees<br>
-            <span class="text-green-600 font-bold">Correct</span>
+      </div>
+
+      <!-- Questions Table -->
+      <div class="table-container">
+        <% if @completed_questions.any? %>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Result</th>
+                <th>Time Spent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @completed_questions.each do |answer| %>
+                <tr>
+                  <td><%= answer.date_completed %></td>
+                  <td class="break-words"><%= answer.category %></td>
+                  <td class="break-words"><%= answer.question_description %></td>
+                  <td class="break-words"><%= answer.answer %></td>
+                  <td class="<%= answer.correctness ? 'correctness-yes' : 'correctness-no' %>">
+                    <%= answer.correctness ? 'Correct' : 'Incorrect' %>
+                  </td>
+                  <td><%= answer.time_spent ? "#{answer.time_spent} sec" : "N/A" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="empty-state">
+            <p>You haven't completed any practice problems yet.</p>
+            <a href="/" class="btn">Try Some Problems</a>
           </div>
-        </div>
-  
-        <!-- Row 2: Problem #2 -->
-        <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
-          <div class="flex-1 py-3 px-4">Problem #2: Force Calculation</div>
-          <div class="flex-1 py-3 px-4">
-            60 N<br>
-            <span class="text-red-600 font-bold">Wrong</span>
-          </div>
-        </div>
-  
-        <!-- Row 3: Problem #3 -->
-        <div class="flex border-b border-gray-300 last:border-b-0 divide-x divide-gray-300">
-          <div class="flex-1 py-3 px-4">Problem #3: Momentum</div>
-          <div class="flex-1 py-3 px-4">
-            20 kg·m/s<br>
-            <span class="text-green-600 font-bold">Correct</span>
-          </div>
-        </div>
-  
-        <!-- Add more rows as needed -->
+        <% end %>
       </div>
     </div>
-  </div>
-</div>
+  </main>
+</body>
