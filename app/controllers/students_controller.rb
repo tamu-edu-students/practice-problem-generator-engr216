@@ -2,12 +2,12 @@ class StudentsController < ApplicationController
   # before_action :authorize_student
   before_action :set_student, only: %i[show edit update destroy]
 
-  # GET /students or /students.json
+  # GET /students
   def index
     @students = Student.all
   end
 
-  # GET /students/1 or /students/1.json
+  # GET /students/1
   def show; end
 
   # GET /students/new
@@ -18,7 +18,7 @@ class StudentsController < ApplicationController
   # GET /students/1/edit
   def edit; end
 
-  # POST /students or /students.json
+  # POST /students
   def create
     @student = Student.new(student_params)
 
@@ -33,7 +33,7 @@ class StudentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /students/1 or /students/1.json
+  # PATCH/PUT /students/1
   def update
     respond_to do |format|
       if @student.update(student_params)
@@ -46,7 +46,7 @@ class StudentsController < ApplicationController
     end
   end
 
-  # DELETE /students/1 or /students/1.json
+  # DELETE /students/1
   def destroy
     @student.destroy!
 
@@ -56,15 +56,50 @@ class StudentsController < ApplicationController
     end
   end
 
+  # POST /update_uin
+  def update_uin
+    student = find_logged_in_student
+    new_uin = params[:uin]
+    teacher = find_selected_teacher
+
+    if valid_update_request?(student, new_uin, teacher)
+      student.update(uin: new_uin, teacher: teacher)
+      flash[:notice] = t('student.update_uin.success')
+    else
+      flash[:alert] = determine_error_message(student, new_uin, teacher)
+    end
+
+    redirect_to practice_problems_path
+  end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_student
     @student = Student.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def student_params
     params.expect(student: %i[first_name last_name email uin teacher teacher_id authenticate])
+  end
+
+  # === Refactored helpers for update_uin ===
+
+  def find_logged_in_student
+    Student.find_by(id: session[:user_id])
+  end
+
+  def find_selected_teacher
+    Teacher.find_by(id: params[:teacher_id])
+  end
+
+  def valid_update_request?(student, new_uin, teacher)
+    student.present? && new_uin =~ /^\d{9}$/ && teacher.present?
+  end
+
+  def determine_error_message(_student, _new_uin, teacher)
+    return t('student.update_uin.not_found') if teacher.nil?
+
+    # For all other invalid cases
+    t('student.update_uin.error')
   end
 end

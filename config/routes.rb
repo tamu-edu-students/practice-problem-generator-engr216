@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   resources :students
   resources :teachers
 
+  # Update student UIN + teacher
+  post '/update_uin', to: 'students#update_uin', as: :update_uin
+
   # Routes for Measurements & Error Problems
   get 'measurements_and_error_problems/generate', to: 'measurements_and_error_problems#generate', as: :generate_measurements_and_error_problems
   post 'measurements_and_error_problems/check_answer', to: 'measurements_and_error_problems#check_answer', as: :check_measurements_and_error_answer
