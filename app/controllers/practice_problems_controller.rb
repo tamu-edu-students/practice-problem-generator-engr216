@@ -753,6 +753,8 @@ class PracticeProblemsController < ApplicationController
       { lower_bound: params[:lower_bound], upper_bound: params[:upper_bound] }.to_json
     when 'engineering_ethics'
       params[:ethics_answer].to_s # Convert boolean to string
+    when 'propagation of error'
+      params[:answer].to_s
     when 'momentum & collisions'
       if @question[:answer].is_a?(Hash)
         params.select { |k, v| @question[:answer].key?(k.to_sym) && v.present? }.to_json
@@ -765,6 +767,8 @@ class PracticeProblemsController < ApplicationController
       else
         params[:answer].to_s
       end
+    else
+      params[:answer].to_s
     end
   end
 
