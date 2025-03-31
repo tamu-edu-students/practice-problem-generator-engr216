@@ -1,4 +1,4 @@
-# rubocop:disable RSpec/MultipleDescribes, RSpec/MultipleExpectations
+# rubocop:disable RSpec/MultipleDescribes
 
 require 'rails_helper'
 
@@ -70,7 +70,6 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
   end
 
   before do
-    # Instead of allow_any_instance_of, we stub the constructor on the class.
     allow(MeasurementsAndErrorProblemGenerator).to receive(:new)
       .and_return(instance_double(
                     MeasurementsAndErrorProblemGenerator,
@@ -134,4 +133,4 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
   end
 end
 
-# rubocop:enable RSpec/MultipleDescribes, RSpec/MultipleExpectations
+# rubocop:enable RSpec/MultipleDescribes
