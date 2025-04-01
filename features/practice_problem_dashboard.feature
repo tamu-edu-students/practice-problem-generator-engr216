@@ -7,7 +7,7 @@ Feature: Practice Problem Dashboard
         Given I am on the log in page
         When I log in as a student
         Then I should be on the practice problems.
-    Scenario: No access if not student
+    Scenario: No access if not student for Practice Problem Dashboard
         I am not logged in as a student
         When I navigate to the dashboard link
         Then I should not be on the problem dashboard
