@@ -4,7 +4,7 @@ class CreateAnswers < ActiveRecord::Migration[6.1]
       t.integer :question_id
       t.string  :category
       t.string  :question_description
-      t.text    :answer_choices  # Using text to store serialized data (or JSON)
+      t.text    :answer_choices # Using text to store serialized data (or JSON)
       t.string  :answer
       t.boolean :correctness
       t.string  :student_email
