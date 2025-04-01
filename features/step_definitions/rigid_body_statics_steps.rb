@@ -1,6 +1,6 @@
 # features/step_definitions/rigid_body_statics_steps.rb
 
-Given('I am on the {string} page') do |page_name|
+Given('I am on the {string} page for bodies') do |page_name|
   @student = Student.create!(
     email: 'test@example.com',
     first_name: 'Test',
@@ -16,7 +16,7 @@ Given('I am on the {string} page') do |page_name|
   end
 end
 
-When('I click the {string} button') do |_button_text|
+When('I click the {string} button for bodies') do |_button_text|
   click_link_or_button('New Problem')
 end
 

@@ -29,7 +29,7 @@ When('I submit a particle statics answer') do
   click_button 'Check Answer'
 end
 
-Then('a new "Particle Statics" problem should be dynamically generated') do
+Then('a new "Particle Statics" problem should be dynamically generated for particles') do
   expect(page).to have_content('Particle Statics Question:')
 end
 

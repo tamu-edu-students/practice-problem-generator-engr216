@@ -1,4 +1,4 @@
-Given('I am on the "Angular Momentum" page') do
+Given('I am on the "Angular Momentum" page for momentum') do
   visit generate_angular_momentum_problems_path
 end
 
@@ -29,7 +29,7 @@ When('I submit an answer') do
   click_button 'Check Answer'
 end
 
-Then('a new "Angular Momentum" problem should be dynamically generated') do
+Then('a new "Angular Momentum" problem should be dynamically generated for momentum') do
   expect(page).to have_content('Angular Momentum Question:')
 end
 

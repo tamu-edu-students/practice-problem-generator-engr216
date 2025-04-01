@@ -6,7 +6,7 @@ Feature: Particle Statics Problem Generator
   Scenario: Generate new Problem
     Given I am on the "Particle Statics" page
     When I click the "new problem" button
-    Then a new "Particle Statics" problem should be dynamically generated
+    Then a new "Particle Statics" problem should be dynamically generated for particles
 
   Scenario: Answer Submission
     Given I am on the "Particle Statics" page
