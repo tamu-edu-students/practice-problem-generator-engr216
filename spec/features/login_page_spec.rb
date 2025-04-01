@@ -5,6 +5,6 @@ RSpec.feature 'Login Page', type: :feature do
   scenario 'visitor sees login page' do
     visit root_path
 
-    expect(page).to have_selector('h1', text: 'Login')
+    expect(page).to have_selector('h1', text: 'Practice Problem Generator 216')
   end
 end

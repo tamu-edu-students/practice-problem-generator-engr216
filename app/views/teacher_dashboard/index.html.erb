@@ -1,18 +1,25 @@
-<head>
-  <%= stylesheet_link_tag 'teacher_dashboard', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-</head>
+<!DOCTYPE html>
 
-<body class="teacher-dashboard">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-700 font-sans">
   <!-- Navbar -->
-  <nav>
-    <div class="container">
-      <a href="/teacher_dashboard">Dashboard</a>
-      <div class="dropdown">
-        <button>Account ▼</button>
-        <ul class="dropdown-content">
-          <li><a href="/dashboard">Dashboard</a></li>
+  <nav class="navbar bg-black text-white px-6 fixed top-0 z-50 w-full">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>
@@ -20,10 +27,20 @@
   </nav>
 
   <!-- Main Content -->
-  <main>
-    <div class="button-container">
-      <a href="<%= manage_students_path %>" class="btn">Student Management</a>
-      <a href="<%= student_history_dashboard_path %>" class="btn">Student Problem History</a>
+  <main class="max-w-6xl mx-auto pt-24 p-4 flex flex-col items-center min-h-screen">
+    <!-- Title just below the navbar -->
+    <h1 class="w-full text-center text-5xl font-bold text-gray-800 mb-8">
+      Teacher Dashboard
+    </h1>
+    <!-- Button Container -->
+    <div class="flex flex-wrap justify-center gap-6">
+      <a href="<%= manage_students_path %>" class="btn bg-gray-500 hover:bg-gray-600 text-white px-6 py-3">
+        Student Management
+      </a>
+      <a href="<%= student_history_dashboard_path %>" class="btn bg-gray-500 hover:bg-gray-600 text-white px-6 py-3">
+        Student Problem History
+      </a>
     </div>
   </main>
 </body>
+</html>
