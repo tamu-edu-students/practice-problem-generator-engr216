@@ -9,26 +9,16 @@ When('I click the New Problem button') do
 end
 
 When('I submit a Harmonic Motion answer') do
-  # First ensure we have a problem to solve
-  step 'I click the New Problem button'
-
-  # Wait for the page to load
-  sleep(1)
-
   if page.has_field?('shm_answer', wait: 5)
     fill_in 'shm_answer', with: '1.734'
   elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
     fill_in 'shm_answer_1', with: '1.734'
     fill_in 'shm_answer_2', with: '0.403'
   else
-    # Check for any available input fields
     inputs = page.all('input[type="text"]')
-    raise 'No input fields found for harmonic motion answer' unless inputs.any?
+    raise 'No enabled input fields found for harmonic motion answer' unless inputs.any?
 
-    inputs.each do |input|
-      input.set('1.234')
-    end
-
+    inputs.each { |input| input.set('1.234') }
   end
 
   click_button 'Check Answer'

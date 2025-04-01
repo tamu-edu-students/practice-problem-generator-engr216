@@ -1,0 +1,118 @@
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
+  <%= render 'shared/navbar' %>
+  
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", practice_problems_path,
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50",
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+  
+  <!-- Spacer -->
+  <div class="h-24"></div>
+  
+  <!-- Title -->
+  <div class="pb-2 text-center">
+    <h1 class="text-5xl font-bold text-black">Category: <%= @category %></h1>
+  </div>
+  
+  <!-- Card for Question and Answers -->
+  <div class="mt-6 flex flex-col items-center justify-center w-full text-center px-4">
+    <div class="bg-gray-800 shadow-md rounded-lg p-8 w-full max-w-4xl text-white border border-gray-600">
+      
+      <% if @question && @question[:question].present? %>
+        <h1 class="text-3xl font-bold mb-6">Rigid Body Statics Question:</h1>
+        <p class="text-xl mb-6"><%= @question[:question] %></p>
+        <%# Display image if provided %>
+        <% if @question[:image].present? %>
+          <div class="mb-6">
+            <%= image_tag @question[:image], alt: "Problem Diagram", class: "mx-auto", style: "max-height:300px;" %>
+          </div>
+        <% end %>
+        <% if Array(@question[:input_fields]).any? && @question[:input_fields].first[:type] == "radio" %>
+          <p class="text-md text-gray-300 mb-6"><strong>Select the correct answer:</strong></p>
+        <% end %>
+      <% else %>
+        <h1 class="text-3xl font-bold mb-6">Question: Unable to load question</h1>
+      <% end %>
+      
+      <!-- Render data table if present -->
+      <% if @question[:data_table].present? %>
+        <div class="mt-6 overflow-x-auto">
+          <table class="mx-auto border-collapse">
+            <% @question[:data_table].each do |row| %>
+              <tr>
+                <% row.each do |cell| %>
+                  <td class="border border-gray-500 px-3 py-2 bg-gray-700 text-center">
+                    <%= cell %>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      <% end %>
+      
+      <!-- Answer Form -->
+      <%= form_with url: check_answer_rigid_body_statics_problems_path, method: :post, local: true do |form| %>
+        <%= form.hidden_field :category_id, value: @category %>
+        
+        <div class="flex flex-col gap-4 mt-8">
+          <% Array(@question[:input_fields]).each do |field| %>
+            <% if field[:type] == "radio" && field[:options].present? %>
+              <% field[:options].each do |option| %>
+                <% selected = (params[field[:key]] == option[:value]) %>
+                <% highlight_class = if params[:commit].present?
+                     option[:value] == @question[:answer] ? 'text-green-500' : (selected ? 'text-red-500' : '')
+                   else
+                     ''
+                   end %>
+                <div class="flex items-center space-x-2">
+                  <%= form.radio_button field[:key], option[:value],
+                        id: option[:value],
+                        class: "radio radio-primary",
+                        disabled: params[:commit].present?,
+                        checked: selected %>
+                  <label for="<%= option[:value] %>" class="cursor-pointer text-xl <%= highlight_class %>">
+                    <%= option[:label] %>
+                  </label>
+                </div>
+              <% end %>
+            <% elsif field[:type] == "text" || (field[:type] == "radio" && field[:options].blank?) %>
+              <div class="flex flex-col items-center">
+                <label class="mb-2 text-xl"><%= field[:label] %></label>
+                <%= form.text_field field[:key],
+                      class: "px-4 py-2 rounded bg-gray-700 border border-white text-center w-40",
+                      placeholder: "Enter answer",
+                      value: params[field[:key]],
+                      disabled: params[:commit].present? %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+        
+        <!-- Submit button appears only if the form is active -->
+        <% unless params[:commit].present? %>
+          <div class="mt-8">
+            <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-700 shadow-md transition-colors cursor-pointer" %>
+          </div>
+        <% end %>
+      <% end %>
+      
+      <!-- Feedback Message in a Box -->
+      <% if @feedback_message.present? %>
+        <div class="mt-4 p-4 border-2 rounded <%= @feedback_message.include?('Correct') ? 'border-green-500 bg-green-100 text-green-700' : 'border-red-500 bg-red-100 text-red-700' %>">
+          <%= @feedback_message %>
+        </div>
+      <% end %>
+      
+      <%= render 'shared/feedback_messages' %>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_rigid_body_statics_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %>
