@@ -1,4 +1,11 @@
 Given('I am on the "Angular Momentum" page for momentum') do
+  @student = Student.create!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  page.set_rack_session(user_id: @student.id)
   visit generate_angular_momentum_problems_path
 end
 

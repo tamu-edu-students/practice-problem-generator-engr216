@@ -1,4 +1,11 @@
 Given('I am on the "Particle Statics" page') do
+  @student = Student.create!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  page.set_rack_session(user_id: @student.id)
   visit generate_particle_statics_problems_path
 end
 

@@ -3,6 +3,10 @@ require 'rails_helper'
 
 RSpec.describe ParticleStaticsProblemsController, type: :controller do
   describe 'GET #generate' do
+  let!(:student) do
+    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+  end
+
     let(:dummy_question) do
       {
         type: 'particle_statics',
@@ -21,6 +25,7 @@ RSpec.describe ParticleStaticsProblemsController, type: :controller do
         .with('Particle Statics')
         .and_return(generator)
       get :generate
+      session[:user_id] = student.id
     end
 
     it 'assigns @category as "Particle Statics"', :aggregate_failures do
@@ -41,6 +46,13 @@ RSpec.describe ParticleStaticsProblemsController, type: :controller do
   end
 
   describe 'POST #check_answer' do
+  let!(:student) do
+    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+  end
+
+    before do
+      session[:user_id] = student.id
+    end
     context 'when the answer is a single numeric value' do
       let(:question) do
         {

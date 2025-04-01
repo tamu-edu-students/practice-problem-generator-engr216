@@ -11,6 +11,9 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
         input_fields: [{ label: 'Angular Momentum', key: 'am_answer', type: 'text' }]
       }
     end
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     let(:generator) do
       instance_double(AngularMomentumProblemGenerator, generate_questions: [dummy_question])
@@ -21,6 +24,7 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
         .with('Angular Momentum')
         .and_return(generator)
       get :generate
+      session[:user_id] = student.id
     end
 
     it 'assigns @category as "Angular Momentum"', :aggregate_failures do
@@ -41,6 +45,13 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
   end
 
   describe 'POST #check_answer' do
+  let!(:student) do
+    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+  end
+
+    before do
+      session[:user_id] = student.id
+    end
     context 'when the answer is a single numeric value' do
       let(:question) do
         {
