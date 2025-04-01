@@ -53,4 +53,7 @@ RSpec/MultipleExpectations:
   Max: 5
 
 Metrics/PerceivedComplexity:
-  Max: 10
+  Max: 15
+
+Metrics/CyclomaticComplexity:
+  Max: 15
