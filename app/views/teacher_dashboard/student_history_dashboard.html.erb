@@ -5,92 +5,94 @@
 </head>
 
 <body>
-  <!-- Navbar -->
-  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
-    <div class="flex-1">
-      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-        Dashboard
-      </a>
-    </div>
-    <div class="flex-none">
-      <div class="dropdown dropdown-end">
-        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-          Account ▼
-        </button>
-        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/logout">Logout</a></li>
-        </ul>
+  <div class="student-history-dashboard">
+    <!-- Navbar -->
+    <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+      <div class="flex-1">
+        <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Dashboard
+        </a>
+      </div>
+      <div class="flex-none">
+        <div class="dropdown dropdown-end">
+          <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+            Account ▼
+          </button>
+          <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
+
+    <%= link_to "←", teacher_dashboard_path, class: "back-arrow fixed left-4 top-16 text-2xl z-50" %>
+
+    <main class="pt-24 p-4">
+      <!-- Page Title -->
+      <h1 class="text-center text-5xl font-bold text-gray-800 mb-8">
+        Student History Dashboard
+      </h1>
+      
+      <div class="tables-container">
+        <!-- Summary Table -->
+        <div class="table-wrapper w-3/5">
+          <h2>Class Performance</h2>
+          <div class="scrollable">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Attempted</th>
+                  <th>Performance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">Total Completed</td>
+                  <td><%= @total_completed[:attempted] %></td>
+                  <td><%= "#{@total_completed[:correct]} / #{@total_completed[:attempted]} - #{@total_completed[:percentage]}%" %></td>
+                </tr>
+                <% @category_summaries.each do |category, stats| %>
+                  <tr>
+                    <td><%= category %></td>
+                    <td><%= stats[:attempted] %></td>
+                    <td><%= "#{stats[:correct]} / #{stats[:attempted]} - #{stats[:percentage]}%" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-wrapper w-2/5">
+          <h2>Students</h2>
+          <div class="search-form">
+            <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
+              <%= text_field_tag :search, params[:search], placeholder: "Search by name or UIN" %>
+              <%= submit_tag "Search" %>
+            <% end %>
+          </div>
+          <div class="scrollable">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>UIN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @students.each do |student| %>
+                  <tr>
+                    <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(uin: student.uin) %></td>
+                    <td><%= student.uin %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
-
-  <%= link_to "←", teacher_dashboard_path, class: "back-arrow fixed left-4 top-16 text-2xl z-50" %>
-
-  <main class="pt-24 p-4">
-    <!-- Page Title -->
-    <h1 class="text-center text-5xl font-bold text-gray-800 mb-8">
-      Student History Dashboard
-    </h1>
-    
-    <div class="tables-container">
-      <!-- Summary Table -->
-      <div class="table-wrapper w-3/5">
-        <h2>Class Performance</h2>
-        <div class="scrollable">
-          <table>
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Attempted</th>
-                <th>Performance</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="font-bold">Total Completed</td>
-                <td><%= @total_completed[:attempted] %></td>
-                <td><%= "#{@total_completed[:correct]} / #{@total_completed[:attempted]} - #{@total_completed[:percentage]}%" %></td>
-              </tr>
-              <% @category_summaries.each do |category, stats| %>
-                <tr>
-                  <td><%= category %></td>
-                  <td><%= stats[:attempted] %></td>
-                  <td><%= "#{stats[:correct]} / #{stats[:attempted]} - #{stats[:percentage]}%" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Students Table -->
-      <div class="table-wrapper w-2/5">
-        <h2>Students</h2>
-        <div class="search-form">
-          <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
-            <%= text_field_tag :search, params[:search], placeholder: "Search by name or UIN" %>
-            <%= submit_tag "Search" %>
-          <% end %>
-        </div>
-        <div class="scrollable">
-          <table>
-            <thead>
-              <tr>
-                <th>Student Name</th>
-                <th>UIN</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @students.each do |student| %>
-                <tr>
-                  <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(uin: student.uin) %></td>
-                  <td><%= student.uin %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </main>
 </body>
