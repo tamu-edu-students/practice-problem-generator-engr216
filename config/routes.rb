@@ -67,6 +67,14 @@ Rails.application.routes.draw do
       post 'check_answer'
     end
   end
+  resources :particle_statics_problems do
+    collection do
+      post :check_answer
+      get :generate
+    end
+  end
+  
+  
 
   # Add these routes if they don't exist already
   get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics',
