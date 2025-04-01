@@ -98,7 +98,14 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
   end
 
   describe 'POST #check_answer' do
-    before { session[:current_question] = dummy_question.to_json }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    before do
+      session[:user_id] = student.id
+      session[:current_question] = dummy_question.to_json
+    end
 
     context 'when the answer is correct' do
       before { post :check_answer, params: { measurement_answer: '4' } }

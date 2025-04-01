@@ -255,6 +255,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   describe 'POST #check_answer with probability questions' do
     let(:category) { 'Experimental Statistics' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     before do
       question = {
@@ -264,6 +267,8 @@ RSpec.describe PracticeProblemsController, type: :controller do
         input_fields: nil
       }
       session[:current_question] = question.to_json
+      session[:user_id] = student.id
+
     end
 
     it 'redirects to generate with success parameter when answer is correct' do
@@ -284,6 +289,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   describe 'POST #check_answer with data statistics questions' do
     let(:category) { 'Experimental Statistics' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     before do
       question = {
@@ -297,6 +305,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
         ]
       }
       session[:current_question] = question.to_json
+      session[:user_id] = student.id
     end
 
     it 'redirects to generate with success parameter when all answers are correct' do
@@ -369,6 +378,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   describe 'POST #check_answer with confidence interval questions' do
     let(:category) { 'Confidence Intervals' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     before do
       question = {
@@ -388,6 +400,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
         ]
       }
       session[:current_question] = question.to_json
+      session[:user_id] = student.id
     end
 
     it 'redirects to generate with success parameter when both bounds are correct' do
@@ -477,6 +490,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   describe 'parameter extraction from question text' do
     let(:category) { 'Confidence Intervals' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
     let(:question) do
       {
         type: 'confidence_interval',
@@ -489,6 +505,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
     before do
       session[:current_question] = question.to_json
       session[:debug_info] = nil
+      session[:user_id] = student.id
     end
 
     it 'extracts sample size parameter from text' do
@@ -514,6 +531,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   # Test extraction with parameters present in question data
   describe 'confidence interval with parameters in question data' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
     let(:category) { 'Confidence Intervals' }
     let(:question) do
       {
@@ -531,6 +551,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     before do
       session[:current_question] = question.to_json
+      session[:user_id] = student.id
     end
 
     it 'uses sample size parameter from question data' do
@@ -547,6 +568,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
   # Tests for engineering ethics answer checking
   describe 'engineering ethics answer checking' do
     let(:category) { 'Engineering Ethics' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     context 'with true answer' do
       let(:question) do
@@ -559,6 +583,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       before do
         session[:current_question] = question.to_json
+        session[:user_id] = student.id
       end
 
       it 'redirects to success page when answer is correct' do
@@ -609,6 +634,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   # Tests for finite differences answer checking
   describe 'POST #check_answer with finite differences' do
+  let!(:student) do
+    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+  end
     context 'with single answer field' do
       let(:category) { 'Finite Differences' }
       let(:question) do
@@ -621,6 +649,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       before do
         session[:current_question] = question.to_json
+        session[:user_id] = student.id
       end
 
       it 'redirects to success page when answer is correct' do
@@ -636,6 +665,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     context 'with multiple input fields' do
       let(:category) { 'Finite Differences' }
+      let!(:student) do
+        Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+      end
       let(:question) do
         {
           type: 'finite_differences',
@@ -653,6 +685,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       before do
         session[:current_question] = question.to_json
+        session[:user_id] = student.id
       end
 
       it 'redirects to success page when all answers are correct' do
@@ -670,6 +703,9 @@ RSpec.describe PracticeProblemsController, type: :controller do
   # Adjust the nesting level to fix the RSpec/NestedGroups offense
   describe 'finite differences with missing parameter' do
     let(:category) { 'Finite Differences' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
     let(:question) do
       {
         type: 'finite_differences',
@@ -683,6 +719,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     before do
       session[:current_question] = question.to_json
+      session[:user_id] = student.id
     end
 
     it 'handles missing parameter definition' do
@@ -764,8 +801,12 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     # Adjust nesting level to fix RSpec/NestedGroups offenses
     describe 'POST #check_answer for correct answer' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
       before do
         session[:current_question] = question.to_json
+        session[:user_id] = student.id
       end
 
       it 'renders the problem template' do
@@ -780,8 +821,12 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
 
     describe 'POST #check_answer for incorrect answer' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
       before do
         session[:current_question] = question.to_json
+        session[:user_id] = student.id
       end
 
       it 'sets error message for small answer' do

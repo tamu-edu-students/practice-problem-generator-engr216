@@ -41,6 +41,14 @@ RSpec.describe HarmonicMotionProblemsController, type: :controller do
   end
 
   describe 'POST #check_answer' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    before do
+      session[:user_id] = student.id
+    end
+
     context 'when the answer is a single numeric value' do
       let(:question) do
         {
