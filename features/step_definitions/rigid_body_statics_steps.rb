@@ -1,6 +1,13 @@
 # features/step_definitions/rigid_body_statics_steps.rb
 
 Given('I am on the {string} page') do |page_name|
+  @student = Student.create!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  page.set_rack_session(user_id: @student.id)
   case page_name
   when 'Rigid Body Statics'
     visit generate_rigid_body_statics_problems_path

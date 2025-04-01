@@ -6,6 +6,7 @@
 
 require 'cucumber/rails'
 require 'simplecov'
+require 'rack_session_access/capybara'
 SimpleCov.start 'rails' do
   add_filter '/features/'
 end

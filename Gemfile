@@ -52,6 +52,8 @@ group :development, :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record', '~> 2.0'
   gem 'rspec-rails', '~> 6.0'
+
+  gem 'rack_session_access'
 end
 
 group :development do

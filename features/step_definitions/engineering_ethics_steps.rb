@@ -1,4 +1,11 @@
 Given('I am on the Engineering Ethics problem page') do
+  @student = Student.create!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  page.set_rack_session(user_id: @student.id)
   visit generate_practice_problems_path(category_id: 'Engineering Ethics')
   expect(page).to have_content('Engineering Ethics')
 end
