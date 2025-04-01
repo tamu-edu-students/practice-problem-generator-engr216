@@ -1,24 +1,15 @@
-/* student_history_dashboard.css */
-
-/* Reset defaults */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* Body and container */
-body {
-  background-color: #e5e7eb; /* gray-100 */
+.student-history-dashboard body {
+  background-color: #e5e7eb;
   font-family: Arial, sans-serif;
   min-height: 100vh;
   color: #374151;
 }
 
 /* Navbar */
-nav {
-  background-color: #1f2937; /* gray-800 */
-  color: #ffffff; /* white */
+.student-history-dashboard nav {
+  background-color: #1f2937;
+  color: #ffffff;
   padding: 1rem;
   position: fixed;
   width: 100%;
@@ -26,23 +17,25 @@ nav {
   z-index: 50;
 }
 
-nav a, nav button {
+.student-history-dashboard nav a,
+.student-history-dashboard nav button {
   color: #ffffff;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   text-decoration: none;
 }
 
-nav a:hover, nav button:hover {
-  background-color: #374151; /* gray-700 */
+.student-history-dashboard nav a:hover,
+.student-history-dashboard nav button:hover {
+  background-color: #374151;
 }
 
 /* Dropdown */
-.relative:hover ul {
+.student-history-dashboard .relative:hover ul {
   display: block;
 }
 
-ul {
+.student-history-dashboard ul {
   position: absolute;
   right: 0;
   margin-top: 0.5rem;
@@ -54,131 +47,132 @@ ul {
   display: none;
 }
 
-ul a {
+.student-history-dashboard ul a {
   display: block;
   padding: 0.5rem;
   color: #ffffff;
 }
 
-ul a:hover {
-  background-color: #374151; /* gray-700 */
+.student-history-dashboard ul a:hover {
+  background-color: #374151;
 }
 
 /* Back arrow */
-.back-arrow {
-  color: #1f2937; /* gray-800 */
+.student-history-dashboard .back-arrow {
+  color: #1f2937;
   position: fixed;
   left: 1rem;
   top: 4rem;
   z-index: 50;
 }
 
-.back-arrow:hover {
-  color: #1d4ed8; /* blue-700 */
+.student-history-dashboard .back-arrow:hover {
+  color: #1d4ed8;
 }
 
 /* Main content */
-main {
-  max-width: 1200px; /* Matches max-w-6xl */
+.student-history-dashboard main {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 5rem 1rem 1rem; /* Matches pt-20 px-4 */
+  padding: 5rem 1rem 1rem;
 }
 
 /* Tables container */
-.tables-container {
+.student-history-dashboard .tables-container {
   display: flex;
-  gap: 1rem; /* Matches gap-4 */
+  gap: 1rem;
 }
 
 /* Table styling */
-.table-wrapper {
-  background-color: #ffffff; /* white */
-  padding: 1rem; /* Matches p-4 */
-  border-radius: 0.375rem; /* Matches rounded */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Matches shadow */
+.student-history-dashboard .table-wrapper {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   max-height: 80vh;
   display: flex;
   flex-direction: column;
 }
 
-.table-wrapper h2 {
-  font-size: 1.125rem; /* Matches text-lg */
+.student-history-dashboard .table-wrapper h2 {
+  font-size: 1.125rem;
   font-weight: bold;
-  color: #1f2937; /* gray-800 */
-  margin-bottom: 1rem; /* Matches mb-4 */
+  color: #1f2937;
+  margin-bottom: 1rem;
 }
 
-table {
+.student-history-dashboard table {
   width: 100%;
   text-align: left;
   border-collapse: collapse;
 }
 
-thead tr {
-  background-color: #d1d5db; /* gray-200 */
-  color: #1f2937; /* gray-800 */
+.student-history-dashboard thead tr {
+  background-color: #d1d5db;
+  color: #1f2937;
 }
 
-thead th {
+.student-history-dashboard thead th {
   position: sticky;
   top: 0;
-  background-color: #d1d5db; /* Ensure background persists */
-  z-index: 10; /* Stay above tbody */
+  background-color: #d1d5db;
+  z-index: 10;
 }
 
-th, td {
-  padding: 0.5rem; /* Matches p-2 */
+.student-history-dashboard th,
+.student-history-dashboard td {
+  padding: 0.5rem;
 }
 
-tbody tr {
-  border-bottom: 1px solid #e5e7eb; /* gray-100 */
+.student-history-dashboard tbody tr {
+  border-bottom: 1px solid #e5e7eb;
 }
 
-tbody tr:hover {
-  background-color: #f9fafb; /* gray-50 */
+.student-history-dashboard tbody tr:hover {
+  background-color: #f9fafb;
 }
 
 /* Search form */
-.search-form {
+.student-history-dashboard .search-form {
   display: flex;
-  gap: 0.5rem; /* Matches gap-2 */
-  margin-bottom: 1rem; /* Matches mb-4 */
-  align-items: center; /* Vertically align input and button */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
 }
 
-.search-form input {
-  border: 1px solid #d1d5db; /* gray-200 */
-  padding: 0.5rem; /* Matches p-2 */
-  flex-grow: 1; /* Allows input to take available space */
-  border-radius: 0.375rem; /* Matches rounded */
+.student-history-dashboard .search-form input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  flex-grow: 1;
+  border-radius: 0.375rem;
 }
 
-.search-form button {
-  background-color: #1d4ed8; /* blue-700 */
-  color: #ffffff; /* White text */
-  padding: 0.5rem 1rem; /* Matches px-4 py-2 */
-  border-radius: 0.375rem; /* Matches rounded */
-  border: none; /* Remove default button border */
+.student-history-dashboard .search-form button {
+  background-color: #1d4ed8;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
   cursor: pointer;
 }
 
-.search-form button:hover {
-  background-color: #1e40af; /* blue-800 */
-  color: #ffffff; /* Ensure text stays white on hover */
+.student-history-dashboard .search-form button:hover {
+  background-color: #1e40af;
+  color: #ffffff;
 }
 
 /* Links */
-a {
-  color: #1d4ed8; /* blue-700 */
+.student-history-dashboard a {
+  color: #1d4ed8;
   text-decoration: none;
 }
 
-a:hover {
+.student-history-dashboard a:hover {
   text-decoration: underline;
 }
 
 /* Scrollable areas */
-.scrollable {
+.student-history-dashboard .scrollable {
   overflow-y: auto;
   flex-grow: 1;
 }
