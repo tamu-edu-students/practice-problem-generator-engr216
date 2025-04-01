@@ -55,6 +55,12 @@ Rails.application.routes.draw do
       post 'check_answer'
     end
   end
+  resources :angular_momentum_problems, only: [] do
+    collection do
+      get 'generate'
+      post 'check_answer'
+    end
+  end
   
 
   # Add these routes if they don't exist already
