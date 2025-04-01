@@ -17,8 +17,7 @@
 * Measurement & Error \- 2  
 * Universal Counting Equation \- 2  
 * Finite Differences \- 2  
-* Engineering Ethics \- 2  
-* Art in Engineering \- 2  
+* Engineering Ethics \- 2   
 * Particle Statics \- 2  
 * Propagation of Error \- 2  
 * Harmonic Motion \- 2  
@@ -28,7 +27,7 @@
 
 **How many points were pulled into the Sprint?**
 
-* 26
+* 24
 
 **Which Stories are the 4 Developers starting with, and what are their time estimates / points?**
 
