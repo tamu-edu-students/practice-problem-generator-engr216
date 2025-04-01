@@ -12,6 +12,7 @@
 
 * Create Sessions \- 1  
 * Fixing Cucumber \- 1  
+* Styling Uniformity \- 1
 * Student History Added with Each Answer Attempt \- 1  
 * Measurement & Error \- 2  
 * Universal Counting Equation \- 2  
@@ -27,7 +28,7 @@
 
 **How many points were pulled into the Sprint?**
 
-* 25
+* 26
 
 **Which Stories are the 4 Developers starting with, and what are their time estimates / points?**
 
