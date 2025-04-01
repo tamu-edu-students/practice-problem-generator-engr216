@@ -67,7 +67,6 @@ class PracticeProblemsController < ApplicationController
       redirect_to(generate_particle_statics_problems_path) and return true
     end
 
-
     false
   end
 
