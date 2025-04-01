@@ -52,7 +52,6 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
     before do
       session[:user_id] = student.id
     end
-
     context 'when the answer is a single numeric value' do
       let(:question) do
         {

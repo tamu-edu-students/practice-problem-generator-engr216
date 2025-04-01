@@ -79,7 +79,12 @@ Rails.application.routes.draw do
     end
   end
   
-  
+  resources :rigid_body_statics_problems, only: [] do
+    collection do
+      get 'generate'
+      post 'check_answer'
+    end
+  end
 
   # Add these routes if they don't exist already
   get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics',
