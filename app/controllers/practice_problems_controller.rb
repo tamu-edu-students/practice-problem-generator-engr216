@@ -691,34 +691,20 @@ class PracticeProblemsController < ApplicationController
   end
 
   def save_answer_to_database(is_correct)
-    Rails.logger.debug { "Saving answer to database: correct=#{is_correct}" }
-
     student = Student.find_by(id: session[:user_id])
-    if student
-      Rails.logger.debug { "Student found: #{student.email}" }
-    else
-      Rails.logger.debug { "No student found with ID: #{session[:user_id]}" }
-      return # Don't save if no student is logged in
-    end
 
     # Calculate time spent on the problem
     time_spent = nil
     if session[:problem_start_time]
       begin
         time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-        Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
       rescue StandardError => e
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
-    else
-      Rails.logger.debug { 'No problem start time available' }
     end
 
     # Get user's answer based on the question type
     user_answer = extract_user_answer
-    Rails.logger.debug { "Extracted user answer: #{user_answer}" }
-
-    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
 
     # Create and save the answer record
     answer = Answer.create(
@@ -734,27 +720,17 @@ class PracticeProblemsController < ApplicationController
     )
     Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
 
-    if answer.save
-      # Success
-    else
-      Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.inspect}" }
-    end
-
     Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
   end
 
   def extract_user_answer
     case @question[:type]
-    when 'probability', 'universal_account_equations'
-      params[:answer].to_s
     when 'data_statistics'
       params.select { |k, v| @question[:answers]&.key?(k.to_sym) && v.present? }.to_json
     when 'confidence_interval'
       { lower_bound: params[:lower_bound], upper_bound: params[:upper_bound] }.to_json
     when 'engineering_ethics'
       params[:ethics_answer].to_s # Convert boolean to string
-    when 'propagation of error'
-      params[:answer].to_s
     when 'momentum & collisions'
       if @question[:answer].is_a?(Hash)
         params.select { |k, v| @question[:answer].key?(k.to_sym) && v.present? }.to_json
