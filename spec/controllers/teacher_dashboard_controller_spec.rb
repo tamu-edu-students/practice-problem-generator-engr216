@@ -62,8 +62,10 @@ RSpec.describe TeacherDashboardController, type: :controller do
       expect(assigns(:student)).to eq(student)
     end
 
-    it 'raises error for invalid student' do
-      expect { get :student_history, params: { uin: '999' } }.to raise_error(ActiveRecord::RecordNotFound)
+    it 'redirects to teacher dashboard with message for invalid student' do
+      get :student_history, params: { uin: '999999998' }
+      expect(response).to redirect_to(teacher_dashboard_path)
+      expect(flash[:alert]).to eq('Student not found.')
     end
   end
 

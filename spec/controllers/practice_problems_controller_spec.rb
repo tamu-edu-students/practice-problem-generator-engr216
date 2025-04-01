@@ -472,17 +472,27 @@ RSpec.describe PracticeProblemsController, type: :controller do
   end
 
   describe 'set_error_message' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    before do
+      session[:user_id] = student.id
+    end
     it 'formats error message for string keys' do
+      controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, 'mean', 5.0, 4.0)
       expect(assigns(:error_message)).to eq('your mean is too high (correct answer: 4.0)')
     end
 
     it 'formats error message for symbol keys' do
+      controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, :standard_deviation, 3.0, 4.0)
       expect(assigns(:error_message)).to eq('your standard deviation is too low (correct answer: 4.0)')
     end
 
     it 'handles multi-word keys with humanize' do
+      controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, 'lower_bound', 2.0, 3.0)
       expect(assigns(:error_message)).to eq('your lower bound is too low (correct answer: 3.0)')
     end

@@ -6,6 +6,14 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
   describe '#evaluate_answer' do
     subject(:result) { controller.send(:evaluate_answer, correct_answer, tolerance) }
 
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+    before do
+      session[:user_id] = student.id
+      controller.instance_variable_set(:@question, { type: 'rigid_body_statics' })
+    end
+
     context 'when correct_answer is not an Array' do
       let(:correct_answer) { '18.4' }
 
@@ -24,7 +32,25 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
   describe '#check_multi_part_answer' do
     subject(:multi_result) { controller.send(:check_multi_part_answer, correct_answers, tolerance) }
 
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
     let(:correct_answers) { %w[A B] }
+
+    before do
+      question = {
+        type: 'rigid_body_statics',
+        question: 'Dummy multi-part question',
+        answer: correct_answers,
+        input_fields: [
+          { label: 'Answer 1', key: 'rbs_answer_1', type: 'text' },
+          { label: 'Answer 2', key: 'rbs_answer_2', type: 'text' }
+        ]
+      }
+      controller.instance_variable_set(:@question, question)
+      session[:current_question] = question.to_json
+      session[:user_id] = student.id
+    end
 
     context 'when all submitted answers are numeric and within tolerance' do
       let(:correct_answers) { ['18.4', '20.0'] } # Use numeric strings here.
@@ -84,6 +110,26 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
 
   describe '#check_single_answer' do
     subject(:single_result) { controller.send(:check_single_answer, correct_answer, tolerance) }
+
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+    let(:correct_answers) { %w[A B] }
+
+    before do
+      question = {
+        type: 'rigid_body_statics',
+        question: 'Dummy multi-part question',
+        answer: correct_answers,
+        input_fields: [
+          { label: 'Answer 1', key: 'rbs_answer_1', type: 'text' },
+          { label: 'Answer 2', key: 'rbs_answer_2', type: 'text' }
+        ]
+      }
+      controller.instance_variable_set(:@question, question)
+      session[:current_question] = question.to_json
+      session[:user_id] = student.id
+    end
 
     context 'when the answer is numeric and within tolerance' do
       let(:correct_answer) { '18.4' }
