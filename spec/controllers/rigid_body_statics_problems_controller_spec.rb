@@ -9,6 +9,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
     let!(:student) do
       Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
     end
+
     before do
       session[:user_id] = student.id
       controller.instance_variable_set(:@question, { type: 'rigid_body_statics' })

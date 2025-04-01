@@ -268,7 +268,6 @@ RSpec.describe PracticeProblemsController, type: :controller do
       }
       session[:current_question] = question.to_json
       session[:user_id] = student.id
-
     end
 
     it 'redirects to generate with success parameter when answer is correct' do
@@ -479,6 +478,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
     before do
       session[:user_id] = student.id
     end
+
     it 'formats error message for string keys' do
       controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, 'mean', 5.0, 4.0)
@@ -644,9 +644,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
   # Tests for finite differences answer checking
   describe 'POST #check_answer with finite differences' do
-  let!(:student) do
-    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
-  end
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
     context 'with single answer field' do
       let(:category) { 'Finite Differences' }
       let(:question) do
@@ -811,9 +812,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     # Adjust nesting level to fix RSpec/NestedGroups offenses
     describe 'POST #check_answer for correct answer' do
-    let!(:student) do
-      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
-    end
+      let!(:student) do
+        Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+      end
+
       before do
         session[:current_question] = question.to_json
         session[:user_id] = student.id
@@ -831,9 +833,10 @@ RSpec.describe PracticeProblemsController, type: :controller do
     end
 
     describe 'POST #check_answer for incorrect answer' do
-    let!(:student) do
-      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
-    end
+      let!(:student) do
+        Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+      end
+
       before do
         session[:current_question] = question.to_json
         session[:user_id] = student.id
