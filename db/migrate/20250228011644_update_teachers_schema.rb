@@ -6,7 +6,7 @@ class UpdateTeachersSchema < ActiveRecord::Migration[6.1]
     # If you want to migrate existing data:
     Teacher.reset_column_information
     Teacher.find_each do |teacher|
-      teacher.update_column(:name, [teacher.first_name, teacher.last_name].compact.join(" "))
+      teacher.update_column(:name, [teacher.first_name, teacher.last_name].compact.join(' '))
     end
 
     # Remove first_name, last_name, uid, and provider if they are no longer needed.
