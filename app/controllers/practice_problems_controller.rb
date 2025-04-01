@@ -19,6 +19,7 @@ class PracticeProblemsController < ApplicationController
     return redirect_to(generate_measurements_and_error_problems_path) if measurement_and_error_category?(@category)
     return redirect_to(generate_harmonic_motion_problems_path) if harmonic_motion_category?(@category)
     return redirect_to(generate_rigid_body_statics_problems_path) if rigid_body_statics_category?(@category)
+    return redirect_to(generate_angular_momentum_problems_path) if angular_momentum_category?(@category)
 
     @question = question_for_category
 
@@ -65,6 +66,8 @@ class PracticeProblemsController < ApplicationController
       redirect_to(generate_harmonic_motion_problems_path) and return true
     elsif rigid_body_statics_category?(@category)
       redirect_to(generate_rigid_body_statics_problems_path) and return true
+    elsif angular_momentum_category?(@category)
+      redirect_to(generate_angular_momentum_problems_path) and return true
     end
 
     false
@@ -80,6 +83,8 @@ class PracticeProblemsController < ApplicationController
 
   def rigid_body_statics_category?(category)
     category.to_s.downcase.include?('rigid')
+  def angular_momentum_category?(category)
+    category.to_s.downcase.include?('angular')
   end
 
   def question_for_category
