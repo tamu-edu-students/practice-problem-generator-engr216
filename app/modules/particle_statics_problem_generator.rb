@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/MethodLength
 class ParticleStaticsProblemGenerator
   attr_reader :category
 
@@ -159,4 +158,3 @@ class ParticleStaticsProblemGenerator
     false
   end
 end
-# rubocop:enable Metrics/MethodLength

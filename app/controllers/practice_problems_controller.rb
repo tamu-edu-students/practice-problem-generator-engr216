@@ -73,7 +73,6 @@ class PracticeProblemsController < ApplicationController
       redirect_to(generate_particle_statics_problems_path) and return true
     end
 
-
     false
   end
 
@@ -88,6 +87,7 @@ class PracticeProblemsController < ApplicationController
   def rigid_body_statics_category?(category)
     category.to_s.downcase.include?('rigid')
   end
+
   def angular_momentum_category?(category)
     category.to_s.downcase.include?('angular')
   end

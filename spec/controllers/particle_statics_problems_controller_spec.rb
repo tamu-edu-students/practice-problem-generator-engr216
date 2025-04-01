@@ -3,9 +3,9 @@ require 'rails_helper'
 
 RSpec.describe ParticleStaticsProblemsController, type: :controller do
   describe 'GET #generate' do
-  let!(:student) do
-    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
-  end
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     let(:dummy_question) do
       {
@@ -46,13 +46,14 @@ RSpec.describe ParticleStaticsProblemsController, type: :controller do
   end
 
   describe 'POST #check_answer' do
-  let!(:student) do
-    Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
-  end
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
 
     before do
       session[:user_id] = student.id
     end
+
     context 'when the answer is a single numeric value' do
       let(:question) do
         {
