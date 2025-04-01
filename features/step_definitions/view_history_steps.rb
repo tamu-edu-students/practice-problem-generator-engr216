@@ -13,7 +13,11 @@ def login_as_student
 end
 
 Given('I am on the student dashboard') do
-  @student = Student.find_or_create_by!(email: 'test_student@tamu.edu') { |s| s.first_name = 'Test'; s.last_name = 'Student'; s.uin = '123456789' }
+  @student = Student.find_or_create_by!(email: 'test_student@tamu.edu') do |s|
+    s.first_name = 'Test'
+    s.last_name = 'Student'
+    s.uin = '123456789'
+  end
   login_as_student
   visit '/practice_problems'
 end
@@ -27,7 +31,11 @@ Then('I should be on the history page') do
 end
 
 Given('I am on the history page') do
-  @student = Student.find_or_create_by!(email: 'test_student@tamu.edu') { |s| s.first_name = 'Test'; s.last_name = 'Student'; s.uin = '123456789' }
+  @student = Student.find_or_create_by!(email: 'test_student@tamu.edu') do |s|
+    s.first_name = 'Test'
+    s.last_name = 'Student'
+    s.uin = '123456789'
+  end
   login_as_student
 
   question = Question.find_or_create_by!(

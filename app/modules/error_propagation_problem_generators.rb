@@ -1,4 +1,4 @@
-# rubocop:disable Layout/LineLength, Metrics/MethodLength, Metrics/ModuleLength
+# rubocop:disable Layout/LineLength, Metrics/ModuleLength
 
 module ErrorPropagationProblemGenerators
   module_function
@@ -415,4 +415,4 @@ module ErrorPropagationProblemGenerators
   end
 end
 
-# rubocop:enable Layout/LineLength, Metrics/MethodLength, Metrics/ModuleLength
+# rubocop:enable Layout/LineLength, Metrics/ModuleLength

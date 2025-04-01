@@ -5,7 +5,7 @@ class HistoryController < ApplicationController
 
     # Redirect to login if no student is found
     unless @student
-      redirect_to login_path, alert: 'Please log in to view your history.'
+      redirect_to login_path, alert: t('student.history.login_required')
       return
     end
 
@@ -25,7 +25,7 @@ class HistoryController < ApplicationController
     @teacher = Teacher.find_by(id: session[:user_id])
 
     unless @teacher
-      redirect_to login_path, alert: 'You must be logged in as a teacher to view student history.'
+      redirect_to login_path, alert: t('history.login_required_teacher')
       return
     end
 
@@ -40,7 +40,7 @@ class HistoryController < ApplicationController
     end
 
     unless @student
-      redirect_to teacher_dashboard_path, alert: 'Student not found.'
+      redirect_to teacher_dashboard_path, alert: t('teacher.student_not_found')
       return
     end
 

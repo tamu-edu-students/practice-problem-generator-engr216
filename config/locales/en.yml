@@ -38,10 +38,16 @@ en:
       success: "UIN and teacher updated successfully."
       error: "Invalid UIN or missing teacher."
       not_found: "Selected teacher not found."
+    history:
+      login_required: "Please log in to view your history."
+
   teacher:
     logged_in: "You are logged in as a teacher."
+    student_not_found: "Student not found."
   sessions:
     invalid_user_type: "Invalid user type."
+  history:
+    login_required_teacher: "You must be logged in as a teacher to view student history."
 
 
     
