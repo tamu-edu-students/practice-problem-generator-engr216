@@ -3,6 +3,7 @@ class RigidBodyStaticsProblemsController < ApplicationController
     @category = 'Rigid Body Statics'
     @question = RigidBodyStaticsProblemGenerator.new(@category).generate_questions.first
     session[:current_question] = @question.to_json
+    session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/rigid_body_statics_problem'
   end
 

@@ -6,6 +6,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
 
     # Store the current question in session for later validation
     session[:current_question] = @question.to_json
+    session[:problem_start_time] = Time.current.to_s
 
     # Render the view (which is located in app/views/practice_problems/)
     render 'practice_problems/measurements_error_problem'

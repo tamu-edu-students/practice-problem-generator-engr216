@@ -12,6 +12,7 @@ class AngularMomentumProblemsController < ApplicationController
     end
 
     session[:current_question] = @question.to_json
+    session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/angular_momentum_problem'
   end
 
@@ -35,8 +36,10 @@ class AngularMomentumProblemsController < ApplicationController
   end
 
   def check_multi_part_answer(correct_answers, tolerance)
+    submitted_answers = []
     all_correct = correct_answers.each_with_index.all? do |correct_ans, i|
       submitted_ans = params["am_answer_#{i + 1}"].to_s.strip
+      submitted_answers << submitted_ans
       if numeric?(submitted_ans) && numeric?(correct_ans)
         (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
       else
@@ -46,9 +49,13 @@ class AngularMomentumProblemsController < ApplicationController
       false
     end
 
+    submitted_ans_str = submitted_answers.join(', ')
+
     if all_correct
+      save_answer_to_database(true, correct_answers.join(', '))
       "Correct, the answer #{correct_answers.join(', ')} is right!"
     else
+      save_answer_to_database(false, submitted_ans_str)
       "Incorrect, the correct answer is #{correct_answers.join(', ')}."
     end
   end
@@ -57,13 +64,17 @@ class AngularMomentumProblemsController < ApplicationController
     submitted_ans = params[:am_answer].to_s.strip
     if numeric?(submitted_ans) && numeric?(correct_ans)
       if (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+        save_answer_to_database(true, submitted_ans)
         "Correct, the answer #{correct_ans} is right!"
       else
+        save_answer_to_database(false, submitted_ans)
         "Incorrect, the correct answer is #{correct_ans}."
       end
     elsif submitted_ans == correct_ans.to_s.strip
+      save_answer_to_database(true, submitted_ans)
       "Correct, the answer #{correct_ans} is right!"
     else
+      save_answer_to_database(false, submitted_ans)
       "Incorrect, the correct answer is #{correct_ans}."
     end
   end
@@ -73,5 +84,52 @@ class AngularMomentumProblemsController < ApplicationController
     true
   rescue ArgumentError, TypeError
     false
+  end
+
+  def save_answer_to_database(is_correct, answer)
+    # Rails.logger.debug { "Saving answer to database: correct=#{is_correct}" }
+
+    student = Student.find_by(id: session[:user_id])
+
+    # Calculate time spent on the problem
+    time_spent = nil
+    if session[:problem_start_time]
+      begin
+        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+        # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
+      rescue StandardError => e
+        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
+      end
+    else
+      Rails.logger.debug { 'No problem start time available' }
+    end
+
+    # Get user's answer based on the question type
+    user_answer = answer
+    # Rails.logger.debug { "Extracted user answer: #{user_answer}" }
+
+    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
+
+    # Create and save the answer record
+    answer = Answer.create(
+      question_id: nil,
+      category: @category,
+      question_description: @question[:question],
+      answer_choices: extract_answer_choices,
+      answer: user_answer,
+      correctness: is_correct,
+      student_email: student.email,
+      date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
+      time_spent: time_spent
+    )
+    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+  end
+
+  def extract_answer_choices
+    return '[]' unless @question[:answer_choices]
+
+    @question[:answer_choices].to_json
+  rescue StandardError
+    nil
   end
 end

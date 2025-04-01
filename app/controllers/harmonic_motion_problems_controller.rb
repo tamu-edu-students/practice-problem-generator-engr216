@@ -4,6 +4,7 @@ class HarmonicMotionProblemsController < ApplicationController
     @question = HarmonicMotionProblemGenerator.new(@category).generate_questions.first
     session[:current_question] = @question.to_json
     render 'practice_problems/harmonic_motion_problem'
+    session[:problem_start_time] = Time.current.to_s
   end
 
   def check_answer
