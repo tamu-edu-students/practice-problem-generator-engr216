@@ -61,6 +61,11 @@ Rails.application.routes.draw do
     end
   end
   resources :rigid_body_statics_problems, only: [] do
+    collection do
+      get 'generate'
+      post 'check_answer'
+    end
+  end
   resources :angular_momentum_problems, only: [] do
     collection do
       get 'generate'
