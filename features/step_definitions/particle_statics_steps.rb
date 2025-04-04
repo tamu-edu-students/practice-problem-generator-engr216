@@ -20,11 +20,11 @@ When('I submit a particle statics answer') do
   # Wait for inputs to appear
   sleep(1)
 
-  if page.has_field?('ps_answer', wait: 5)
-    fill_in 'ps_answer', with: '12.0'
-  elsif page.has_field?('ps_answer_1', wait: 5) && page.has_field?('ps_answer_2', wait: 5)
-    fill_in 'ps_answer_1', with: '1.234'
-    fill_in 'ps_answer_2', with: '2.345'
+  if page.has_field?('answer', wait: 5)
+    fill_in 'answer', with: '12.0'
+  elsif page.has_field?('answer_1', wait: 5) && page.has_field?('answer_2', wait: 5)
+    fill_in 'answer_1', with: '1.234'
+    fill_in 'answer_2', with: '2.345'
   else
     # Fall back to any visible text input fields
     inputs = page.all('input[type="text"]')
