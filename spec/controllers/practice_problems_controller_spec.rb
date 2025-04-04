@@ -2,6 +2,11 @@
 require 'rails_helper'
 
 RSpec.describe PracticeProblemsController, type: :controller do
+  before do
+    session[:user_type] = 'student'
+    session[:user_id] = 1
+  end
+
   let(:confidence_interval_question) do
     {
       question: 'Calculate confidence interval...',

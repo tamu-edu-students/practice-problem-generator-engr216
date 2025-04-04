@@ -1,13 +1,13 @@
 # features/step_definitions/harmonic_motion_steps.rb
 
 Given('I am on the Harmonic Motion Problem Generator page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
+  login_as_student
   visit generate_harmonic_motion_problems_path
 end
 
@@ -16,11 +16,11 @@ When('I click the New Problem button') do
 end
 
 When('I submit a Harmonic Motion answer') do
-  if page.has_field?('shm_answer', wait: 5)
-    fill_in 'shm_answer', with: '1.734'
-  elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
-    fill_in 'shm_answer_1', with: '1.734'
-    fill_in 'shm_answer_2', with: '0.403'
+  if page.has_field?('answer', wait: 5)
+    fill_in 'answer', with: '1.734'
+  elsif page.has_field?('answer_1', wait: 5) && page.has_field?('answer_2', wait: 5)
+    fill_in 'answer_1', with: '1.734'
+    fill_in 'answer_2', with: '0.403'
   else
     inputs = page.all('input[type="text"]')
     raise 'No enabled input fields found for harmonic motion answer' unless inputs.any?

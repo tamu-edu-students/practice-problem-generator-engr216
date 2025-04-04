@@ -1,5 +1,12 @@
 Given('I am on the student dashboard and I am logged in as a student') do
-  visit '/practice_problems'
+  @student = Student.find_or_create_by!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  login_as_student
+  visit practice_problems_path
 end
 
 Then('I should see a settings button.') do

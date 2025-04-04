@@ -1,12 +1,11 @@
 Given('I am on the Experimental Statistics Page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
-  @category = 'Experimental Statistics'
+  login_as_student
   visit practice_problems_path
   click_link 'Experimental Statistics'
 end

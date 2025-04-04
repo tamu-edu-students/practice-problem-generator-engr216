@@ -68,3 +68,10 @@ RSpec.configure do |config|
   OmniAuth.config.test_mode = true
   OmniAuth.config.allowed_request_methods = %i[get post]
 end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

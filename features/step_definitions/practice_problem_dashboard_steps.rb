@@ -1,25 +1,11 @@
 Given('I am on the log in page as a student') do
-  Student.find_or_create_by!(
-    email: 'test_student@tamu.edu'
-  ) do |student|
-    student.first_name = 'test'
-    student.last_name = 'student'
-    student.uin = '123456789'
-  end
+  @teacher = Teacher.find_or_create_by!(email: 'test_student@tamu.edu') { |t| t.name = 'Test TStudent' }
   visit root_path
 end
 
 When('I log in as a student') do
-  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
-                                                                       uid: '123',
-                                                                       provider: 'google_oauth2',
-                                                                       info: {
-                                                                         email: 'test_student@tamu.edu',
-                                                                         first_name: 'test',
-                                                                         last_name: 'student'
-                                                                       }
-                                                                     })
-  visit '/auth/google_oauth2/callback?state=student'
+  login_as_student
+  visit practice_problems_path
 end
 
 Then('I should be on the practice problems.') do
@@ -38,10 +24,6 @@ When('I navigate to the dashboard link') do
 end
 
 Then('I should not be on the problem dashboard') do
-  # The test is likely expecting to be redirected away from the dashboard
-  # Fix by checking for absence of dashboard elements instead of current path
-  expect(page).not_to have_content('Practice Problem Dashboard')
-  expect(page).not_to have_css('.problem-card')
-  # Or verify we're on a different page like the login page
-  expect(page).to have_content('Log In')
+  expect(page).to have_content('Please log in as a student') # Match the alert
+  expect(page).not_to have_content('Select Category')
 end
