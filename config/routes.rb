@@ -46,6 +46,7 @@ Rails.application.routes.draw do
 
   # Add the history route
   get 'history', to: 'history#show', as: 'history'
+  get 'history/teacher_view', to: 'history#teacher_view', as: 'teacher_view'
 
   # Practice Problem Routes
   resources :practice_problems, only: [:index] do

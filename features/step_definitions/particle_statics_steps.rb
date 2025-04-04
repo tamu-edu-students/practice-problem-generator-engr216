@@ -7,6 +7,7 @@ Given('I am on the "Particle Statics" page') do
   )
   page.set_rack_session(user_id: @student.id)
   visit generate_particle_statics_problems_path
+  expect(page).to have_content('Particle Statics')
 end
 
 When('I click the "new particle statics problem" button') do

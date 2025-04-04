@@ -9,6 +9,7 @@ Given('I am on the Harmonic Motion Problem Generator page') do
   )
   login_as_student
   visit generate_harmonic_motion_problems_path
+  expect(page).to have_content('Harmonic Motion')
 end
 
 When('I click the New Problem button') do
@@ -17,10 +18,10 @@ end
 
 When('I submit a Harmonic Motion answer') do
   if page.has_field?('answer', wait: 5)
-    fill_in 'answer', with: '1.734'
-  elsif page.has_field?('answer_1', wait: 5) && page.has_field?('answer_2', wait: 5)
-    fill_in 'answer_1', with: '1.734'
-    fill_in 'answer_2', with: '0.403'
+    fill_in 'shm_answer', with: '1.734'
+  elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
+    fill_in 'shm_answer_1', with: '1.734'
+    fill_in 'shm_answer_2', with: '0.403'
   else
     inputs = page.all('input[type="text"]')
     raise 'No enabled input fields found for harmonic motion answer' unless inputs.any?
