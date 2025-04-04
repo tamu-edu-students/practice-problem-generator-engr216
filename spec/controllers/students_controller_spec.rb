@@ -83,7 +83,7 @@ RSpec.describe StudentsController, type: :controller do
       it 'returns unprocessable_entity status with JSON' do
         post :create, params: { student: invalid_attributes }, format: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to have_key('email')
+        expect(response.parsed_body).to have_key('email')
       end
     end
   end
@@ -143,7 +143,7 @@ RSpec.describe StudentsController, type: :controller do
       it 'returns unprocessable_entity status with JSON' do
         patch :update, params: { id: student.id, student: invalid_attributes }, format: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to have_key('email')
+        expect(response.parsed_body).to have_key('email')
       end
     end
   end
@@ -180,7 +180,7 @@ RSpec.describe StudentsController, type: :controller do
       it 'updates the student’s uin and teacher' do
         post :update_uin, params: { uin: '987654321', teacher_id: teacher.id }
         student.reload
-        expect(student.uin).to eq(987654321)
+        expect(student.uin).to eq(987_654_321)
         expect(student.teacher).to eq(teacher)
       end
 
