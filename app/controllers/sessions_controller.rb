@@ -1,13 +1,11 @@
 class SessionsController < ApplicationController
-  # GET /logout
-  # def logout
-  #  reset_session
-  #  session[:user_id] = nil
-  #  session[:user_type] = nil
-  # redirect_to root_path, notice: 'You are logged out.'
-  # end
+  def logout
+   reset_session
+   session[:user_id] = nil
+   session[:user_type] = nil
+  redirect_to root_path, notice: 'You are logged out.'
+  end
 
-  # GET /auth/google_oauth2/callback
   def omniauth
     auth = request.env['omniauth.auth']
 

@@ -1,22 +1,11 @@
 Given('I am on the Confidence Interval Page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
-  visit generate_practice_problems_path(category_id: 'Confidence Intervals')
-end
-
-Given('I on the Confidence Interval Page') do
-  @student = Student.create!(
-    email: 'test@example.com',
-    first_name: 'Test',
-    last_name: 'Student',
-    uin: '123456789'
-  )
-  page.set_rack_session(user_id: @student.id)
+  login_as_student
   visit generate_practice_problems_path(category_id: 'Confidence Intervals')
 end
 

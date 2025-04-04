@@ -1,11 +1,11 @@
 Given('I am on the Universal Accounting Equation problem page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
+  login_as_student
   visit generate_practice_problems_path(category_id: 'Universal Accounting Equation')
 end
 

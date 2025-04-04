@@ -1,13 +1,13 @@
 # features/step_definitions/harmonic_motion_steps.rb
 
 Given('I am on the Harmonic Motion Problem Generator page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
+  login_as_student
   visit generate_harmonic_motion_problems_path
 end
 

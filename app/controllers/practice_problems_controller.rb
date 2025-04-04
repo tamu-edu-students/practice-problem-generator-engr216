@@ -1,5 +1,6 @@
 # rubocop:disable Metrics/ClassLength, Layout/LineLength
 class PracticeProblemsController < ApplicationController
+  before_action :require_student_login
   # List unique category names from the questions table.
   def index
     @categories = Question.distinct.pluck(:category)
@@ -59,6 +60,10 @@ class PracticeProblemsController < ApplicationController
   end
 
   private
+
+  def require_student_login
+    redirect_to root_path, alert: 'Please log in as a student' unless session[:user_type] == 'student'
+  end
 
   def special_category_redirect?
     if measurement_and_error_category?(@category)

@@ -1,12 +1,11 @@
 Given('I am on the measurement and error page') do
-  @student = Student.create!(
+  @student = Student.find_or_create_by!(
     email: 'test@example.com',
     first_name: 'Test',
     last_name: 'Student',
     uin: '123456789'
   )
-  page.set_rack_session(user_id: @student.id)
-  # Ensure that this URL renders the measurement & error view.
+  login_as_student
   visit generate_practice_problems_path(category_id: 'Measurements and Error')
 end
 

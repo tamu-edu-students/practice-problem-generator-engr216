@@ -1,6 +1,13 @@
 # Step definitions for Momentum & Collisions feature
 
 Given('I am on the "Momentum & Collisions" page for collision problems') do
+  @student = Student.find_or_create_by!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789'
+  )
+  login_as_student
   visit generate_practice_problems_path(category_id: 'Momentum & Collisions')
 end
 
