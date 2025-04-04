@@ -39,5 +39,66 @@ RSpec.describe HistoryController, type: :controller do
         expect(response).to render_template(:show)
       end
     end
+
+    context 'when student has completed questions' do
+      let(:student) do
+        Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+      end
+
+      before do
+        session[:user_id] = student.id
+        Answer.create!(student_email: student.email, correctness: true, question_description: 'Q1',
+                       answer_choices: %w[A B], answer: 'A')
+        Answer.create!(student_email: student.email, correctness: false, question_description: 'Q2',
+                       answer_choices: %w[C D], answer: 'C')
+        get :show
+      end
+
+      it 'assigns correct statistics' do
+        expect(assigns(:attempted)).to eq(2)
+        expect(assigns(:correct)).to eq(1)
+        expect(assigns(:incorrect)).to eq(1)
+        expect(assigns(:percentage_correct)).to eq(50.0)
+      end
+    end
+  end
+
+  describe 'GET #teacher_view' do
+    let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Test Teacher') }
+    let(:student) do
+      Student.create!(email: 'student@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    context 'when teacher is not logged in' do
+      it 'redirects to login_path' do
+        get :teacher_view
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context 'when teacher is logged in' do
+      before { session[:user_id] = teacher.id }
+
+      it 'redirects to teacher_dashboard_path with invalid student_id' do
+        get :teacher_view, params: { student_id: 999 }
+        expect(response).to redirect_to(teacher_dashboard_path)
+      end
+
+      it 'assigns @student and statistics with valid student_id' do
+        Answer.create!(student_email: student.email, correctness: true, question_description: 'Q1',
+                       answer_choices: %w[A B], answer: 'A')
+        get :teacher_view, params: { student_id: student.id }
+        expect(assigns(:student)).to eq(student)
+        expect(assigns(:attempted)).to eq(1)
+        expect(assigns(:correct)).to eq(1)
+      end
+
+      it 'renders show template with valid student_id' do
+        Answer.create!(student_email: student.email, correctness: true, question_description: 'Q1',
+                       answer_choices: %w[A B], answer: 'A')
+        get :teacher_view, params: { student_id: student.id }
+        expect(response).to render_template(:show)
+      end
+    end
   end
 end
