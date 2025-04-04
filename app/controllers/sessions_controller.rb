@@ -1,9 +1,9 @@
 class SessionsController < ApplicationController
   def logout
-   reset_session
-   session[:user_id] = nil
-   session[:user_type] = nil
-  redirect_to root_path, notice: 'You are logged out.'
+    reset_session
+    session[:user_id] = nil
+    session[:user_type] = nil
+    redirect_to root_path, notice: t('sessions.logged_out')
   end
 
   def omniauth

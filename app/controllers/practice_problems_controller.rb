@@ -15,34 +15,37 @@ class PracticeProblemsController < ApplicationController
   end
 
   def generate
-    @category = params[:category_id]
-    # Redirect to dedicated controllers if applicable.
-    return redirect_to(generate_measurements_and_error_problems_path) if measurement_and_error_category?(@category)
-    return redirect_to(generate_harmonic_motion_problems_path) if harmonic_motion_category?(@category)
-    return redirect_to(generate_rigid_body_statics_problems_path) if rigid_body_statics_category?(@category)
-    return redirect_to(generate_angular_momentum_problems_path) if angular_momentum_category?(@category)
-    return redirect_to(generate_particle_statics_problems_path) if particle_statics_category?(@category)
+    @category = params[:category_id] || 'default' # Fallback if nil
+    return redirect_to_special_category if special_category?
 
     @question = question_for_category
-
-    # For error propagation questions, store the COMPLETE question including explanation
-    if @question[:type] == 'propagation of error'
-      session[:current_question] = @question.to_json
-      session[:error_propagation_seed] = Random.new_seed
-    else
-      # Store only essential question data for other types, omitting lengthy explanations
-      session[:current_question] = {
-        type: @question[:type],
-        question: @question[:question],
-        answer: @question[:answer],
-        field_label: @question[:field_label]
-      }.to_json
-    end
-
-    # Record the time when the problem was generated
+    store_question_data
     session[:problem_start_time] = Time.current.to_s
-
     render determine_template_for_question(@question)
+  end
+
+  def redirect_to_special_category
+    path = {
+      'measurement' => generate_measurements_and_error_problems_path,
+      'harmonic' => generate_harmonic_motion_problems_path,
+      'rigid' => generate_rigid_body_statics_problems_path,
+      'angular' => generate_angular_momentum_problems_path,
+      'particle' => generate_particle_statics_problems_path
+    }.find { |k, _v| @category.to_s.downcase.include?(k) }&.last
+    redirect_to(path || generate_practice_problems_path(category_id: @category)) # Fallback
+  end
+
+  def special_category?
+    %w[measurement harmonic rigid angular particle].any? { |c| @category.to_s.downcase.include?(c) }
+  end
+
+  def store_question_data
+    session[:current_question] = @question[:type] == 'propagation of error' ? @question.to_json : essential_question_data.to_json
+    session[:error_propagation_seed] = Random.new_seed if @question[:type] == 'propagation of error'
+  end
+
+  def essential_question_data
+    { type: @question[:type], question: @question[:question], answer: @question[:answer], field_label: @question[:field_label] }
   end
 
   def check_answer
@@ -62,7 +65,7 @@ class PracticeProblemsController < ApplicationController
   private
 
   def require_student_login
-    redirect_to root_path, alert: 'Please log in as a student' unless session[:user_type] == 'student'
+    redirect_to root_path, alert: t('practice_problems.login_required') unless session[:user_type] == 'student'
   end
 
   def special_category_redirect?
@@ -744,27 +747,29 @@ class PracticeProblemsController < ApplicationController
 
   def extract_user_answer
     case @question[:type]
-    when 'data_statistics'
-      params.select { |k, v| @question[:answers]&.key?(k.to_sym) && v.present? }.to_json
-    when 'confidence_interval'
-      { lower_bound: params[:lower_bound], upper_bound: params[:upper_bound] }.to_json
-    when 'engineering_ethics'
-      params[:ethics_answer].to_s # Convert boolean to string
-    when 'momentum & collisions'
-      if @question[:answer].is_a?(Hash)
-        params.select { |k, v| @question[:answer].key?(k.to_sym) && v.present? }.to_json
-      else
-        params[:answer].to_s
-      end
-    when 'finite_differences'
-      if @question[:input_fields].present?
-        params.select { |k, _v| @question[:input_fields].any? { |f| f[:key] == k } }.to_json
-      else
-        params[:answer].to_s
-      end
-    else
-      params[:answer].to_s
+    when 'data_statistics' then extract_multi_field_answer(@question[:answers])
+    when 'confidence_interval' then extract_bounds_answer
+    when 'engineering_ethics' then params[:ethics_answer].to_s
+    when 'momentum & collisions' then extract_collision_answer
+    when 'finite_differences' then extract_finite_differences_answer
+    else params[:answer].to_s
     end
+  end
+
+  def extract_multi_field_answer(answers)
+    params.select { |k, v| answers&.key?(k.to_sym) && v.present? }.to_json
+  end
+
+  def extract_bounds_answer
+    { lower_bound: params[:lower_bound], upper_bound: params[:upper_bound] }.to_json
+  end
+
+  def extract_collision_answer
+    @question[:answer].is_a?(Hash) ? params.select { |k, v| @question[:answer].key?(k.to_sym) && v.present? }.to_json : params[:answer].to_s
+  end
+
+  def extract_finite_differences_answer
+    @question[:input_fields].present? ? params.select { |k, _v| @question[:input_fields].any? { |f| f[:key] == k } }.to_json : params[:answer].to_s
   end
 
   def extract_answer_choices

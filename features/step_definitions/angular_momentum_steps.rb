@@ -15,7 +15,6 @@ When('I click the "new problem" button') do
 end
 
 When('I submit an answer') do
-
   # Wait for inputs to appear
   sleep(1)
 

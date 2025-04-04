@@ -46,8 +46,10 @@ en:
     student_not_found: "Student not found."
   sessions:
     invalid_user_type: "Invalid user type."
+    logged_out: "You are logged out."
   history:
     login_required_teacher: "You must be logged in as a teacher to view student history."
-
+  practice_problems:
+    login_required: "Please log in as a student"
 
     

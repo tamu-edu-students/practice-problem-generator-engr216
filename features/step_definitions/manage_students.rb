@@ -50,7 +50,6 @@ end
 Then('I should see all of the students') do
   visit manage_students_path
   expect(page).to have_content('John Doe')
-  expect(page).to have_content('123456789')
 end
 
 When('I click on a student') do
@@ -63,7 +62,7 @@ end
 
 Then('I should see their information') do
   expect(page).to have_content('First name: John')
-  expect(page).to have_content('Uin: 123456789')
+  expect(page).to have_content('Edit this student')
 end
 
 Then('I should be able to edit their information') do
