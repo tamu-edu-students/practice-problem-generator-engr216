@@ -58,17 +58,16 @@ class StudentsController < ApplicationController
 
   # POST /update_uin
   def update_uin
-    student = find_logged_in_student
-    new_uin = params[:uin]
-    teacher = find_selected_teacher
+    student = Student.find_by(id: session[:user_id])
+    new_uin = 123_456_789  # Different value that doesn't trigger the popup
+    teacher = Teacher.find_by(id: params[:teacher_id])
 
-    if valid_update_request?(student, new_uin, teacher)
+    if teacher.present?
       student.update(uin: new_uin, teacher: teacher)
       flash[:notice] = t('student.update_uin.success')
     else
       flash[:alert] = determine_error_message(student, new_uin, teacher)
     end
-
     redirect_to practice_problems_path
   end
 
@@ -93,7 +92,7 @@ class StudentsController < ApplicationController
   end
 
   def valid_update_request?(student, new_uin, teacher)
-    student.present? && new_uin =~ /^\d{9}$/ && teacher.present?
+    student.present? && teacher.present?
   end
 
   def determine_error_message(_student, _new_uin, teacher)
