@@ -59,7 +59,7 @@ class StudentsController < ApplicationController
   # POST /update_uin
   def update_uin
     student = Student.find_by(id: session[:user_id])
-    new_uin = 123_456_789  # Different value that doesn't trigger the popup
+    new_uin = 123_456_789 # Different value that doesn't trigger the popup
     teacher = Teacher.find_by(id: params[:teacher_id])
 
     if teacher.present?
@@ -91,7 +91,7 @@ class StudentsController < ApplicationController
     Teacher.find_by(id: params[:teacher_id])
   end
 
-  def valid_update_request?(student, new_uin, teacher)
+  def valid_update_request?(student, _new_uin, teacher)
     student.present? && teacher.present?
   end
 
