@@ -23,16 +23,16 @@ Teachers will be able to manage and view students by new attributes such as seme
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
 | Settings and Form Field Fix for the Student View (chore)           |  Nick  | 2      | [Acceptance Criteria]()                                                                       |
-| Remove Unneeded Elements from App (chore)         |  Vivek  | 2      | [Acceptance Criteria]()                                                                         |
-| User Friendly Error Handling for Teacher and Student Login (chore)              |  Jordan  | 2      | [Acceptance Criteria]()                                                                                                       |
+| Remove Unneeded Elements from App (chore)         |  Vivek  | 1      | [Acceptance Criteria]()                                                                         |
+| User Friendly Error Handling for Teacher and Student Login (chore)              |  Jordan  | 1      | [Acceptance Criteria]()                                                                                                       |
 | Response Grading and Show Answer Logic Fix (chore)               |  Cooper  | 2      | [Acceptance Criteria]()                                                |
 |  Rspec & Cucumber Testing Fixes (chore) | Kevin  | 1      | [Acceptance Criteria]()                                                                                                       |
 | Participation Statistics for the Teacher View        |    | 2      | [Acceptance Criteria]()                                                                                                       |
-| Category Difficulty Statistic for the Teacher View          |    | 1      | [Acceptance Criteria]()                                                                                                       |           
+| Category Difficulty Statistic for the Teacher View          |    | 2      | [Acceptance Criteria]()                                                                                                       |           
 | Organize Student Statistics by Semester |   | 2 | [Acceptance Criteria]() |
 | Manage Students by Semester |   | 2 | [Acceptance Criteria]() |
 |
-| Total Points|    | 12      |                                                                                                      |
+| Total Points|    | 15      |                                                                                                      |
 
 
 
