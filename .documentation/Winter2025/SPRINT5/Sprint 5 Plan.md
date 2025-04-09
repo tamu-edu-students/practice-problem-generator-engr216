@@ -10,7 +10,7 @@
 | 2 | Jordan | Cooper | Dhruv, Nick, Vivek, Kevin |
 | 2 | Cooper | Jordan | Dhruv, Nick, Vivek, Kevin |
 | 4 | Dhruv | Kevin | Jordan, Nick, Vivek, Cooper |
-| 5 | Kevin | Dhruvn | Jordan, Nick, Vivek, Cooper |
+| 5 | Kevin | Dhruv | Jordan, Nick, Vivek, Cooper |
 
 ### Sprint Goal
 Students will be able to manage details about themselves including email, full name, section, and teacher. Students will be able to effectively view answers as a separate function from submitting their answer.
