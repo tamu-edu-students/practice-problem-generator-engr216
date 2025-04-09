@@ -104,11 +104,6 @@ physics_categories = {
     'Why is engineering ethics critical in professional practice?',
     'Discuss a real-world case where ethical considerations impacted an engineering decision.',
     'How can engineers balance innovation with ethical responsibilities?'
-  ],
-  'Art in Engineering' => [
-    'How does art influence design in engineering projects?',
-    'In what ways can engineering principles enhance artistic expression?',
-    'Discuss examples where art and engineering have successfully integrated.'
   ]
 }
 

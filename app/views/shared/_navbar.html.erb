@@ -14,7 +14,9 @@
         Account ▼
       </button>
       <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-        <li><a href="/dashboard">Dashboard</a></li>
+        <% if session[:user_type] == 'teacher' %>
+          <li><a href="/dashboard">Dashboard</a></li>
+        <% end %>
         <li><a href="/settings">Settings</a></li>
         <li><a href="/logout">Logout</a></li>
       </ul>
