@@ -22,15 +22,15 @@ Teachers will be able to manage and view students by new attributes such as seme
 
 | Name                               | Assigned   | Points | Acceptance Criteria                                                                                                             |
 |------------------------------------|------------|--------|---------------------------------------------------------------------------------------------------------------------------------|
-| Settings and Form Field Fix for the Student View (chore)           |  Nick  | 2      | [Acceptance Criteria]()                                                                       |
-| Remove Unneeded Elements from App (chore)         |  Vivek  | 1      | [Acceptance Criteria]()                                                                         |
-| User Friendly Error Handling for Teacher and Student Login (chore)              |  Jordan  | 1      | [Acceptance Criteria]()                                                                                                       |
-| Response Grading and Show Answer Logic Fix (chore)               |  Cooper  | 2      | [Acceptance Criteria]()                                                |
+| Settings and Form Field Fix for the Student View (chore)           |  Nick  | 2      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/131)                                                                       |
+| Remove Unneeded Elements from App (chore)         |  Vivek  | 1      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/136)                                                                         |
+| User Friendly Error Handling for Teacher and Student Login (chore)              |  Jordan  | 1      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/140)                                                                                                       |
+| Response Grading and Show Answer Logic Fix (chore)               |  Cooper  | 2      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/139)                                                |
 |  Rspec & Cucumber Testing Fixes (chore) | Kevin  | 1      | [Acceptance Criteria]()                                                                                                       |
-| Participation Statistics for the Teacher View        |    | 2      | [Acceptance Criteria]()                                                                                                       |
-| Category Difficulty Statistic for the Teacher View          |    | 2      | [Acceptance Criteria]()                                                                                                       |           
-| Organize Student Statistics by Semester |   | 2 | [Acceptance Criteria]() |
-| Manage Students by Semester |   | 2 | [Acceptance Criteria]() |
+| Participation Statistics for the Teacher View        |    | 2      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/142)                                                                                                       |
+| Category Difficulty Statistic for the Teacher View          |    | 2      | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/143)                                                                                                       |           
+| Organize Student Statistics by Semester |   | 2 | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/138) |
+| Manage Students by Semester |   | 2 | [Acceptance Criteria](https://github.com/tamu-edu-students/practice-problem-generator-engr216/issues/144) |
 |
 | Total Points|    | 15      |                                                                                                      |
 
