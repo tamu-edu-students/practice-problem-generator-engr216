@@ -67,7 +67,9 @@ class StudentsController < ApplicationController
 
     if teacher.present? && semester.present?
       student.update(uin: new_uin, teacher: teacher, semester: semester, authenticate: authenticate)
+      # rubocop:disable Rails/I18nLocaleTexts
       flash[:notice] = 'Your settings were saved. Good luck studying!'
+      # rubocop:enable Rails/I18nLocaleTexts
     else
       flash[:alert] = determine_error_message(student, new_uin, teacher)
     end
