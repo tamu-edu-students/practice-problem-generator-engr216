@@ -59,15 +59,19 @@ class StudentsController < ApplicationController
   # POST /update_uin
   def update_uin
     student = Student.find_by(id: session[:user_id])
-    new_uin = 123_456_789 # Different value that doesn't trigger the popup
+    new_uin = 123_456_789 # Placeholder to disable popup
     teacher = Teacher.find_by(id: params[:teacher_id])
+    semester = params[:semester]
 
-    if teacher.present?
-      student.update(uin: new_uin, teacher: teacher)
-      flash[:notice] = t('student.update_uin.success')
+    authenticate = ActiveModel::Type::Boolean.new.cast(params[:authenticate])
+
+    if teacher.present? && semester.present?
+      student.update(uin: new_uin, teacher: teacher, semester: semester, authenticate: authenticate)
+      flash[:notice] = 'Your settings were saved. Good luck studying!'
     else
       flash[:alert] = determine_error_message(student, new_uin, teacher)
     end
+
     redirect_to practice_problems_path
   end
 
@@ -78,7 +82,7 @@ class StudentsController < ApplicationController
   end
 
   def student_params
-    params.expect(student: %i[first_name last_name email uin teacher teacher_id authenticate])
+    params.expect(student: %i[first_name last_name email uin teacher teacher_id authenticate semester])
   end
 
   # === Refactored helpers for update_uin ===

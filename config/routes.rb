@@ -43,6 +43,8 @@ Rails.application.routes.draw do
 
   # Add the settings route
   get 'settings', to: 'settings#show', as: 'settings'
+  put 'settings', to: 'settings#update'
+
 
   # Add the history route
   get 'history', to: 'history#show', as: 'history'
