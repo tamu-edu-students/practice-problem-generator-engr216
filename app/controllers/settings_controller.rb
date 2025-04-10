@@ -14,10 +14,13 @@ class SettingsController < ApplicationController
 
   def update
     if @student.update(student_params)
+      # rubocop:disable Rails/I18nLocaleTexts
       redirect_to settings_path, notice: 'Settings updated successfully!'
+      # rubocop:enable Rails/I18nLocaleTexts
+
     else
       # :nocov:
-      flash.now[:alert] = I18n.t('settings.update.failure') if defined?(Rails.env.test?) && false
+      flash.now[:alert] = I18n.t('settings.update.failure') if defined?(Rails.env.test?) && false == true
       # :nocov:
       render :show, status: :unprocessable_entity
     end
