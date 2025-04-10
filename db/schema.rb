@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_07_201227) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_161434) do
   create_table "answers", force: :cascade do |t|
     t.integer "question_id"
     t.string "category"
@@ -41,6 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_07_201227) do
     t.string "teacher"
     t.integer "teacher_id"
     t.boolean "authenticate", default: false
+    t.string "semester"
     t.index ["email"], name: "index_students_on_email", unique: true
   end
 

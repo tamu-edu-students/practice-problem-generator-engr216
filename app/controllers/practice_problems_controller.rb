@@ -4,7 +4,7 @@ class PracticeProblemsController < ApplicationController
   # List unique category names from the questions table.
   def index
     @categories = Question.distinct.pluck(:category)
-
+    @semesters = semester_options
     @student = Student.find_by(id: session[:user_id])
     @prompt_for_uin = @student&.uin == 100_000_000
     Rails.logger.debug { "Session User ID: #{session[:user_id]}" }
@@ -12,6 +12,12 @@ class PracticeProblemsController < ApplicationController
     @teachers = Teacher.all
 
     render :index
+  end
+
+  def semester_options
+    (2023..2026).flat_map do |year|
+      ["Spring #{year}", "Fall #{year}"]
+    end
   end
 
   def generate
