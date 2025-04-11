@@ -1,15 +1,14 @@
 class HistoryController < ApplicationController
   def show
-    # Get the current student
+    # Verify the current user is a student
     @student = Student.find_by(id: session[:user_id])
 
-    # Redirect to login if no student is found
     unless @student
-      redirect_to login_path, alert: t('student.history.login_required')
+      redirect_to login_path, alert: t('history.login_required')
       return
     end
 
-    # Fetch all answers for this student
+    # Fetch all answers for this student using email for consistency
     @completed_questions = Answer.where(student_email: @student.email)
                                  .order(created_at: :desc)
 
@@ -29,22 +28,16 @@ class HistoryController < ApplicationController
       return
     end
 
-    # Get the requested student by ID or email parameter
-    student_id = params[:student_id]
+    # Get the requested student by email parameter
     student_email = params[:student_email]
-
-    if student_id
-      @student = Student.find_by(id: student_id)
-    elsif student_email
-      @student = Student.find_by(email: student_email)
-    end
+    @student = Student.find_by(email: student_email)
 
     unless @student
       redirect_to teacher_dashboard_path, alert: t('teacher.student_not_found')
       return
     end
 
-    # Fetch all answers for this student
+    # Fetch all answers for this student using email for consistency
     @completed_questions = Answer.where(student_email: @student.email)
                                  .order(created_at: :desc)
 
@@ -54,6 +47,6 @@ class HistoryController < ApplicationController
     @incorrect = @attempted - @correct
     @percentage_correct = @attempted.positive? ? ((@correct.to_f / @attempted) * 100).round(2) : 0
 
-    render :show # Reuse the same view template as student history
+    render :show
   end
 end

@@ -1,5 +1,6 @@
 # spec/controllers/sessions_controller_spec.rb
 require 'rails_helper'
+require 'ostruct'
 
 RSpec.describe SessionsController, type: :controller do
   describe 'GET #omniauth' do
@@ -54,6 +55,93 @@ RSpec.describe SessionsController, type: :controller do
       it 'redirects to root_path with an alert' do
         get :omniauth, params: { state: 'invalid_state' }
         expect(flash[:alert]).to eq('Invalid user type.')
+      end
+    end
+  end
+
+  describe 'GET #logout' do
+    before do
+      session[:user_id] = 1
+      session[:user_type] = 'teacher'
+    end
+
+    it 'clears the session and redirects to root path' do
+      get :logout
+      expect(session[:user_id]).to be_nil
+      expect(session[:user_type]).to be_nil
+      expect(response).to redirect_to(root_path)
+      expect(flash[:notice]).to eq(I18n.t('sessions.logged_out'))
+    end
+  end
+
+  describe 'GET #auth_failure' do
+    it 'redirects to root path with an alert message' do
+      get :auth_failure, params: { message: 'invalid_credentials' }
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq('Authentication failed: Invalid credentials')
+    end
+  end
+
+  describe '#handle_student_login' do
+    context 'with invalid email domain' do
+      let(:auth) do
+        OmniAuth::AuthHash.new(
+          info: OpenStruct.new(
+            email: 'student@gmail.com', # Non-tamu.edu domain
+            first_name: 'Test',
+            last_name: 'Student'
+          )
+        )
+      end
+
+      it 'rejects non-tamu.edu email domains' do
+        expect(controller.send(:valid_email_domain?, 'student@gmail.com')).to be false
+      end
+    end
+
+    context 'with valid student data' do
+      let(:auth) do
+        OmniAuth::AuthHash.new(
+          info: OpenStruct.new(
+            email: 'new_student@tamu.edu',
+            first_name: 'New',
+            last_name: 'Student'
+          )
+        )
+      end
+
+      it 'creates a new student when one does not exist' do
+        expect do
+          controller.send(:find_or_create_student, auth)
+        end.to change(Student, :count).by(1)
+      end
+
+      it 'sets session variables correctly' do
+        student = Student.create!(
+          email: 'session_test@tamu.edu',
+          first_name: 'Session',
+          last_name: 'Test',
+          uin: 987_654_321
+        )
+        controller.send(:student_session_set, student)
+        expect(session[:user_id]).to eq(student.id)
+        expect(session[:user_type]).to eq('student')
+      end
+    end
+  end
+
+  describe 'private methods' do
+    describe '#redirect_invalid_domain' do
+      it 'redirects to root with an alert for invalid domain' do
+        expect(controller).to receive(:redirect_to).with(root_path, alert: I18n.t('sessions.invalid_domain'))
+        controller.send(:redirect_invalid_domain)
+      end
+    end
+
+    describe '#redirect_login_failed' do
+      it 'redirects to root with an alert for login failure' do
+        expect(controller).to receive(:redirect_to).with(root_path, alert: I18n.t('sessions.login_failed'))
+        controller.send(:redirect_login_failed)
       end
     end
   end

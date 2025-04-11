@@ -6,10 +6,14 @@ class PracticeProblemsController < ApplicationController
     @categories = Question.distinct.pluck(:category)
     @semesters = semester_options
     @student = Student.find_by(id: session[:user_id])
-    @prompt_for_uin = @student&.uin == 100_000_000
+    # Only prompt if the student needs to select a teacher AND semester
+    @prompt_for_uin = @student&.teacher_id.nil? || @student&.semester_id.nil?
     Rails.logger.debug { "Session User ID: #{session[:user_id]}" }
     Rails.logger.debug { "Student UIN: #{@student&.uin}" }
+    Rails.logger.debug { "Student Semester: #{@student&.semester_id}" }
+    Rails.logger.debug { "Student Teacher: #{@student&.teacher_id}" }
     @teachers = Teacher.all
+    @semesters = Semester.active.order(:name)
 
     render :index
   end
