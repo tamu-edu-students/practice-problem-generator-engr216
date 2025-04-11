@@ -6,8 +6,7 @@ Given('I am on the Experimental Statistics Page') do
     uin: '123456789'
   )
   login_as_student
-  visit practice_problems_path
-  click_link 'Experimental Statistics'
+  visit generate_practice_problems_path(category_id: 'Experimental Statistics')
 end
 
 When('I click the new experimental statistics problem button') do

@@ -23,7 +23,8 @@ Then('I should be on a page where I can see and edit my settings.') do
 end
 
 Given('I am on the student settings page and I am logged in as a student') do
-  visit '/settings'
+  login_as_student
+  click_link('Settings')
 end
 
 Then('I should see a Problem Select button.') do
