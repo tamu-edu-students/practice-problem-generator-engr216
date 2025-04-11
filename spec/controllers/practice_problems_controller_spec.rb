@@ -879,4 +879,211 @@ RSpec.describe PracticeProblemsController, type: :controller do
       expect(controller.send(:determine_template_for_question, question)).to eq('generate')
     end
   end
+
+  # Test for handle_collisions method
+  describe 'POST #check_answer with collision problems' do
+    let(:category) { 'Momentum & Collisions' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    context 'with single answer field' do
+      let(:question) do
+        {
+          type: 'momentum & collisions',
+          question: 'Calculate the final velocity',
+          answer: 5.0
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+        session[:user_id] = student.id
+      end
+
+      it 'redirects to success page when answer is correct' do
+        post :check_answer, params: { category_id: category, answer: '5.0' }
+        expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+      end
+
+      it 'sets error message when answer is slightly off' do
+        post :check_answer, params: { category_id: category, answer: '5.3' }
+        expect(assigns(:error_message)).to include('too high')
+      end
+
+      it 'sets error message when answer is too small' do
+        post :check_answer, params: { category_id: category, answer: '4.0' }
+        expect(assigns(:error_message)).to include('too low')
+      end
+    end
+
+    context 'with multiple answer fields' do
+      let(:question) do
+        {
+          type: 'momentum & collisions',
+          question: 'Calculate the final velocities',
+          answer: { puck1: 2.0, puck2: 3.0 }
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+        session[:user_id] = student.id
+      end
+
+      it 'redirects to success page when all answers are correct' do
+        post :check_answer, params: { category_id: category, puck1: '2.0', puck2: '3.0' }
+        expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+      end
+
+      it 'sets error messages when answers are wrong' do
+        post :check_answer, params: { category_id: category, puck1: '1.5', puck2: '3.5' }
+        expect(assigns(:error_message)).to include('incorrect')
+      end
+    end
+  end
+
+  # Test for handle_collision_problem
+  describe 'GET #generate for Momentum & Collisions' do
+    let(:collision_context) do
+      {
+        category: 'Momentum & Collisions',
+        generator: instance_double(CollisionProblemGenerator),
+        question: {
+          type: 'momentum & collisions',
+          question: 'Test collision question',
+          answer: 10.0
+        }
+      }
+    end
+
+    before do
+      allow(CollisionProblemGenerator).to receive(:new)
+        .with(collision_context[:category])
+        .and_return(collision_context[:generator])
+      allow(collision_context[:generator]).to receive(:generate_questions)
+        .and_return([collision_context[:question]])
+    end
+
+    it 'generates a collision problem' do
+      get :generate, params: { category_id: collision_context[:category] }
+      expect(assigns(:question)).to eq(collision_context[:question])
+    end
+
+    it 'stores the question in the session' do
+      get :generate, params: { category_id: collision_context[:category] }
+      session_data = JSON.parse(controller.session[:current_question], symbolize_names: true)
+      expect(session_data[:type]).to eq('momentum & collisions')
+    end
+  end
+
+  # Tests for error propagation handling
+  describe 'POST #check_answer with error propagation problems' do
+    let(:category) { 'Propagation of Error' }
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    context 'with percentage answer' do
+      let(:question) do
+        {
+          type: 'propagation of error',
+          question: 'Calculate the percentage error',
+          answer: 5.0,
+          field_label: 'Answer (%)'
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+        session[:user_id] = student.id
+      end
+
+      it 'displays success message when percentage answer is correct' do
+        allow(controller).to receive(:redirect_to_success).and_return(true)
+        post :check_answer, params: { category_id: category, answer: '5.0', success: true }
+        expect(controller.params[:success]).to eq('true')
+        expect(response).to render_template('practice_problems/propagation_of_error_problem')
+      end
+
+      it 'displays success message when percentage answer is within tolerance' do
+        allow(controller).to receive(:redirect_to_success).and_return(true)
+        post :check_answer, params: { category_id: category, answer: '5.15', success: true }
+        expect(controller.params[:success]).to eq('true')
+        expect(response).to render_template('practice_problems/propagation_of_error_problem')
+      end
+
+      it 'sets error message when percentage answer is wrong' do
+        post :check_answer, params: { category_id: category, answer: '15.0' }
+        expect(assigns(:error_message)).to include('too large')
+      end
+    end
+
+    context 'with standard answer' do
+      let(:question) do
+        {
+          type: 'propagation of error',
+          question: 'Calculate the error propagation',
+          answer: 10.0
+        }
+      end
+
+      before do
+        session[:current_question] = question.to_json
+        session[:user_id] = student.id
+      end
+
+      it 'displays success message when standard answer is correct' do
+        allow(controller).to receive(:redirect_to_success).and_return(true)
+        post :check_answer, params: { category_id: category, answer: '10.0', success: true }
+        expect(controller.params[:success]).to eq('true')
+        expect(response).to render_template('practice_problems/propagation_of_error_problem')
+      end
+
+      it 'displays success message when standard answer is within tolerance' do
+        allow(controller).to receive(:redirect_to_success).and_return(true)
+        post :check_answer, params: { category_id: category, answer: '10.4', success: true }
+        expect(controller.params[:success]).to eq('true')
+        expect(response).to render_template('practice_problems/propagation_of_error_problem')
+      end
+
+      it 'sets error message when standard answer is wrong' do
+        post :check_answer, params: { category_id: category, answer: '11.0' }
+        expect(assigns(:error_message)).to include('too large')
+      end
+    end
+  end
+
+  # Test for error propagation problem generation
+  describe 'GET #generate for Error Propagation' do
+    let(:error_prop_context) do
+      {
+        category: 'Propagation of Error',
+        generator: instance_double(ErrorPropagationProblemGenerator),
+        question: {
+          type: 'propagation of error',
+          question: 'Test error propagation question',
+          answer: 5.0
+        }
+      }
+    end
+
+    before do
+      allow(ErrorPropagationProblemGenerator).to receive(:new)
+        .with(error_prop_context[:category])
+        .and_return(error_prop_context[:generator])
+      allow(error_prop_context[:generator]).to receive(:generate_questions)
+        .and_return([error_prop_context[:question]])
+    end
+
+    it 'generates an error propagation problem' do
+      get :generate, params: { category_id: error_prop_context[:category] }
+      expect(assigns(:question)).to eq(error_prop_context[:question])
+    end
+
+    it 'stores the seed for reproducibility' do
+      get :generate, params: { category_id: error_prop_context[:category] }
+      expect(session[:error_propagation_seed]).to be_present
+    end
+  end
 end

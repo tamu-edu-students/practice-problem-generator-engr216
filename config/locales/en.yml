@@ -35,9 +35,10 @@ en:
     destroyed: "Student was successfully destroyed."
     logged_in: "You are logged in as a student."
     update_uin:
-      success: "Teacher updated successfully."
+      success: "Teacher and semester updated successfully."
       error: "Invalid UIN or missing teacher."
       not_found: "Selected teacher not found."
+      semester_not_found: "Selected semester not found."
     history:
       login_required: "Please log in to view your history."
 
@@ -52,5 +53,12 @@ en:
   practice_problems:
     login_required: "Please log in as a student"
   
+
+  teacher_dashboard:
+    student_not_found: "Student not found."
+    delete_semester_students:
+      success: "Deleted %{count} students from %{semester} semester."
+      semester_not_found: "Semester not found."
+      no_semester_selected: "No semester selected."
 
     

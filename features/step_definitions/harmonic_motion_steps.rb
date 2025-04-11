@@ -17,7 +17,7 @@ When('I click the New Problem button') do
 end
 
 When('I submit a Harmonic Motion answer') do
-  if page.has_field?('answer', wait: 5)
+  if page.has_field?('shm_answer', wait: 5)
     fill_in 'shm_answer', with: '1.734'
   elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
     fill_in 'shm_answer_1', with: '1.734'

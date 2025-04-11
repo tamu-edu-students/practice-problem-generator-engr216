@@ -23,6 +23,8 @@ class TestRigidBodyStaticsProblemGenerator < RigidBodyStaticsProblemGenerator
       { question: 'dynamic', answer: 'F', input_fields: [] }
     ]
   end
+
+  # Expose private methods for testing
 end
 
 RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
@@ -257,6 +259,108 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
       let(:input) { nil }
 
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#dynamic_problem_1' do
+    let(:problem) { generator.send(:dynamic_problem_1) }
+
+    it 'generates a valid beam problem' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:question]).to include('A horizontal beam ABCD is supported by a pin at A and a roller at D')
+      expect(problem[:image]).to eq('rigid1.png')
+    end
+
+    it 'includes valid numeric answer and input fields' do
+      expect(problem[:answer]).to be_a(String)
+      expect(Float(problem[:answer])).to be_a(Float)
+      expect(problem[:input_fields]).to match([
+                                                hash_including(
+                                                  label: 'Reaction at D',
+                                                  key: 'rbs_answer',
+                                                  type: 'text'
+                                                )
+                                              ])
+    end
+  end
+
+  describe '#dynamic_problem_2' do
+    let(:problem) { generator.send(:dynamic_problem_2) }
+
+    it 'generates a valid cable tension problem' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:question]).to include('Cables AC and BC are tied together at C and are loaded as shown')
+      expect(problem[:image]).to eq('rigid2.png')
+    end
+
+    it 'includes two numeric answers' do
+      expect(problem[:answer]).to be_an(Array)
+      expect(problem[:answer].size).to eq(2)
+      expect(problem[:answer].all?(String)).to be(true)
+      expect(problem[:input_fields].size).to eq(2)
+    end
+  end
+
+  describe '#dynamic_problem_3' do
+    let(:problem) { generator.send(:dynamic_problem_3) }
+
+    it 'generates a valid cable tension problem with alpha angle' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:question]).to include('In the figure below, if the angle α (alpha) is')
+      expect(problem[:image]).to eq('rigid3.png')
+    end
+
+    it 'includes two tenstion values as answers' do
+      expect(problem[:answer]).to be_an(Array)
+      expect(problem[:answer].size).to eq(2)
+      expect(problem[:input_fields].size).to eq(2)
+    end
+  end
+
+  describe '#dynamic_problem_4' do
+    let(:problem) { generator.send(:dynamic_problem_4) }
+
+    it 'generates a valid coordinates problem' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:question]).to include('Determine the magnitude of the moment of this force')
+      expect(problem[:answer]).to be_present
+    end
+  end
+
+  describe '#dynamic_problem_5' do
+    let(:problem) { generator.send(:dynamic_problem_5) }
+
+    it 'generates a valid problem with force calculation' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:answer]).to be_present
+    end
+  end
+
+  describe '#dynamic_problem_6' do
+    let(:problem) { generator.send(:dynamic_problem_6) }
+
+    it 'generates a valid force and weight calculation problem' do
+      expect(problem).to include(
+        type: 'rigid_body_statics',
+        input_fields: be_an(Array)
+      )
+      expect(problem[:question]).to include('Find the moment about Point B due to the force F')
+      expect(problem[:answer]).to be_present
     end
   end
 end

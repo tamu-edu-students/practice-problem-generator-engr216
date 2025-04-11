@@ -79,24 +79,24 @@ RSpec.describe HistoryController, type: :controller do
     context 'when teacher is logged in' do
       before { session[:user_id] = teacher.id }
 
-      it 'redirects to teacher_dashboard_path with invalid student_id' do
-        get :teacher_view, params: { student_id: 999 }
+      it 'redirects to teacher_dashboard_path with invalid student_email' do
+        get :teacher_view, params: { student_email: 'nonexistent@example.com' }
         expect(response).to redirect_to(teacher_dashboard_path)
       end
 
-      it 'assigns @student and statistics with valid student_id' do
+      it 'assigns @student and statistics with valid student_email' do
         Answer.create!(student_email: student.email, correctness: true, question_description: 'Q1',
                        answer_choices: %w[A B], answer: 'A')
-        get :teacher_view, params: { student_id: student.id }
+        get :teacher_view, params: { student_email: student.email }
         expect(assigns(:student)).to eq(student)
         expect(assigns(:attempted)).to eq(1)
         expect(assigns(:correct)).to eq(1)
       end
 
-      it 'renders show template with valid student_id' do
+      it 'renders show template with valid student_email' do
         Answer.create!(student_email: student.email, correctness: true, question_description: 'Q1',
                        answer_choices: %w[A B], answer: 'A')
-        get :teacher_view, params: { student_id: student.id }
+        get :teacher_view, params: { student_email: student.email }
         expect(response).to render_template(:show)
       end
     end

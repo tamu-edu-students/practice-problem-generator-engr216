@@ -196,4 +196,141 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#generate' do
+    let(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+    let(:mock_question) do
+      {
+        type: 'rigid_body_statics',
+        question: 'Test RBS question',
+        answer: '42',
+        input_fields: [{ label: 'Your answer', key: 'rbs_answer', type: 'text' }]
+      }
+    end
+
+    before do
+      session[:user_id] = student.id
+      allow_any_instance_of(RigidBodyStaticsProblemGenerator).to receive(:generate_questions).and_return([mock_question])
+    end
+
+    it 'generates a new question and stores it in session' do
+      get :generate
+      expect(session[:current_question]).to be_present
+      expect(session[:problem_start_time]).to be_present
+      expect(JSON.parse(session[:current_question], symbolize_names: true)).to eq(mock_question)
+      expect(response).to render_template('practice_problems/rigid_body_statics_problem')
+    end
+  end
+
+  describe '#check_answer' do
+    let(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+    let(:mock_question) do
+      {
+        type: 'rigid_body_statics',
+        question: 'Test RBS question',
+        answer: '42',
+        input_fields: [{ label: 'Your answer', key: 'rbs_answer', type: 'text' }]
+      }
+    end
+
+    before do
+      session[:user_id] = student.id
+      session[:current_question] = mock_question.to_json
+      session[:problem_start_time] = Time.current.to_s
+    end
+
+    it 'evaluates the answer and renders the template' do
+      allow(controller).to receive(:params).and_return({ rbs_answer: '42' })
+
+      get :check_answer
+
+      expect(assigns(:category)).to eq('Rigid Body Statics')
+      expect(assigns(:question)).to eq(mock_question)
+      expect(assigns(:feedback_message)).to include('Correct')
+      expect(response).to render_template('practice_problems/rigid_body_statics_problem')
+    end
+  end
+
+  describe '#save_answer_to_database' do
+    let(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+    let(:mock_question) do
+      {
+        type: 'rigid_body_statics',
+        question: 'Test RBS question',
+        answer: '42',
+        input_fields: [{ label: 'Your answer', key: 'rbs_answer', type: 'text' }]
+      }
+    end
+
+    before do
+      session[:user_id] = student.id
+      controller.instance_variable_set(:@category, 'Rigid Body Statics')
+      controller.instance_variable_set(:@question, mock_question)
+      session[:problem_start_time] = 30.seconds.ago.to_s
+    end
+
+    it 'creates an Answer record in the database' do
+      expect do
+        controller.send(:save_answer_to_database, true, '42')
+      end.to change(Answer, :count).by(1)
+
+      answer = Answer.last
+      expect(answer.category).to eq('Rigid Body Statics')
+      expect(answer.question_description).to eq('Test RBS question')
+      expect(answer.answer).to eq('42')
+      expect(answer.correctness).to be(true)
+      expect(answer.student_email).to eq(student.email)
+    end
+
+    it 'calculates time spent on the problem' do
+      controller.send(:save_answer_to_database, true, '42')
+
+      answer = Answer.last
+      expect(answer.time_spent).to be_present
+      expect(answer.time_spent.to_i).to be >= 29 # Approximately 30 seconds
+    end
+  end
+
+  describe '#extract_answer_choices' do
+    context 'when question has answer_choices' do
+      before do
+        controller.instance_variable_set(:@question, {
+                                           answer_choices: %w[A B C]
+                                         })
+      end
+
+      it 'returns the answer choices as JSON' do
+        expect(controller.send(:extract_answer_choices)).to eq('["A","B","C"]')
+      end
+    end
+
+    context 'when question has no answer_choices' do
+      before do
+        controller.instance_variable_set(:@question, {})
+      end
+
+      it 'returns empty array as JSON' do
+        expect(controller.send(:extract_answer_choices)).to eq('[]')
+      end
+    end
+
+    context 'when an error occurs during serialization' do
+      before do
+        # Create a mock object instead of setting expectations on nil
+        question_mock = double('question')
+        allow(question_mock).to receive(:[]).and_raise(StandardError)
+        controller.instance_variable_set(:@question, question_mock)
+      end
+
+      it 'returns nil' do
+        expect(controller.send(:extract_answer_choices)).to be_nil
+      end
+    end
+  end
 end

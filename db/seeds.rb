@@ -1,6 +1,7 @@
 require 'faker'
 
 # Clear existing data for Students, Teachers, and Questions
+Semester.destroy_all
 Student.destroy_all
 Teacher.destroy_all
 Question.destroy_all
@@ -11,6 +12,20 @@ Answer.destroy_all
 # ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
 # ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
 # ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
+
+# Seed Semesters
+semesters_data = [
+  { name: 'Spring 2023', active: false },
+  { name: 'Fall 2023', active: false },
+  { name: 'Spring 2024', active: true },
+  { name: 'Summer 2024', active: true },
+  { name: 'Fall 2024', active: true },
+  { name: 'Spring 2025', active: true }
+]
+
+semesters = semesters_data.map do |semester_data|
+  Semester.create!(semester_data)
+end
 
 # Seed Teachers
 teachers_data = [
@@ -33,6 +48,7 @@ end
 # Seed Students
 200.times do
   assigned_teacher = teachers.sample
+  assigned_semester = semesters.sample
   Student.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
@@ -40,7 +56,9 @@ end
     uin: Faker::Number.number(digits: 9).to_i,
     teacher: assigned_teacher, # associating the teacher object
     teacher_id: assigned_teacher.id,
-    authenticate: [true, false].sample
+    authenticate: [true, false].sample,
+    semester: assigned_semester,
+    semester_id: assigned_semester.id
   )
 end
 
@@ -137,3 +155,4 @@ Rails.logger.debug { "Seeded #{Student.count} students!" }
 Rails.logger.debug { "Seeded #{Teacher.count} teachers!" }
 Rails.logger.debug { "Seeded #{Question.count} questions!" }
 Rails.logger.debug { "Seeded #{Answer.count} answers!" }
+Rails.logger.debug { "Seeded #{Semester.count} semesters!" }

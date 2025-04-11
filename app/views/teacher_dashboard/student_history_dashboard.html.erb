@@ -69,7 +69,7 @@
           <h2>Students</h2>
           <div class="search-form">
             <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
-              <%= text_field_tag :search, params[:search], placeholder: "Search by name or UIN" %>
+              <%= text_field_tag :search, params[:search], placeholder: "Search by name or email" %>
               <%= submit_tag "Search" %>
             <% end %>
           </div>
@@ -78,14 +78,14 @@
               <thead>
                 <tr>
                   <th>Student Name</th>
-                  <th>UIN</th>
+                  <th>Email</th>
                 </tr>
               </thead>
               <tbody>
                 <% @students.each do |student| %>
                   <tr>
-                    <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(uin: student.uin) %></td>
-                    <td><%= student.uin %></td>
+                    <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(student_email: student.email) %></td>
+                    <td><%= student.email %></td>
                   </tr>
                 <% end %>
               </tbody>
