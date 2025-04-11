@@ -1,6 +1,7 @@
 # features/step_definitions/teacher_steps.rb
 
 Given('I am on Settings Page') do
+  login_as_student
   visit '/settings'
 end
 
