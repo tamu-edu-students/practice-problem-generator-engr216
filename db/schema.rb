@@ -28,7 +28,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_162409) do
   create_table "questions", force: :cascade do |t|
     t.string "category"
     t.string "question"
-    t.string "answer_choices"
+    t.text "answer_choices"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

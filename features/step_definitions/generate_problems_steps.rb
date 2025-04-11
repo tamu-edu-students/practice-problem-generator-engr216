@@ -13,18 +13,17 @@ Given('I am on the select problem category page') do
 end
 
 When('I select a category') do
-  click_link 'Experimental Statistics'
+  visit generate_practice_problems_path(category_id: 'Confidence Intervals')
 end
 
 Then('I should be on the generate problem page') do
-  expect(page).to have_content('Question:')
+  expect(page).to have_content('Category: Confidence Intervals')
 end
 
 Given('I am on the generate problems page') do
   login_as_student
-  visit practice_problems_path
-  click_link 'Experimental Statistics'
-  expect(page).to have_content('Question:')
+  visit generate_practice_problems_path(category_id: 'Experimental Statistics')
+  expect(page).to have_content('Category: Experimental Statistics')
 end
 
 When('I click generate problem') do
@@ -32,7 +31,7 @@ When('I click generate problem') do
 end
 
 Then('I should see a problem') do
-  expect(page).to have_content('Question:')
+  expect(page).to have_content('Category: Experimental Statistics')
   store_page_content
 end
 
