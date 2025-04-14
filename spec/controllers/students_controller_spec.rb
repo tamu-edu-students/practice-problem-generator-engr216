@@ -179,19 +179,20 @@ RSpec.describe StudentsController, type: :controller do
         session[:user_id] = student.id
       end
 
-      it 'updates the student’s uin and teacher' do
-        post :update_uin, params: { teacher_id: teacher.id, semester: 'Spring 2025', authenticate: 'true' }
+      it 'updates the student uin and teacher' do
+        post :update_uin, params: { teacher_id: teacher.id, semester_id: test_semester.id, authenticate: 'true' }
         student.reload
         expect(student.teacher).to eq(teacher)
+        expect(student.semester).to eq(test_semester)
         # Since your controller uses a constant for uin, assert that value
         expect(student.uin).to eq(123_456_789)
       end
 
       it 'redirects to practice_problems_path with success notice' do
-        post :update_uin, params: { teacher_id: teacher.id, semester: 'Spring 2025', authenticate: 'true' }
+        post :update_uin, params: { teacher_id: teacher.id, semester_id: test_semester.id, authenticate: 'true' }
         expect(response).to redirect_to(practice_problems_path)
         # Adjust the expected flash notice to match what the controller sets
-        expect(flash[:notice]).to eq('Your settings were saved. Good luck studying!')
+        expect(flash[:notice]).to eq(I18n.t('student.update_uin.success'))
       end
     end
 
@@ -200,7 +201,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'does not update teacher and sets not_found message' do
         original_teacher = student.teacher
-        post :update_uin, params: { teacher_id: 999, semester: 'Spring 2025', authenticate: 'false' }
+        post :update_uin, params: { teacher_id: 999, semester_id: test_semester.id, authenticate: 'false' }
         student.reload
         expect(student.teacher).to eq(original_teacher)
         expect(flash[:alert]).to eq(I18n.t('student.update_uin.not_found'))

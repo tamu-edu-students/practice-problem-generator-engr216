@@ -65,29 +65,34 @@ RSpec.describe Student, type: :model do
       expect(student.errors[:uin]).to include("can't be blank")
     end
 
-    it 'is invalid with a duplicate email' do
-      unique_email = "john_#{Time.now.to_i}@example.com"
+    context 'with email validation' do
+      let(:unique_email) { "john_#{Time.now.to_i}@example.com" }
 
-      described_class.create!(
-        first_name: 'John',
-        last_name: 'Doe',
-        email: unique_email,
-        uin: 123_456_789,
-        teacher: teacher,
-        semester: semester
-      )
+      before do
+        # Create first student with the unique email
+        described_class.create!(
+          first_name: 'John',
+          last_name: 'Doe',
+          email: unique_email,
+          uin: 123_456_789,
+          teacher: teacher,
+          semester: semester
+        )
+      end
 
-      student = described_class.new(
-        first_name: 'Jane',
-        last_name: 'Doe',
-        email: unique_email,
-        uin: 987_654_321,
-        teacher: teacher,
-        semester: semester
-      )
-
-      expect(student).not_to be_valid
-      expect(student.errors[:email]).to include('has already been taken')
+      it 'is invalid with a duplicate email' do
+        # Try to create another student with the same email
+        duplicate_student = described_class.new(
+          first_name: 'Jane',
+          last_name: 'Doe',
+          email: unique_email,
+          uin: 987_654_321,
+          teacher: teacher,
+          semester: semester
+        )
+        expect(duplicate_student).not_to be_valid
+        expect(duplicate_student.errors[:email]).to include('has already been taken')
+      end
     end
 
     it 'is invalid with a UIN that is not 9 digits' do
@@ -119,11 +124,10 @@ RSpec.describe Student, type: :model do
   end
 
   describe 'scopes' do
-    it 'filters students by semester' do
-      fall_semester = Semester.create!(name: "Fall #{Time.now.to_i}", active: true)
-      spring_semester = Semester.create!(name: "Spring #{Time.now.to_i}", active: true)
-
-      student1 = described_class.create!(
+    let(:fall_semester) { Semester.create!(name: "Fall #{Time.now.to_i}", active: true) }
+    let(:spring_semester) { Semester.create!(name: "Spring #{Time.now.to_i}", active: true) }
+    let(:fall_student) do
+      described_class.create!(
         first_name: 'John',
         last_name: 'Doe',
         email: "john_#{Time.now.to_i}@example.com",
@@ -131,8 +135,9 @@ RSpec.describe Student, type: :model do
         teacher: teacher,
         semester: fall_semester
       )
-
-      student2 = described_class.create!(
+    end
+    let(:spring_student) do
+      described_class.create!(
         first_name: 'Jane',
         last_name: 'Smith',
         email: "jane_#{Time.now.to_i}@example.com",
@@ -140,11 +145,14 @@ RSpec.describe Student, type: :model do
         teacher: teacher,
         semester: spring_semester
       )
+    end
 
-      expect(described_class.by_semester(fall_semester.id)).to include(student1)
-      expect(described_class.by_semester(fall_semester.id)).not_to include(student2)
-      expect(described_class.by_semester(spring_semester.id)).to include(student2)
-      expect(described_class.by_semester(spring_semester.id)).not_to include(student1)
+    it 'filters students by semester' do
+      # Use the let-defined students
+      expect(described_class.by_semester(fall_semester.id)).to include(fall_student)
+      expect(described_class.by_semester(fall_semester.id)).not_to include(spring_student)
+      expect(described_class.by_semester(spring_semester.id)).to include(spring_student)
+      expect(described_class.by_semester(spring_semester.id)).not_to include(fall_student)
     end
 
     it 'returns all students when no semester is specified' do

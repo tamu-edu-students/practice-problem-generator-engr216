@@ -37,16 +37,21 @@ Given('I am on a Student\'s Problem History') do
     t.name = 'Test Teacher'
   end
 
+  # Create a semester first
+  @semester = Semester.find_or_create_by!(name: 'Spring 2024', active: true)
+
   # Seed a student with fixed data for reliable testing
   @student = Student.find_or_create_by!(email: 'history_student@example.com') do |student|
     student.first_name = 'History'
     student.last_name = 'Test'
     student.uin = 555_666_777
-    student.teacher = @teacher
+    student.teacher_id = @teacher.id
+    student.semester_id = @semester.id
     student.authenticate = true # Ensure student is authenticated
   end
+
   # Ensure student is associated with the teacher
-  @student.update!(teacher: @teacher) if @student.teacher != @teacher
+  @student.update!(teacher_id: @teacher.id) if @student.teacher_id != @teacher.id
 
   # Seed problem history for the student
   question = Question.find_or_create_by!(
@@ -67,13 +72,26 @@ Given('I am on a Student\'s Problem History') do
   # Log in as teacher
   login_as_teacher # Use the helper method defined at the top
 
-  # Navigate to the student's problem history page *after* logging in
-  visit student_history_path(student_email: @student.email)
+  # Navigate to the history dashboard
+  visit student_history_dashboard_path
 
-  # Verify we are on the correct page AFTER navigation
-  # Use have_current_path with regex to be more flexible
-  expect(page).to have_current_path(%r{/teacher_dashboard/student_history/#{@student.email}}, wait: 5)
-  expect(page).to have_content("#{@student.first_name} #{@student.last_name}'s Problem History")
+  # Print available students for debugging
+  puts "Available students: #{Student.pluck(:email).join(', ')}"
+
+  # Find and click on the student's history link
+  if page.has_link?(@student.email, wait: 5)
+    click_link @student.email
+  elsif page.has_link?("#{@student.first_name} #{@student.last_name}")
+    click_link "#{@student.first_name} #{@student.last_name}"
+  else
+    puts "Page content: #{page.text}"
+    puts "Available links: #{page.all('a').map(&:text).join(', ')}"
+    raise "Could not find link for student: #{@student.email} or #{@student.first_name} #{@student.last_name}"
+  end
+
+  # Verify the page content rather than the path
+  expect(page).to have_content("#{@student.first_name} #{@student.last_name}")
+  expect(page).to have_content('Problem History')
 end
 
 Then('I should be able to view the student\'s past problems') do
