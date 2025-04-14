@@ -69,8 +69,8 @@
           <h2>Students</h2>
           <div class="search-form">
             <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
-              <%= text_field_tag :search, params[:search], placeholder: "Search by name or email" %>
-              <%= submit_tag "Search" %>
+              <%= text_field_tag :search, params[:search], placeholder: "Search by name or email", class: "p-2 rounded-md border border-gray-300 w-full bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              <%= submit_tag "Search", class: "mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition cursor-pointer" %>
             <% end %>
           </div>
           <div class="scrollable">
