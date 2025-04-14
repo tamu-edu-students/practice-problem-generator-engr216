@@ -5,10 +5,10 @@ Feature: Angular Momentum Problem Generator
 
   Scenario: Generate new Problem
     Given I am on the "Angular Momentum" page for momentum
-    When I click the "new problem" button
+    When I click the angular momentum new problem button
     Then a new "Angular Momentum" problem should be dynamically generated for momentum
 
   Scenario: Answer Submission
     Given I am on the "Angular Momentum" page for momentum
-    When I submit an answer
+    When I submit an angular momentum answer
     Then I should receive feedback on my angular momentum answer

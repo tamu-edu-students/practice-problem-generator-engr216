@@ -1,96 +1,111 @@
 require 'rails_helper'
 
-RSpec.describe CollisionQuestionText do
-  let(:test_class) do
-    Class.new do
-      include CollisionQuestionText
-    end
-  end
+# Create a test class that includes the module to allow testing
+class TestQuestionText
+  include CollisionQuestionText
+end
 
-  let(:formatter) { test_class.new }
+RSpec.describe CollisionQuestionText, type: :module do
+  subject(:generator) { TestQuestionText.new }
 
-  describe 'question text formatting' do
+  describe 'question text generation methods' do
     describe '#bullet_block_question_text' do
-      it 'formats bullet block question correctly' do
-        question = formatter.bullet_block_question_text(20, 150, 75, 200)
+      it 'generates properly formatted question text' do
+        question = generator.bullet_block_question_text(20, 150, 75, 250)
+
         expect(question).to include('20 g bullet')
-        expect(question).to include('150 m/s')
-        expect(question).to include('75 m/s')
-        expect(question).to include('200 g wooden block')
+        expect(question).to include('moving at 150 m/s')
+        expect(question).to include('250 g wooden block')
+        expect(question).to include('reduced to 75 m/s')
+        expect(question).to include('What is the resulting speed of the block?')
       end
     end
 
     describe '#electron_collision_question_text' do
-      it 'formats electron collision question correctly' do
-        question = formatter.electron_collision_question_text(150)
+      it 'generates properly formatted question text' do
+        question = generator.electron_collision_question_text(1836)
+
         expect(question).to include('electron undergoes')
-        expect(question).to include('150 times the mass')
+        expect(question).to include('elastic collision')
+        expect(question).to include('hydrogen atom')
+        expect(question).to include('1836 times the mass of the electron')
       end
     end
 
     describe '#ball_drop_question_text' do
-      it 'formats ball drop question correctly' do
-        question = formatter.ball_drop_question_text(150, 180, 30)
-        expect(question).to include('mass 150 kg')
-        expect(question).to include('mass 180 kg')
-        expect(question).to include('height of 30 m')
+      it 'generates properly formatted question text' do
+        question = generator.ball_drop_question_text(5, 10, 20)
+
+        expect(question).to include('soccer ball with mass 5 kg')
+        expect(question).to include('yoga ball with mass 10 kg')
+        expect(question).to include('height of 20 m')
+        expect(question).to include('How high does the soccer ball bounce')
       end
     end
 
     describe '#car_collision_question_text' do
-      it 'formats car collision question correctly' do
-        question = formatter.car_collision_question_text(1500, 15, 1800, 12)
-        expect(question).to include('1500 kg car')
-        expect(question).to include('15 m/s')
-        expect(question).to include('1800 kg car')
-        expect(question).to include('12
-     m/s')
+      it 'generates properly formatted question text' do
+        question = generator.car_collision_question_text(1500, 15, 1800, 12)
+
+        expect(question).to include('1500 kg car traveling at 15 m/s')
+        expect(question).to include('collides with a 1800 kg car')
+        expect(question).to include('cars stick together')
+        expect(question).to include('What is the velocity of the combined cars')
       end
     end
 
     describe '#pool_ball_question_text' do
-      it 'formats pool ball question correctly' do
-        question = formatter.pool_ball_question_text(150, 15, 30)
-        expect(question).to include('mass 150 g')
-        expect(question).to include('15 m/s')
-        expect(question).to include('30°')
+      it 'generates properly formatted question text' do
+        question = generator.pool_ball_question_text(150, 15, 30)
+
+        expect(question).to include('pool ball of mass 150 g')
+        expect(question).to include('speed of 15 m/s')
+        expect(question).to include('angle of 30°')
+        expect(question).to include('what is the speed of the target ball')
       end
     end
 
     describe '#pendulum_collision_question_text' do
-      it 'formats pendulum collision question correctly' do
-        question = formatter.pendulum_collision_question_text(150, 180, 30)
-        expect(question).to include('150 g pendulum')
-        expect(question).to include('180 g pendulum')
-        expect(question).to include('30 cm')
+      it 'generates properly formatted question text' do
+        question = generator.pendulum_collision_question_text(150, 200, 30)
+
+        expect(question).to include('150 g pendulum bob')
+        expect(question).to include('height of 30 cm')
+        expect(question).to include('200 g pendulum bob')
+        expect(question).to include('What is the maximum height reached')
       end
     end
 
     describe '#puck_collision_question_text' do
-      it 'formats puck collision question correctly' do
-        question = formatter.puck_collision_question_text(150, 15, 180)
-        expect(question).to include('150 kg puck')
-        expect(question).to include('15 m/s')
-        expect(question).to include('180 kg puck')
+      it 'generates properly formatted question text' do
+        question = generator.puck_collision_question_text(2, 10, 3)
+
+        expect(question).to include('frictionless horizontal surface')
+        expect(question).to include('2 kg puck')
+        expect(question).to include('10 m/s')
+        expect(question).to include('stationary 3 kg puck')
       end
     end
 
     describe '#projectile_collision_question_text' do
-      it 'formats projectile collision question correctly' do
-        question = formatter.projectile_collision_question_text(150, 180, 15)
-        expect(question).to include('150 g projectile')
+      it 'generates properly formatted question text' do
+        question = generator.projectile_collision_question_text(50, 200, 15)
+
+        expect(question).to include('50 g projectile')
         expect(question).to include('15 m/s')
-        expect(question).to include('180 g target')
+        expect(question).to include('200 g target')
+        expect(question).to include('maximum height')
       end
     end
 
     describe '#falling_object_question_text' do
-      it 'formats falling object question correctly' do
-        question = formatter.falling_object_question_text(150, 180, 30, 0.8)
-        expect(question).to include('150 kg object')
-        expect(question).to include('180 kg object')
-        expect(question).to include('30 m')
-        expect(question).to include('0.8')
+      it 'generates properly formatted question text' do
+        question = generator.falling_object_question_text(5, 8, 15, 0.6)
+
+        expect(question).to include('5 kg object is dropped')
+        expect(question).to include('8 kg object')
+        expect(question).to include('15 m')
+        expect(question).to include('0.6')
       end
     end
   end

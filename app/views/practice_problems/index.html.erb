@@ -41,39 +41,41 @@
 <% if @prompt_for_uin %>
   <div id="uin-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-md">
-      <h3 class="text-xl font-bold mb-4">Select Teacher and Semester</h3>
-      
+      <h3 class="text-xl font-bold mb-4">Student Registration</h3>
       <form method="post" action="/update_uin">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <% if @student %>
+          <%= hidden_field_tag :student_email, @student.email %>
+        <% end %>
 
         <!-- Teacher Dropdown -->
-        <label for="teacher_id" class="block text-sm font-medium text-white">Teacher</label>
+        <label for="teacher_id" class="block text-sm font-medium text-white mb-1">Teacher</label>
         <select
           name="teacher_id"
           id="teacher_id"
-          class="select w-full mb-4 bg-white text-black border border-gray-500"
+          class="select w-full mb-4 bg-gray-700 text-white border border-gray-500"
           required
         >
           <option disabled selected value="">Select a teacher</option>
           <% @teachers.each do |teacher| %>
-            <option value="<%= teacher.id %>" class="text-black">
+            <option value="<%= teacher.id %>">
               <%= teacher.name %>
             </option>
           <% end %>
         </select>
-
+        
         <!-- Semester Dropdown -->
-        <label for="semester" class="block text-sm font-medium text-white">Semester</label>
+        <label for="semester_id" class="block text-sm font-medium text-white mb-1">Semester</label>
         <select
-          name="semester"
-          id="semester"
-          class="select w-full mb-4 bg-white text-black border border-gray-500"
+          name="semester_id"
+          id="semester_id"
+          class="select w-full mb-4 bg-gray-700 text-white border border-gray-500"
           required
         >
           <option disabled selected value="">Select a semester</option>
           <% @semesters.each do |semester| %>
-            <option value="<%= semester %>" class="text-black">
-              <%= semester %>
+            <option value="<%= semester.id %>">
+              <%= semester.name %>
             </option>
           <% end %>
         </select>
@@ -92,12 +94,12 @@
           <select
             name="authenticate"
             id="authenticate"
-            class="select w-full bg-white text-black border border-gray-500"
+            class="select w-full bg-gray-700 text-white border border-gray-500"
             required
           >
             <option value="" disabled selected>Select authentication</option>
-            <option value="true" class="text-black">Enabled</option>
-            <option value="false" class="text-black">Disabled</option>
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
           </select>
         </div>
 

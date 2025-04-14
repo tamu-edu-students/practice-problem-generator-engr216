@@ -4,20 +4,15 @@ RSpec.describe UniversalAccountEquationsProblemGenerator do
   # Create a custom implementation for our tests
   before do
     # Stub the generator's question text methods to avoid signature mismatches
-    allow(generator).to receive_messages(
+    allow_any_instance_of(described_class).to receive_messages(
       electricity_bill_question_text: 'Electricity bill question',
       fuel_efficiency_question_text: 'Fuel efficiency question',
       mixing_solution_question_text: 'Mixing solution question',
       simple_interest_question_text: 'Simple interest question'
     )
 
-    allow(generator.instance_variable_get(:@problem_types)).to receive(:sample) do |array|
-      if array.first == :roller_coaster_velocity
-        :roller_coaster_velocity
-      else
-        array.first
-      end
-    end
+    # Stub the sample method to make the tests deterministic
+    allow_any_instance_of(Array).to receive(:sample), &:first
   end
 
   let(:category) { 'Universal Accounting Equation' }

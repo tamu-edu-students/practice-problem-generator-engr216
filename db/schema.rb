@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_161434) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_162409) do
   create_table "answers", force: :cascade do |t|
     t.integer "question_id"
     t.string "category"
@@ -33,6 +33,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_161434) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "semesters", force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_semesters_on_name", unique: true
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -41,8 +49,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_161434) do
     t.string "teacher"
     t.integer "teacher_id"
     t.boolean "authenticate", default: false
-    t.string "semester"
+    t.string "semester", default: "Unknown", null: false
+    t.integer "semester_id"
     t.index ["email"], name: "index_students_on_email", unique: true
+    t.index ["semester_id"], name: "index_students_on_semester_id"
   end
 
   create_table "teachers", force: :cascade do |t|

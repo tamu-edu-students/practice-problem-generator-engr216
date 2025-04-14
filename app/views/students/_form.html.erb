@@ -11,22 +11,22 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :first_name, style: "display: block" %>
-    <%= form.text_field :first_name %>
+  <div class="mb-4">
+    <%= form.label :first_name, class: "block text-white text-sm font-medium mb-2" %>
+    <%= form.text_field :first_name, class: "w-full p-2 bg-white text-black border border-gray-500 rounded" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :last_name, class: "block text-white text-sm font-medium mb-2" %>
+    <%= form.text_field :last_name, class: "w-full p-2 bg-white text-black border border-gray-500 rounded" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :uin, class: "block text-white text-sm font-medium mb-2" %>
+    <%= form.text_field :uin, class: "w-full p-2 bg-white text-black border border-gray-500 rounded" %>
   </div>
 
   <div>
-    <%= form.label :last_name, style: "display: block" %>
-    <%= form.text_field :last_name %>
-  </div>
-
-  <div>
-    <%= form.label :uin, style: "display: block" %>
-    <%= form.text_field :uin %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+    <%= form.submit class: "btn btn-primary bg-blue-600 text-white hover:bg-blue-800" %>
   </div>
 <% end %>

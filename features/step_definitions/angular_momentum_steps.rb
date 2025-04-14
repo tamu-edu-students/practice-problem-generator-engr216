@@ -9,11 +9,11 @@ Given('I am on the "Angular Momentum" page for momentum') do
   visit generate_practice_problems_path(category_id: 'Angular Momentum')
 end
 
-When('I click the "new problem" button') do
+When('I click the angular momentum new problem button') do
   click_link 'Generate New Problem'
 end
 
-When('I submit an answer') do
+When('I submit an angular momentum answer') do
   # Wait for inputs to appear
   sleep(1)
 
