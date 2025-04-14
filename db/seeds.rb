@@ -39,10 +39,9 @@ teachers_data = [
 ]
 
 teachers = teachers_data.map do |teacher_data|
-  Teacher.create!(
-    name: "#{teacher_data[:first_name].capitalize} #{teacher_data[:last_name].capitalize}",
-    email: teacher_data[:email]
-  )
+  Teacher.find_or_create_by!(email: teacher_data[:email]) do |teacher|
+    teacher.name = "#{teacher_data[:first_name].capitalize} #{teacher_data[:last_name].capitalize}"
+  end
 end
 
 # Seed Students
@@ -52,9 +51,9 @@ end
   Student.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    email: Faker::Internet.email,
+    email: Faker::Internet.unique.email,
     uin: Faker::Number.number(digits: 9).to_i,
-    teacher: assigned_teacher, # associating the teacher object
+    teacher: assigned_teacher,
     teacher_id: assigned_teacher.id,
     authenticate: [true, false].sample,
     semester: assigned_semester,
