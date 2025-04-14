@@ -7,9 +7,7 @@ class SettingsController < ApplicationController
   end
 
   def semester_options
-    (2023..2026).flat_map do |year|
-      ["Spring #{year}", "Fall #{year}"]
-    end
+    Semester.where(active: true).order(:name)
   end
 
   def update
@@ -33,6 +31,10 @@ class SettingsController < ApplicationController
   end
 
   def student_params
-    params.expect(student: %i[teacher_id authenticate semester])
+    params.expect(
+      student: %i[teacher_id
+                  authenticate
+                  semester_id]
+    )
   end
 end

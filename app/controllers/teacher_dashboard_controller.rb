@@ -36,43 +36,15 @@ class TeacherDashboardController < ApplicationController
   end
 
   def student_history
-    # Verify the current user is a teacher
-    @teacher = Teacher.find_by(id: session[:user_id])
-
-    unless @teacher
-      redirect_to login_path, alert: t('history.login_required_teacher')
-      return
-    end
-
-    # Get the student email from either params[:student_email] as a URL segment or query parameter
+    # Verify that we have a valid student email
     student_email = params[:student_email]
+    log_student_history_request(student_email)
 
-    # Debug information
-    Rails.logger.debug { "Student History: Looking for student with email #{student_email.inspect}" }
-    Rails.logger.debug { "Params: #{params.inspect}" }
+    return redirect_with_missing_email_alert if student_email.blank?
+    return redirect_with_student_not_found_alert unless (@student = find_student_by_email(student_email))
 
-    if student_email.blank?
-      redirect_to teacher_dashboard_path, alert: 'Student email is required'
-      return
-    end
-
-    @student = Student.find_by(email: student_email)
-    Rails.logger.debug { "Student found: #{@student&.id}" }
-
-    unless @student
-      redirect_to teacher_dashboard_path, alert: t('teacher.student_not_found')
-      return
-    end
-
-    # Fetch all answers for this student using email for consistency
-    @completed_questions = Answer.where(student_email: @student.email)
-                                 .order(created_at: :desc)
-
-    # Calculate statistics
-    @attempted = @completed_questions.count
-    @correct = @completed_questions.where(correctness: true).count
-    @incorrect = @attempted - @correct
-    @percentage_correct = @attempted.positive? ? ((@correct.to_f / @attempted) * 100).round(2) : 0
+    load_student_answers
+    set_student_stats
 
     # Render the view template
     render 'teacher_dashboard/student_history'
@@ -100,6 +72,28 @@ class TeacherDashboardController < ApplicationController
   end
 
   private
+
+  def redirect_with_missing_email_alert
+    redirect_to teacher_dashboard_path, alert: t('teacher.student_email_required')
+  end
+
+  def redirect_with_student_not_found_alert
+    redirect_to teacher_dashboard_path, alert: t('teacher.student_not_found')
+  end
+
+  def find_student_by_email(email)
+    Student.find_by(email: email)
+  end
+
+  def log_student_history_request(student_email)
+    Rails.logger.debug { "Student History: Looking for student with email #{student_email.inspect}" }
+    Rails.logger.debug { "Params: #{params.inspect}" }
+  end
+
+  def load_student_answers
+    @completed_questions = Answer.where(student_email: @student.email)
+                                 .order(created_at: :desc)
+  end
 
   def current_teacher
     @current_teacher ||= Teacher.find_by(id: session[:user_id])

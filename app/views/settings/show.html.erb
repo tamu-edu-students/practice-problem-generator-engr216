@@ -47,8 +47,8 @@
           </li>
           <li class="flex justify-between items-center border-b border-gray-300 pb-2">
             <span class="font-medium text-gray-700">Linked Semesters</span>
-            <%= f.select :semester,
-              options_for_select(@semesters, @student.semester),
+            <%= f.select :semester_id,
+              options_from_collection_for_select(@semesters, :id, :name, @student.semester_id),
               { prompt: "Select a semester" },
               class: "border border-gray-300 rounded px-2 py-1"
             %>

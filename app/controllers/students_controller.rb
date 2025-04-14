@@ -59,23 +59,26 @@ class StudentsController < ApplicationController
   end
 
   # POST /update_uin
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def update_uin
     # Use the extended student lookup logic from the new version
     student = find_logged_in_student
-    
+
     # If there's no student in the session, but we have an email in the params, try to find the student by email
     if student.nil? && params[:student_email].present?
       student = Student.find_by(email: params[:student_email])
-      Rails.logger.debug { "UPDATE_UIN Trying to find student by email: #{params[:student_email]}, found: #{student&.id}" }
+      Rails.logger.debug do
+        "UPDATE_UIN Trying to find student by email: #{params[:student_email]}, found: #{student&.id}"
+      end
     end
-    
+
     # Support both teacher lookup methods
     teacher = find_selected_teacher
-    
+
     # Support both semester parameter styles (object and ID)
     semester_id = params[:semester_id]
     semester_param = params[:semester]
-    
+
     # Find semester by ID or by name
     semester = if semester_id.present?
                  Semester.find_by(id: semester_id)
@@ -85,9 +88,10 @@ class StudentsController < ApplicationController
                end
 
     authenticate = ActiveModel::Type::Boolean.new.cast(params[:authenticate])
-    
+
     Rails.logger.debug do
-      "UPDATE_UIN DEBUG: student=#{student&.id}, teacher=#{teacher&.id}, semester=#{semester&.id}, session_user_id=#{session[:user_id]}"
+      "UPDATE_UIN DEBUG: student=#{student&.id}, teacher=#{teacher&.id}, " \
+        "semester=#{semester&.id}, session_user_id=#{session[:user_id]}"
     end
 
     # If there's still no student but we have teacher and semester, we'll create a new student
@@ -130,11 +134,11 @@ class StudentsController < ApplicationController
         teacher: teacher,
         authenticate: authenticate
       }
-      
+
       # Handle both semester object and semester_id
       update_attributes[:semester_id] = semester.id if semester.id.present?
       update_attributes[:semester] = semester if semester.present?
-      
+
       result = student.update(update_attributes)
       Rails.logger.debug { "UPDATE_UIN UPDATE RESULT: #{result}, errors: #{student.errors.full_messages.join(', ')}" }
 
@@ -171,8 +175,8 @@ class StudentsController < ApplicationController
   end
 
   def student_params
-    params.require(:student).permit(:first_name, :last_name, :email, :uin, :teacher, :teacher_id, 
-                                   :authenticate, :semester, :semester_id)
+    params.expect(student: %i[first_name last_name email uin teacher teacher_id
+                              authenticate semester semester_id])
   end
 
   # === Refactored helpers for update_uin ===
@@ -196,3 +200,4 @@ class StudentsController < ApplicationController
     t('student.update_uin.error')
   end
 end
+# rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

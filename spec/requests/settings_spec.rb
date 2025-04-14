@@ -2,13 +2,14 @@ require 'rails_helper'
 
 RSpec.describe 'Settings', type: :request do
   describe 'GET /show' do
+    let!(:semester) { Semester.create!(name: "Test Fall 2024 Request #{Time.now.to_i}", active: true) }
     let!(:student) do
       Student.create!(
         first_name: 'Test',
         last_name: 'Student',
         email: 'test@student.com',
         uin: 123_456_789,
-        semester: 'Fall 2024'
+        semester_id: semester.id
       )
     end
 

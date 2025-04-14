@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Semester, type: :model do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe 'validations' do
     it 'is valid with a name' do
       semester = described_class.new(name: 'Fall 2024 Test 1', active: true)
@@ -27,19 +29,24 @@ RSpec.describe Semester, type: :model do
       expect(semester.macro).to eq(:has_many)
     end
 
-    it 'nullifies students when destroyed' do
-      semester = described_class.create!(name: 'Fall 2024 Test 3', active: true)
-      teacher = Teacher.create!(name: 'Test Teacher', email: 'teacher_test3@example.com')
-      student = Student.create!(
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'john_test3@example.com',
-        uin: 123_456_789,
-        teacher: teacher,
-        semester: semester
-      )
+    context 'when destroyed' do
+      let(:semester) { described_class.create!(name: 'Fall 2024 Test 3', active: true) }
+      let(:teacher) { Teacher.create!(name: 'Test Teacher', email: 'teacher_test3@example.com') }
+      let(:student) do
+        Student.create!(
+          first_name: 'John',
+          last_name: 'Doe',
+          email: 'john_test3@example.com',
+          uin: 123_456_789,
+          teacher: teacher,
+          semester: semester
+        )
+      end
 
-      expect { semester.destroy }.to change { Student.find(student.id).semester }.from(semester).to(nil)
+      it 'nullifies associated students' do
+        student # Ensure student is created
+        expect { semester.destroy }.to change { Student.find(student.id).semester }.from(semester).to(nil)
+      end
     end
   end
 
@@ -56,21 +63,25 @@ RSpec.describe Semester, type: :model do
   describe '.current' do
     it 'returns the most recent active semester' do
       # Make sure all existing semesters are inactive first
-      described_class.where(active: true).update_all(active: false)
+      described_class.where(active: true).find_each { |semester| semester.update(active: false) }
 
       # Create two new active semesters with specific creation times
       older = described_class.create!(name: "Spring 2024 Test #{Time.now.to_i}", active: true)
-      older.update_column(:created_at, 2.days.ago)
+      travel_to(2.days.ago) do
+        older.save # Save with older timestamp
+      end
 
       newer = described_class.create!(name: "Fall 2024 Test #{Time.now.to_i}", active: true)
-      newer.update_column(:created_at, 1.day.ago)
+      travel_to(1.day.ago) do
+        newer.save # Save with newer timestamp
+      end
 
       expect(described_class.current).to eq(newer)
     end
 
     it 'returns nil when no active semesters exist' do
       # Make sure there are no active semesters in the database
-      described_class.where(active: true).update_all(active: false)
+      described_class.where(active: true).find_each { |semester| semester.update(active: false) }
       described_class.create!(name: 'Spring 2024 Test 6', active: false)
       expect(described_class.current).to be_nil
     end
