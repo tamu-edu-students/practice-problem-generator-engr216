@@ -62,6 +62,22 @@ class PracticeProblemsController < ApplicationController
     render determine_template_for_question(@question)
   end
 
+  def view_answer
+    @category = params[:category_id]
+    @question = parse_question_from_session
+
+    if @question
+      save_answer_to_database(false) # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_practice_problems_path(category_id: @category))
+    end
+
+    render determine_template_for_question(@question)
+  end
+
   private
 
   def require_student_login
@@ -572,8 +588,8 @@ class PracticeProblemsController < ApplicationController
     if user_answer == correct_answer
       redirect_to_success
     else
-      @error_message = "That's incorrect. The correct answer is #{correct_answer ? 'True' : 'False'}."
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -727,6 +743,7 @@ class PracticeProblemsController < ApplicationController
 
     # Get user's answer based on the question type
     user_answer = extract_user_answer
+    user_answer = 'Answer Viewed By Student' if user_answer == ''
 
     # Create and save the answer record
     answer = Answer.create(
@@ -752,7 +769,8 @@ class PracticeProblemsController < ApplicationController
     when 'engineering_ethics' then params[:ethics_answer].to_s
     when 'momentum & collisions' then extract_collision_answer
     when 'finite_differences' then extract_finite_differences_answer
-    else params[:answer].to_s
+    else
+      params[:answer].presence || '0'
     end
   end
 

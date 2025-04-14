@@ -53,6 +53,7 @@ Rails.application.routes.draw do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
   resources :harmonic_motion_problems, only: [] do
