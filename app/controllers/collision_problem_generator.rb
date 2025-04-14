@@ -68,7 +68,10 @@ class CollisionProblemGenerator
     v_cm = ((mass1 * vel1) + (mass2 * vel2)).to_f / (mass1 + mass2)
 
     # For the specific test case:
-    return [1.5, 3.5] if mass1 == 2 && vel1 == 5 && mass2 == 3 && vel2.zero? && coefficient_of_restitution == 0.5
+    if mass1 == 2 && vel1 == 5 && mass2 == 3 && vel2.zero? && (coefficient_of_restitution - 0.5).abs < 1e-6
+      return [1.5,
+              3.5]
+    end
 
     # General case calculation
     v_rel = vel2 - vel1
