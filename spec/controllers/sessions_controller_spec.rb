@@ -1,27 +1,22 @@
-# spec/controllers/sessions_controller_spec.rb
+# frozen_string_literal: true
+
 require 'rails_helper'
-require 'ostruct'
 
 RSpec.describe SessionsController, type: :controller do
   describe 'GET #omniauth' do
     before do
-      # Ensure the teacher exists (using new Teacher attributes)
-      Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') do |t|
-        t.name = 'Test Teacher'
-      end
+      Teacher.find_or_create_by!(email: 'test_teacher@tamu.edu') { |t| t.name = 'Test Teacher' }
     end
 
     context 'when state is teacher' do
       it 'sets the session and redirects to teacher dashboard if teacher exists' do
-        # Set up the OmniAuth mock for teacher
-        request.env['omniauth.auth'] = mock_auth_hash('test_teacher@tamu.edu')
+        request.env['omniauth.auth'] = OmniAuth::AuthHash.new(info: { email: 'test_teacher@tamu.edu' })
         get :omniauth, params: { state: 'teacher' }
         expect(response).to redirect_to(teacher_dashboard_path)
       end
 
       it 'redirects to root if teacher does not exist' do
-        # Use an email for which no teacher exists
-        request.env['omniauth.auth'] = mock_auth_hash('non_existing_teacher@tamu.edu')
+        request.env['omniauth.auth'] = OmniAuth::AuthHash.new(info: { email: 'non_existing_teacher@tamu.edu' })
         get :omniauth, params: { state: 'teacher' }
         expect(response).to redirect_to(root_path)
       end
@@ -35,13 +30,15 @@ RSpec.describe SessionsController, type: :controller do
       end
 
       before do
-        OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
-                                                                             uid: '456',
-                                                                             provider: 'google_oauth2',
-                                                                             info: { email: student.email,
-                                                                                     first_name: student.first_name,
-                                                                                     last_name: student.last_name }
-                                                                           })
+        OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+          uid: '456',
+          provider: 'google_oauth2',
+          info: {
+            email: student.email,
+            first_name: student.first_name,
+            last_name: student.last_name
+          }
+        )
         request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
       end
 
@@ -86,11 +83,11 @@ RSpec.describe SessionsController, type: :controller do
     context 'with invalid email domain' do
       let(:auth) do
         OmniAuth::AuthHash.new(
-          info: OpenStruct.new(
-            email: 'student@gmail.com', # Non-tamu.edu domain
+          info: {
+            email: 'student@gmail.com',
             first_name: 'Test',
             last_name: 'Student'
-          )
+          }
         )
       end
 
@@ -102,11 +99,11 @@ RSpec.describe SessionsController, type: :controller do
     context 'with valid student data' do
       let(:auth) do
         OmniAuth::AuthHash.new(
-          info: OpenStruct.new(
+          info: {
             email: 'new_student@tamu.edu',
             first_name: 'New',
             last_name: 'Student'
-          )
+          }
         )
       end
 
@@ -133,15 +130,17 @@ RSpec.describe SessionsController, type: :controller do
   describe 'private methods' do
     describe '#redirect_invalid_domain' do
       it 'redirects to root with an alert for invalid domain' do
-        expect(controller).to receive(:redirect_to).with(root_path, alert: I18n.t('sessions.invalid_domain'))
+        allow(controller).to receive(:redirect_to)
         controller.send(:redirect_invalid_domain)
+        expect(controller).to have_received(:redirect_to).with(root_path, alert: I18n.t('sessions.invalid_domain'))
       end
     end
 
     describe '#redirect_login_failed' do
       it 'redirects to root with an alert for login failure' do
-        expect(controller).to receive(:redirect_to).with(root_path, alert: I18n.t('sessions.login_failed'))
+        allow(controller).to receive(:redirect_to)
         controller.send(:redirect_login_failed)
+        expect(controller).to have_received(:redirect_to).with(root_path, alert: I18n.t('sessions.login_failed'))
       end
     end
   end
