@@ -26,26 +26,32 @@ class SessionsController < ApplicationController
   end
 
   def handle_teacher_login(auth)
-    teacher = Teacher.find_by(email: auth.info.email)
+    email = auth.info.email
+
+    return redirect_to root_path, alert: t('sessions.login_failed_teacher') unless valid_email_domain?(email)
+
+    teacher = Teacher.find_by(email: email)
     if teacher
       session[:user_id] = teacher.id
       session[:user_type] = 'teacher'
       redirect_to teacher_dashboard_path, notice: t('teacher.logged_in')
     else
-      redirect_to root_path, alert: t('sessions.login_failed')
+      redirect_to root_path, alert: t('sessions.login_failed_teacher')
     end
   end
 
   def handle_student_login(auth)
     email = auth.info.email
 
-    return root_path unless valid_email_domain?(email)
+    return redirect_to root_path, alert: t('sessions.login_failed_student') unless valid_email_domain?(email)
 
     student = find_or_create_student(auth)
-    return root_path unless student
-
-    student_session_set(student)
-    redirect_to practice_problems_path, notice: t('student.logged_in')
+    if student
+      student_session_set(student)
+      redirect_to practice_problems_path, notice: t('student.logged_in')
+    else
+      redirect_to root_path, alert: t('sessions.login_failed_student')
+    end
   end
 
   private
