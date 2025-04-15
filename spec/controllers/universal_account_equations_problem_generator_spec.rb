@@ -1,22 +1,35 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe UniversalAccountEquationsProblemGenerator do
-  # Create a custom implementation for our tests
-  before do
-    # Stub the generator's question text methods to avoid signature mismatches
-    allow_any_instance_of(described_class).to receive_messages(
-      electricity_bill_question_text: 'Electricity bill question',
-      fuel_efficiency_question_text: 'Fuel efficiency question',
-      mixing_solution_question_text: 'Mixing solution question',
-      simple_interest_question_text: 'Simple interest question'
-    )
+  let(:category) { 'Universal Accounting Equation' }
 
-    # Stub the sample method to make the tests deterministic
-    allow_any_instance_of(Array).to receive(:sample), &:first
+  let(:generator_class) do
+    Class.new(described_class) do
+      def generator_list
+        %i[
+          electricity_bill_question
+          fuel_efficiency_question
+          mixing_solution_question
+          simple_interest_question
+        ]
+      end
+
+      def electricity_bill_question_text(*) = 'Electricity bill question'
+      def fuel_efficiency_question_text(*) = 'Fuel efficiency question'
+      def mixing_solution_question_text(*) = 'Mixing solution question'
+      def simple_interest_question_text(*) = 'Simple interest question'
+
+      private
+
+      def sample(array)
+        array.first
+      end
+    end
   end
 
-  let(:category) { 'Universal Accounting Equation' }
-  let(:generator) { described_class.new(category) }
+  let(:generator) { generator_class.new(category) }
 
   describe '#initialize' do
     it 'sets the category' do
