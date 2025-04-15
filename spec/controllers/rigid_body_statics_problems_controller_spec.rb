@@ -19,7 +19,6 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       let(:correct_answer) { '18.4' }
 
       before do
-        # Force evaluate_answer to use check_single_answer branch
         allow(controller).to receive(:check_single_answer)
           .with('18.4', tolerance).and_return('single answer branch')
       end
@@ -54,7 +53,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
     end
 
     context 'when all submitted answers are numeric and within tolerance' do
-      let(:correct_answers) { ['18.4', '20.0'] } # Use numeric strings here.
+      let(:correct_answers) { ['18.4', '20.0'] }
 
       before do
         allow(controller).to receive(:params).and_return({
@@ -212,7 +211,8 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
 
     before do
       session[:user_id] = student.id
-      allow_any_instance_of(RigidBodyStaticsProblemGenerator).to receive(:generate_questions).and_return([mock_question])
+      generator_double = instance_double(RigidBodyStaticsProblemGenerator, generate_questions: [mock_question])
+      allow(RigidBodyStaticsProblemGenerator).to receive(:new).and_return(generator_double)
     end
 
     it 'generates a new question and stores it in session' do
@@ -275,11 +275,14 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       session[:problem_start_time] = 30.seconds.ago.to_s
     end
 
-    it 'creates an Answer record in the database' do
+    it 'increments Answer count' do
       expect do
         controller.send(:save_answer_to_database, true, '42')
       end.to change(Answer, :count).by(1)
+    end
 
+    it 'creates an Answer record in the database with correct attributes' do
+      controller.send(:save_answer_to_database, true, '42')
       answer = Answer.last
       expect(answer.category).to eq('Rigid Body Statics')
       expect(answer.question_description).to eq('Test RBS question')
@@ -290,10 +293,9 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
 
     it 'calculates time spent on the problem' do
       controller.send(:save_answer_to_database, true, '42')
-
       answer = Answer.last
       expect(answer.time_spent).to be_present
-      expect(answer.time_spent.to_i).to be >= 29 # Approximately 30 seconds
+      expect(answer.time_spent.to_i).to be >= 29
     end
   end
 
@@ -322,8 +324,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
 
     context 'when an error occurs during serialization' do
       before do
-        # Create a mock object instead of setting expectations on nil
-        question_mock = double('question')
+        question_mock = instance_double(Hash)
         allow(question_mock).to receive(:[]).and_raise(StandardError)
         controller.instance_variable_set(:@question, question_mock)
       end
