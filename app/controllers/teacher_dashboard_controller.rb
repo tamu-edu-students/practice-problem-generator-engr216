@@ -1,4 +1,5 @@
 class TeacherDashboardController < ApplicationController
+  
   before_action :require_teacher
   before_action :load_semesters, only: %i[index manage_students student_history_dashboard]
 
@@ -20,20 +21,199 @@ class TeacherDashboardController < ApplicationController
   end
 
   def student_history_dashboard
-    @all_students = current_teacher.students # All students for class stats
-    @students = @all_students # Filtered students for display
+    # --- LOAD FILTER PARAMS ---
+    @selected_semester_id = params[:semester_id] || "all"
+    @selected_student_email = params[:student_email]
+    @selected_category = params[:category] || "all"
 
-    apply_semester_filter
-
+  
+    # --- STUDENT SCOPE ---
+    @all_students = current_teacher.students
+    @students = @all_students
+    if @selected_semester_id.present? && @selected_semester_id != "all"
+      @students = @students.by_semester(@selected_semester_id)
+    end
+    @students_for_dropdown = @students.to_a
+    
+      
+    # --- SEARCH (optional, already implemented) ---
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
-      @students = @students.where('LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(email) LIKE ?',
-                                  search_term, search_term, search_term)
+      @students = @students.where(
+        'LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(email) LIKE ?',
+        search_term, search_term, search_term
+      )
+    end
+  
+    # --- IF STUDENT FILTER APPLIED, NARROW SCOPE ---
+    if @selected_student_email.present? && @selected_student_email != "all"
+      @students = @students.where(email: @selected_student_email)
+    
+      student = @students.first
+      @student_selected_semester_id = student&.semester_id
+
+    
+      if student.present?
+        @total_unique_problems = Answer.select(:category, :template_id).distinct.count
+    
+        student_answers = Answer.where(student_email: student.email)
+        @student_unique_attempts = student_answers.select(:category, :template_id).distinct.count
+        @student_unique_correct = student_answers.where(correctness: true).select(:category, :template_id).distinct.count
+    
+        @student_attempt_pie = {
+          attempted: @student_unique_attempts,
+          not_attempted: @total_unique_problems - @student_unique_attempts
+        }
+    
+        @student_correct_pie = {
+          correct: @student_unique_correct,
+          incorrect: @total_unique_problems - @student_unique_correct}
+
+          # 🔹 Build category-wise pie data for this student
+        @student_category_pie_data = {}
+
+        categories = [
+          "Angular Momentum", "Confidence Intervals", "Engineering Ethics",
+          "Experimental Statistics", "Finite Differences", "Harmonic Motion",
+          "Measurement & Error", "Momentum & Collisions", "Particle Statics",
+          "Propagation of Error", "Rigid Body Statics", "Universal Accounting Equation"
+        ]
+
+        categories.each do |cat|
+          total_problems = Answer.where(category: cat).select(:template_id).distinct.count
+
+          student_cat_answers = student_answers.where(category: cat)
+          attempted = student_cat_answers.select(:template_id).distinct.count
+          correct = student_cat_answers.where(correctness: true).select(:template_id).distinct.count
+
+          @student_category_pie_data[cat] = {
+            total: total_problems,
+            attempted: attempted,
+            not_attempted: total_problems - attempted,
+            correct: correct,
+            incorrect: total_problems - correct
+          }
+        end
+
+      else
+        flash.now[:alert] = "Student not found for the selected semester."
+      end
+    end
+    
+    
+  
+    # --- PREP STATS FOR LATER STEPS ---
+    @all_answers = Answer.where(student_email: @students.pluck(:email))
+    @category_stats = {} # (to be filled in next step)
+    @holistic_participation = {} # (to be filled in next step)
+    @holistic_correctness = 0 # (to be filled in next step)
+    # --- BUILD HOLISTIC BUCKET STATS ---
+    buckets = {
+      "<25%" => 0,
+      "25–50%" => 0,
+      "50–75%" => 0,
+      "75–99%" => 0,
+      "100%" => 0
+    }
+
+    correct_buckets = buckets.dup
+
+    # Get the total number of unique problems (category + template_id combo)
+    @total_unique_problems = Answer
+      .select(:category, :template_id)
+      .distinct
+      .count
+
+    @students.each do |student|
+      student_answers = Answer.where(student_email: student.email)
+
+      attempted = student_answers
+        .select(:category, :template_id)
+        .distinct
+        .count
+
+      correct = student_answers
+        .where(correctness: true)
+        .select(:category, :template_id)
+        .distinct
+        .count
+
+      attempt_ratio = attempted.to_f / @total_unique_problems
+      correct_ratio = correct.to_f / @total_unique_problems
+
+      def assign_bucket(ratio)
+        case ratio
+        when 1.0
+          "100%"
+        when 0.75..0.99
+          "75–99%"
+        when 0.5..0.75
+          "50–75%"
+        when 0.25..0.5
+          "25–50%"
+        else
+          "<25%"
+        end
+      end
+
+      buckets[assign_bucket(attempt_ratio)] += 1
+      correct_buckets[assign_bucket(correct_ratio)] += 1
     end
 
-    @category_summaries = build_category_summaries(@students) # Use filtered students
-    class_performance(@students) # Use filtered students
+    @attempted_buckets = buckets
+    @correct_buckets = correct_buckets
+
+    categories = [
+      "Angular Momentum", "Confidence Intervals", "Engineering Ethics",
+      "Experimental Statistics", "Finite Differences", "Harmonic Motion",
+      "Measurement & Error", "Momentum & Collisions", "Particle Statics",
+      "Propagation of Error", "Rigid Body Statics", "Universal Accounting Equation"
+    ]
+
+    @category_bucket_data = {}
+
+    categories.each do |cat|
+      unique_problems = Answer.where(category: cat).select(:template_id).distinct.count
+
+      buckets = { "<25%" => 0, "25–50%" => 0, "50–75%" => 0, "75–99%" => 0, "100%" => 0 }
+      correct_buckets = buckets.dup
+
+      @students.each do |student|
+        student_answers = Answer.where(student_email: student.email, category: cat)
+
+        attempted = student_answers.select(:template_id).distinct.count
+        correct = student_answers.where(correctness: true).select(:template_id).distinct.count
+
+        attempt_ratio = unique_problems.zero? ? 0 : attempted.to_f / unique_problems
+        correct_ratio = unique_problems.zero? ? 0 : correct.to_f / unique_problems
+
+        def assign_bucket(ratio)
+          case ratio
+          when 1.0 then "100%"
+          when 0.75..0.99 then "75–99%"
+          when 0.5..0.75 then "50–75%"
+          when 0.25..0.5 then "25–50%"
+          else "<25%"
+          end
+        end
+
+        buckets[assign_bucket(attempt_ratio)] += 1
+        correct_buckets[assign_bucket(correct_ratio)] += 1
+      end
+
+      @category_bucket_data[cat] = {
+        total: unique_problems,
+        attempted: buckets,
+        correct: correct_buckets
+      }
+    end
+
+
   end
+  
+  
+  
+ 
 
   def student_history
     # Verify that we have a valid student email
