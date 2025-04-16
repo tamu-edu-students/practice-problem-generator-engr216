@@ -157,7 +157,7 @@ RSpec.describe StudentsController, type: :controller do
 
     it 'redirects to the students list' do
       delete :destroy, params: { id: student.id }
-      expect(response).to redirect_to(students_path)
+      expect(response).to redirect_to(manage_students_path)
     end
 
     it 'sets a success notice' do

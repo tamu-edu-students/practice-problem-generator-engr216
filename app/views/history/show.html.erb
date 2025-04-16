@@ -4,75 +4,97 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
-<body>
-  <!-- Navbar -->
-  <nav>
-    <div class="container">
-      <a href="/practice_problems">Problem Select</a>
-      <div class="dropdown">
-        <button>Account ▼</button>
-        <ul class="dropdown-content">
-          <li><a href="/">Dashboard</a></li>
+<div class="min-h-screen w-full flex flex-col", style="background-color: #9aa8c5;">
+  <!-- Navbar (Fixed at Top) -->
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+    <!-- Left: Practice Problems Button -->
+    <div class="flex-1">
+      <a href="/practice_problems" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Problem Select
+      </a>
+    </div>
+    <!-- Right: Account Dropdown -->
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/settings">Settings</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>
     </div>
-  </nav>
+  </div>
 
-  <!-- Title -->
-  <main>
-    <div class="title">
-      <h1>My Practice History</h1>
-    </div>
+  <!-- Title Container with Increased Top Margin -->
+  <div class="w-full mt-28 px-6 flex items-center justify-center">
+    <h1 class="text-4xl font-bold text-black">My Practice History</h1>
+  </div>
 
-    <!-- Content -->
-    <div class="content">
-      <!-- Summary -->
-      <div class="summary">
-        <div class="grid">
-          <p>Attempted: <span><%= @attempted %></span></p>
-          <p>Correct: <span class="correct"><%= @correct %></span></p>
-          <p>Incorrect: <span class="incorrect"><%= @incorrect %></span></p>
-          <p>Percentage Correct: <span><%= @percentage_correct %>%</span></p>
+  <!-- Page Content -->
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6">
+    <!-- Summary Stats Card -->
+    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-4 mb-6">
+      <div class="bg-gray-800 p-6 rounded-lg">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="p-3 border border-gray-700 rounded-lg">
+            <p class="text-lg font-semibold">Attempted</p>
+            <p class="text-2xl font-bold"><%= @attempted %></p>
+          </div>
+          <div class="p-3 border border-gray-700 rounded-lg">
+            <p class="text-lg font-semibold">Correct</p>
+            <p class="text-2xl font-bold text-green-500"><%= @correct %></p>
+          </div>
+          <div class="p-3 border border-gray-700 rounded-lg">
+            <p class="text-lg font-semibold">Incorrect</p>
+            <p class="text-2xl font-bold text-red-500"><%= @incorrect %></p>
+          </div>
+          <div class="p-3 border border-gray-700 rounded-lg">
+            <p class="text-lg font-semibold">Success Rate</p>
+            <p class="text-2xl font-bold"><%= @percentage_correct %>%</p>
+          </div>
         </div>
       </div>
-
-      <!-- Questions Table -->
-      <div class="table-container">
-        <% if @completed_questions.any? %>
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Question</th>
-                <th>Your Answer</th>
-                <th>Result</th>
-                <th>Time Spent</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @completed_questions.each do |answer| %>
-                <tr>
-                  <td><%= answer.date_completed %></td>
-                  <td class="break-words"><%= answer.category %></td>
-                  <td class="break-words"><%= answer.question_description %></td>
-                  <td class="break-words"><%= answer.answer %></td>
-                  <td class="<%= answer.correctness ? 'correctness-yes' : 'correctness-no' %>">
-                    <%= answer.correctness ? 'Correct' : 'Incorrect' %>
-                  </td>
-                  <td><%= answer.time_spent ? "#{answer.time_spent} sec" : "N/A" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        <% else %>
-          <div class="empty-state">
-            <p>You haven't completed any practice problems yet.</p>
-            <a href="/" class="btn">Try Some Problems</a>
-          </div>
-        <% end %>
-      </div>
     </div>
-  </main>
-</body>
+    
+    <!-- Questions Table Container -->
+    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
+      <% if @completed_questions.any? %>
+        <table class="table w-full">
+          <thead>
+            <tr class="text-white border-b border-gray-500">
+              <th class="p-2 text-left">Date</th>
+              <th class="p-2 text-left">Category</th>
+              <th class="p-2 text-left">Question</th>
+              <th class="p-2 text-left">Your Answer</th>
+              <th class="p-2 text-center">Result</th>
+              <th class="p-2 text-right">Time Spent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @completed_questions.each do |answer| %>
+              <tr class="border-b border-gray-700">
+                <td class="p-3"><%= answer.date_completed %></td>
+                <td class="p-3 break-words"><%= answer.category %></td>
+                <td class="p-3 break-words"><%= answer.question_description %></td>
+                <td class="p-3 break-words"><%= answer.answer %></td>
+                <td class="p-3 text-center">
+                  <span class="px-2 py-1 rounded text-xs font-bold <%= answer.correctness ? 'bg-green-800 text-green-200' : 'bg-red-800 text-red-200' %>">
+                    <%= answer.correctness ? 'Correct' : 'Incorrect' %>
+                  </span>
+                </td>
+                <td class="p-3 text-right"><%= answer.time_spent ? "#{answer.time_spent} sec" : "N/A" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="flex flex-col items-center justify-center py-10">
+          <p class="text-lg text-gray-300 mb-4">You haven't completed any practice problems yet.</p>
+          <a href="/practice_problems" class="btn btn-primary">Try Some Problems</a>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
