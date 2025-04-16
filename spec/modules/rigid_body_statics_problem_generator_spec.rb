@@ -26,7 +26,7 @@ class TestRigidBodyStaticsProblemGenerator < RigidBodyStaticsProblemGenerator
   end
 end
 
-# Subclass to override field generation methods for tests of generate_rbs_problem_from_data
+# Subclass to override field generation methods for tests of generate_rbs_problem_from_data.
 class TestRigidBodyStaticsProblemGeneratorWithStubbedFields < TestRigidBodyStaticsProblemGenerator
   def generate_fill_in_fields(_data)
     [{ key: 'rbs_answer', type: 'text' }]
@@ -62,7 +62,7 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
     end
 
     context "when input_type is 'fill_in'" do
-      # Use the subclass that overrides generate_fill_in_fields
+      # Use the subclass that overrides generate_fill_in_fields.
       subject(:generator) { TestRigidBodyStaticsProblemGeneratorWithStubbedFields.new('Rigid Body Statics') }
 
       let(:input_type) { 'fill_in' }
@@ -80,7 +80,7 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
     end
 
     context "when input_type is not 'fill_in'" do
-      # Use the subclass that overrides generate_multiple_choice_fields
+      # Use the subclass that overrides generate_multiple_choice_fields.
       subject(:generator) { TestRigidBodyStaticsProblemGeneratorWithStubbedFields.new('Rigid Body Statics') }
 
       let(:input_type) { 'multiple_choice' }
@@ -320,7 +320,7 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
 
     it 'generates a valid problem with force calculation' do
       expect(problem).to include(
-        type: 'rigid_body statics',
+        type: 'rigid_body_statics', # corrected the expected value here
         input_fields: be_an(Array)
       )
       expect(problem[:answer]).to be_present
