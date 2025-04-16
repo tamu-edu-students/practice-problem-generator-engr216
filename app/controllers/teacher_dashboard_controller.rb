@@ -59,6 +59,11 @@ class TeacherDashboardController < ApplicationController
         student_answers = Answer.where(student_email: student.email)
         @student_unique_attempts = student_answers.select(:category, :template_id).distinct.count
         @student_unique_correct = student_answers.where(correctness: true).select(:category, :template_id).distinct.count
+
+        @student_total_attempted = student_answers.count
+        @student_total_correct = student_answers.where(correctness: true).count
+        @student_total_incorrect = @student_total_attempted - @student_total_correct
+      
     
         @student_attempt_pie = {
           attempted: @student_unique_attempts,
@@ -99,6 +104,8 @@ class TeacherDashboardController < ApplicationController
         flash.now[:alert] = "Student not found for the selected semester."
       end
     end
+
+    
     
     
   
@@ -115,6 +122,46 @@ class TeacherDashboardController < ApplicationController
       "75–99%" => 0,
       "100%" => 0
     }
+    if @selected_student_email.present? && @selected_student_email != "all" &&
+      @selected_category.present? && @selected_category != "all"
+   
+      @student = Student.find_by(email: @selected_student_email)
+      @problem_history = Answer.where(student_email: @student.email, category: @selected_category)
+    
+      @template_ids = @problem_history.select(:template_id).distinct.pluck(:template_id).sort
+    
+      # Unique counts
+      unique_total = Answer.where(category: @selected_category).select(:template_id).distinct.count
+      unique_attempted = @problem_history.select(:template_id).distinct.count
+      unique_correct = @problem_history.where(correctness: true).select(:template_id).distinct.count
+    
+      @unique_attempt_pie = {
+        attempted: unique_attempted,
+        not_attempted: unique_total - unique_attempted
+      }
+    
+      @unique_correct_pie = {
+        correct: unique_correct,
+        incorrect: unique_total - unique_correct
+      }
+    
+      # Total counts (based on actual answers)
+      total_attempted = @problem_history.count
+      total_correct = @problem_history.where(correctness: true).count
+    
+      @total_attempt_pie = {
+        attempted: total_attempted,
+        not_attempted: 0
+      }
+    
+      @total_correct_pie = {
+        correct: total_correct,
+        incorrect: total_attempted - total_correct
+      }
+    end
+   
+   
+    @student_emails = @students.pluck(:email)
     if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all"
       # Holistic view scoped to selected category
       @category_total_unique_questions = Answer.where(category: @selected_category).select(:template_id).distinct.count
@@ -170,6 +217,11 @@ class TeacherDashboardController < ApplicationController
           incorrect: total_students - correct_students
         }
       end
+      @category_total_attempted = Answer.where(student_email: @student_emails, category: @selected_category).count
+      @category_total_correct = Answer.where(student_email: @student_emails, category: @selected_category, correctness: true).count
+      @category_total_incorrect = @category_total_attempted - @category_total_correct
+
+
 
 
     end
@@ -266,6 +318,11 @@ class TeacherDashboardController < ApplicationController
         correct: correct_buckets
       }
     end
+    # Add this at the bottom of your student_history_dashboard method
+    @total_attempted_all = @all_answers.count
+    @total_correct_all = @all_answers.where(correctness: true).count
+    @total_incorrect_all = @total_attempted_all - @total_correct_all
+
 
 
   end

@@ -98,6 +98,12 @@
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
           Student Performance Overview
         </h2>
+        <p class="text-center text-gray-600 mb-1">
+          <strong>Total Completed:</strong> <%= @student_total_attempted %> &nbsp; | &nbsp;
+          <strong>Total Correct:</strong> <%= @student_total_correct %> &nbsp; | &nbsp;
+          <strong>Total Incorrect:</strong> <%= @student_total_incorrect %>
+        </p>
+
         <p class="text-center text-gray-600 mb-6">
           Out of <strong><%= @total_unique_problems %></strong> total unique problems
         </p>
@@ -157,26 +163,35 @@
 
 
     <% if @selected_student_email == "all" && @selected_category == "all" %>
-        <div class="bg-white shadow-lg rounded-xl p-6 mb-12">
-          <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
-            Class Performance Overview
-          </h2>
-          <p class="text-center text-gray-600 mb-6">
-            Out of <strong><%= @total_unique_problems %></strong> total unique problems
-          </p>
+      <div class="bg-white shadow-lg rounded-xl p-6 mb-12">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
+          Class Performance Overview
+        </h2>
 
-          <div class="flex flex-col md:flex-row gap-6 justify-center">
-            <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
-              <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Attempted</h3>
-              <canvas id="attemptedBarChart"></canvas>
-            </div>
-            <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
-              <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Correct</h3>
-              <canvas id="correctBarChart"></canvas>
-            </div>
+        <p class="text-center text-gray-600 mb-1">
+          <strong>Total Completed:</strong> <%= @total_attempted_all %> &nbsp; | &nbsp;
+          <strong>Total Correct:</strong> <%= @total_correct_all %> &nbsp; | &nbsp;
+          <strong>Total Incorrect:</strong> <%= @total_incorrect_all %>
+        </p>
+
+        <p class="text-center text-gray-600 mb-6">
+          Out of <strong><%= @total_unique_problems %></strong> total unique problems
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-6 justify-center">
+          <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
+            <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Attempted</h3>
+            <canvas id="attemptedBarChart"></canvas>
+          </div>
+          <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
+            <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Correct</h3>
+            <canvas id="correctBarChart"></canvas>
           </div>
         </div>
-      <% end %>
+      </div>
+    <% end %>
+
+
 
       <% if @selected_student_email == "all" && @selected_category == "all" %>
         <h2 class="text-2xl font-bold text-white text-center mb-8">Per-Category Breakdown</h2>
@@ -208,6 +223,14 @@
           <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
             Class Performance in <%= @selected_category %>
           </h2>
+          <p class="text-center text-gray-600 mb-1">
+            <strong>Total Completed:</strong> <%= @category_total_attempted %> &nbsp; | &nbsp;
+            <strong>Total Correct:</strong> <%= @category_total_correct %> &nbsp; | &nbsp;
+            <strong>Total Incorrect:</strong> <%= @category_total_incorrect %>
+          </p>
+
+
+
           <p class="text-center text-gray-600 mb-6">
             Out of <strong><%= @category_total_unique_questions %></strong> total unique problems in this category
           </p>
@@ -254,6 +277,134 @@
           <% end %>
         </div>
       <% end %>
+
+      <%# Personalized student category stats %>
+      <% if @selected_student_email.present? && @selected_student_email != "all" &&
+      @selected_category.present? && @selected_category != "all" %>
+        <div class="bg-white shadow-lg rounded-xl p-6 mb-12">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Category Summary for <%= @student.first_name %> in <%= @selected_category %>
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center items-center">
+
+            <!-- Unique Attempted Pie -->
+            <div class="bg-gray-100 p-4 rounded shadow flex flex-col items-center" style="width: 300px; height: 260px;">
+              <h3 class="text-lg font-semibold text-gray-700 mb-2 text-center">Unique Attempted</h3>
+              <div style="width: 180px; height: 180px;">
+                <canvas id="categoryPieChart-0"></canvas>
+              </div>
+            </div>
+
+            <!-- Unique Correct Pie -->
+            <div class="bg-gray-100 p-4 rounded shadow flex flex-col items-center" style="width: 300px; height: 260px;">
+              <h3 class="text-lg font-semibold text-gray-700 mb-2 text-center">Unique Correct</h3>
+              <div style="width: 180px; height: 180px;">
+                <canvas id="categoryPieChart-1"></canvas>
+              </div>
+            </div>
+
+            <!-- Total Statistics -->
+            <div class="bg-gray-100 p-4 rounded shadow flex flex-col items-center" style="width: 300px; height: 260px;">
+              <h3 class="text-lg font-bold text-gray-700 mb-4 text-center">Total Stats</h3>
+              
+              <div class="text-gray-800 text-base font-semibold flex flex-col items-center justify-center h-full space-y-2">
+                <div>Attempted: <%= @total_attempt_pie[:attempted] %></div>
+                <div>Correct: <%= @total_correct_pie[:correct] %></div>
+                <div>Incorrect: <%= @total_correct_pie[:incorrect] %></div>
+              </div>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+
+
+        <div class="bg-white shadow-lg rounded-xl p-6 mb-12">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Problem History for <%= @student.first_name %> <%= @student.last_name %> in <%= @selected_category %>
+          </h2>
+
+          <div class="flex flex-wrap gap-4 justify-center mb-4">
+            <label>
+              <span class="text-sm text-gray-700">Filter by Correctness:</span>
+              <select id="correctnessFilter" class="ml-2 p-1 border rounded">
+                <option value="">All</option>
+                <option value="true">Correct</option>
+                <option value="false">Incorrect</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="text-sm text-gray-700">Filter by Template ID:</span>
+              <select id="templateFilter" class="ml-2 p-1 border rounded">
+                <option value="">All</option>
+                <% @template_ids.each do |tid| %>
+                  <option value="<%= tid %>"><%= tid %></option>
+                <% end %>
+              </select>
+            </label>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="table w-full text-sm text-left border">
+              <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                  <th>Question #</th>
+                  <th>Category</th>
+                  <th>Template ID</th>
+                  <th>Correct</th>
+                  <th>Date Completed</th>
+                  <th>Time Spent</th>
+                  <th>Your Answer</th>
+                  <th class="w-96">Question Text</th>
+                </tr>
+              </thead>
+              <tbody id="problemHistoryTable">
+                <% @problem_history.each_with_index do |a, i| %>
+                  <tr data-correct="<%= a.correctness %>" data-template="<%= a.template_id %>">
+                    <td><%= i + 1 %></td>
+                    <td><%= a.category %></td>
+                    <td><%= a.template_id %></td>
+                    <td><%= a.correctness ? "✅" : "❌" %></td>
+                    <td><%= a.date_completed %></td>
+                    <td><%= a.time_spent %></td>
+                    <td class="whitespace-normal break-words"><%= a.answer %></td>
+                    <td class="whitespace-normal break-words"><%= a.question_description %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const table = document.getElementById("problemHistoryTable");
+            const correctnessFilter = document.getElementById("correctnessFilter");
+            const templateFilter = document.getElementById("templateFilter");
+
+            function applyFilters() {
+              const correctness = correctnessFilter.value;
+              const template = templateFilter.value;
+
+              Array.from(table.rows).forEach(row => {
+                const matchesCorrectness = correctness === "" || row.dataset.correct === correctness;
+                const matchesTemplate = template === "" || row.dataset.template === template;
+                row.style.display = matchesCorrectness && matchesTemplate ? "" : "none";
+              });
+            }
+
+            correctnessFilter.addEventListener("change", applyFilters);
+            templateFilter.addEventListener("change", applyFilters);
+          });
+        </script>
+
+      <% end %>
+
 
 
 
@@ -577,6 +728,50 @@
     });
   </script>
 <% end %>
+<% if @selected_student_email.present? && @selected_student_email != "all" && @selected_category.present? && @selected_category != "all" %>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pieData = [
+      <%= raw @unique_attempt_pie.to_json %>,
+      <%= raw @unique_correct_pie.to_json %>
+    ];
+
+    const pieLabels = [
+      ['Attempted', 'Not Attempted'],
+      ['Correct', 'Incorrect']
+    ];
+
+    const pieColors = [
+      ['rgba(54, 162, 235, 0.7)', 'rgba(211, 211, 211, 0.5)'],
+      ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.6)']
+    ];
+
+    pieData.forEach((data, index) => {
+      new Chart(document.getElementById(`categoryPieChart-${index}`), {
+        type: 'pie',
+        data: {
+          labels: pieLabels[index],
+          datasets: [{
+            data: Object.values(data),
+            backgroundColor: pieColors[index]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed}`
+              }
+            }
+          }
+        }
+      });
+    });
+  });
+</script>
+<% end %>
+
 
 
 
