@@ -55,7 +55,15 @@ class PracticeProblemsController < ApplicationController
   end
 
   def essential_question_data
-    { type: @question[:type], question: @question[:question], answer: @question[:answer], field_label: @question[:field_label] }
+    {
+      type: @question[:type],
+      question: @question[:question],
+      answer: @question[:answer],
+      field_label: @question[:field_label],
+      input_fields: @question[:input_fields],
+      data_table: @question[:data_table],
+      answers: @question[:answers]
+    }
   end
 
   def check_answer
