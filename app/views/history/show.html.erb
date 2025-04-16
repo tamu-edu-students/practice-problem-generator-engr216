@@ -4,7 +4,7 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
-<div class="min-h-screen w-full flex flex-col", style="background-color: #9aa8c5;">
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5;">
   <!-- Navbar (Fixed at Top) -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
     <!-- Left: Practice Problems Button -->
@@ -59,36 +59,57 @@
     </div>
     
     <!-- Questions Table Container -->
-    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
+    <div class="w-full max-w-6xl bg-black text-white shadow-lg rounded-lg p-6 overflow-hidden">
       <% if @completed_questions.any? %>
-        <table class="table w-full">
-          <thead>
-            <tr class="text-white border-b border-gray-500">
-              <th class="p-2 text-left">Date</th>
-              <th class="p-2 text-left">Category</th>
-              <th class="p-2 text-left">Question</th>
-              <th class="p-2 text-left">Your Answer</th>
-              <th class="p-2 text-center">Result</th>
-              <th class="p-2 text-right">Time Spent</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @completed_questions.each do |answer| %>
-              <tr class="border-b border-gray-700">
-                <td class="p-3"><%= answer.date_completed %></td>
-                <td class="p-3 break-words"><%= answer.category %></td>
-                <td class="p-3 break-words"><%= answer.question_description %></td>
-                <td class="p-3 break-words"><%= answer.answer %></td>
-                <td class="p-3 text-center">
-                  <span class="px-2 py-1 rounded text-xs font-bold <%= answer.correctness ? 'bg-green-800 text-green-200' : 'bg-red-800 text-red-200' %>">
-                    <%= answer.correctness ? 'Correct' : 'Incorrect' %>
-                  </span>
-                </td>
-                <td class="p-3 text-right"><%= answer.time_spent ? "#{answer.time_spent} sec" : "N/A" %></td>
+        <div class="overflow-x-auto">
+          <table class="table w-full table-fixed">
+            <thead class="sticky top-0 bg-gray-900 z-10">
+              <tr class="text-white border-b border-gray-700">
+                <th class="p-2 text-left w-40 sticky left-0 bg-gray-900">DATE</th>
+                <th class="p-2 text-left w-1/2">QUESTION</th>
+                <th class="p-2 text-center w-28">YOUR ANSWER</th>
+                <th class="p-2 text-center w-28">RESULT</th>
+                <th class="p-2 text-center w-20">TIME</th>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% @completed_questions.each do |answer| %>
+                <tr class="border-b border-gray-800 hover:bg-gray-800/50">
+                  <td class="p-3 text-sm text-gray-300 whitespace-nowrap sticky left-0 bg-gray-800">
+                    <% if answer.date_completed.is_a?(String) %>
+                      <%= answer.date_completed %>
+                    <% elsif answer.date_completed.respond_to?(:strftime) %>
+                      <%= answer.date_completed.strftime("%Y-%m-%d") %>
+                    <% else %>
+                      <%= answer.date_completed.to_s %>
+                    <% end %>
+                  </td>
+                  <td class="p-3">
+                    <div class="flex flex-col text-left">
+                      <% if answer.category.present? %>
+                        <span class="inline-flex px-2 py-1 mb-2 rounded-md text-xs font-semibold bg-blue-900 text-blue-200 border border-blue-700">
+                          <%= answer.category %>
+                        </span>
+                      <% end %>
+                      <span class="text-white"><%= truncate(answer.question_description, length: 80, omission: "...") %></span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center">
+                    <span class="text-sm font-mono"><%= answer.answer %></span>
+                  </td>
+                  <td class="p-3 text-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold <%= answer.correctness ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200' %>">
+                      <%= answer.correctness ? 'Correct' : 'Incorrect' %>
+                    </span>
+                  </td>
+                  <td class="p-3 text-center text-sm text-gray-300">
+                    <%= answer.time_spent || "N/A" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       <% else %>
         <div class="flex flex-col items-center justify-center py-10">
           <p class="text-lg text-gray-300 mb-4">You haven't completed any practice problems yet.</p>
