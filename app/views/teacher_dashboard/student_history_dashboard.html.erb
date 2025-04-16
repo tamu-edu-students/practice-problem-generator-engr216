@@ -33,6 +33,20 @@
         Student History Dashboard
       </h1>
       
+      <!-- Semester Filter -->
+      <div class="w-full flex justify-center mb-6">
+        <form method="get" action="<%= student_history_dashboard_path %>" class="flex items-center space-x-2 bg-black text-white p-3 rounded-lg">
+          <label for="semester_id" class="font-semibold">Filter by Semester:</label>
+          <select name="semester_id" id="semester_id" class="select select-sm bg-gray-800 text-white border-gray-700">
+            <option value="">All Semesters</option>
+            <% @semesters.each do |semester| %>
+              <option value="<%= semester.id %>" <%= "selected" if semester.id.to_s == params[:semester_id].to_s %>><%= semester.name %></option>
+            <% end %>
+          </select>
+          <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+        </form>
+      </div>
+      
       <div class="tables-container">
         <!-- Summary Table -->
         <div class="table-wrapper w-3/5">
@@ -69,8 +83,11 @@
           <h2>Students</h2>
           <div class="search-form">
             <%= form_with url: student_history_dashboard_path, method: :get, local: true do %>
+              <% if params[:semester_id].present? %>
+                <%= hidden_field_tag :semester_id, params[:semester_id] %>
+              <% end %>
               <%= text_field_tag :search, params[:search], placeholder: "Search by name or email", class: "p-2 rounded-md border border-gray-300 w-full bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-              <%= submit_tag "Search", class: "mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition cursor-pointer" %>
+              <%= submit_tag "Search", class: "mt-2 px-4 py-2 bg-black text-white rounded-md hover:bg-blue-600 transition cursor-pointer w-full font-semibold", style: "background-color: #000000;" %>
             <% end %>
           </div>
           <div class="scrollable">
@@ -84,7 +101,7 @@
               <tbody>
                 <% @students.each do |student| %>
                   <tr>
-                    <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(student_email: student.email) %></td>
+                    <td><%= link_to "#{student.first_name} #{student.last_name}", student_history_path(student_email: student.email, semester_id: params[:semester_id]) %></td>
                     <td><%= student.email %></td>
                   </tr>
                 <% end %>
