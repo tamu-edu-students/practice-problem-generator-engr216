@@ -42,7 +42,7 @@ RSpec.describe UniversalAccountEquationsProblemGenerators do
   end
 
   describe '#build_uae_problem' do
-    subject(:problem) { test_class.build_uae_problem(question_text, answer, params, 1) }
+    subject(:problem) { test_class.build_uae_problem(question_text, answer, 1, params) }
 
     let(:question_text) { 'Test question' }
     let(:answer) { 42.12345 }
