@@ -345,7 +345,7 @@ class PracticeProblemsController < ApplicationController
 
   def set_direction_error_message(user_answer, correct_answer)
     direction = user_answer < correct_answer ? 'too low' : 'too high'
-    @error_message = 'Try again or press View Answer. Your answer was ' + direction
+    @error_message = "Try again or press View Answer. Your answer was #{direction}"
     # save_answer_to_database(false)
   end
 
@@ -576,9 +576,9 @@ class PracticeProblemsController < ApplicationController
 
   def set_error_message(key, user_value, expected_value)
     direction = user_value < expected_value ? 'low' : 'high'
-    key_str = key.to_s.humanize.downcase
-    @error_message = 'Try again or press View Answer. Your answer was ' + direction
-      # save_answer_to_database(false)
+    key.to_s.humanize.downcase
+    @error_message = "Try again or press View Answer. Your answer was #{direction}"
+    # save_answer_to_database(false)
   end
 
   def answer_incorrect?(key, expected_value)
@@ -612,7 +612,7 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
     else
       direction = user_answer < correct_answer ? 'too low' : 'too high'
-      @error_message = 'Try again or press View Answer. Your answer was ' + direction
+      @error_message = "Try again or press View Answer. Your answer was #{direction}"
       # save_answer_to_database(false)
       nil
     end
@@ -734,7 +734,7 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
-  def set_error_message_for_answer(user_ans, correct)
+  def set_error_message_for_answer(_user_ans, _correct)
     @error_message = 'Try again or press View Answer.'
     # save_answer_to_database(false)
     nil
