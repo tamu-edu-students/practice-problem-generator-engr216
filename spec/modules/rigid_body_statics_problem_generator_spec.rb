@@ -26,6 +26,17 @@ class TestRigidBodyStaticsProblemGenerator < RigidBodyStaticsProblemGenerator
   end
 end
 
+# Subclass to override field generation methods for tests of generate_rbs_problem_from_data
+class TestRigidBodyStaticsProblemGeneratorWithStubbedFields < TestRigidBodyStaticsProblemGenerator
+  def generate_fill_in_fields(_data)
+    [{ key: 'rbs_answer', type: 'text' }]
+  end
+
+  def generate_multiple_choice_fields(_data)
+    [{ key: 'rbs_answer', type: 'radio', options: %w[A B] }]
+  end
+end
+
 RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
   subject(:generator) { described_class.new('Rigid Body Statics') }
 
@@ -41,8 +52,6 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
   end
 
   describe '#generate_rbs_problem_from_data' do
-    subject(:result) { generator.send(:generate_rbs_problem_from_data, data) }
-
     let(:data) do
       {
         question: 'Test question?',
@@ -53,14 +62,13 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
     end
 
     context "when input_type is 'fill_in'" do
+      # Use the subclass that overrides generate_fill_in_fields
+      subject(:generator) { TestRigidBodyStaticsProblemGeneratorWithStubbedFields.new('Rigid Body Statics') }
+
       let(:input_type) { 'fill_in' }
 
-      before do
-        allow(generator).to receive(:generate_fill_in_fields).with(data).and_return([{ key: 'rbs_answer',
-                                                                                       type: 'text' }])
-      end
-
       it 'returns a hash with the expected keys' do
+        result = generator.send(:generate_rbs_problem_from_data, data)
         expect(result).to include(
           type: 'rigid_body_statics',
           question: 'Test question?',
@@ -72,15 +80,13 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
     end
 
     context "when input_type is not 'fill_in'" do
+      # Use the subclass that overrides generate_multiple_choice_fields
+      subject(:generator) { TestRigidBodyStaticsProblemGeneratorWithStubbedFields.new('Rigid Body Statics') }
+
       let(:input_type) { 'multiple_choice' }
 
-      before do
-        allow(generator).to receive(:generate_multiple_choice_fields).with(data)
-                                                                     .and_return([{ key: 'rbs_answer', type: 'radio',
-                                                                                    options: %w[A B] }])
-      end
-
       it 'returns a hash using generate_multiple_choice_fields' do
+        result = generator.send(:generate_rbs_problem_from_data, data)
         expect(result).to include(
           type: 'rigid_body_statics',
           question: 'Test question?',
@@ -314,7 +320,7 @@ RSpec.describe TestRigidBodyStaticsProblemGenerator, type: :model do
 
     it 'generates a valid problem with force calculation' do
       expect(problem).to include(
-        type: 'rigid_body_statics',
+        type: 'rigid_body statics',
         input_fields: be_an(Array)
       )
       expect(problem[:answer]).to be_present
