@@ -64,7 +64,8 @@ module ErrorPropagationProblemGenerators
         theta_deg,
         theta_unc,
         uncertainty
-      )
+      ),
+      template_id: 1
     }
   end
 
@@ -97,7 +98,8 @@ module ErrorPropagationProblemGenerators
         length,
         length_unc,
         uncertainty
-      )
+      ),
+      template_id: 2
     }
   end
 
@@ -130,7 +132,8 @@ module ErrorPropagationProblemGenerators
         distance,
         distance_unc,
         uncertainty
-      )
+      ),
+      template_id: 3
     }
   end
 
@@ -165,7 +168,8 @@ module ErrorPropagationProblemGenerators
         angle_deg,
         angle_unc,
         uncertainty
-      )
+      ),
+      template_id: 4
     }
   end
 
@@ -211,7 +215,8 @@ module ErrorPropagationProblemGenerators
         [length, width],
         [length_unc, width_unc],
         uncertainty
-      )
+      ),
+      template_id: 5
     }
   end
 
@@ -245,7 +250,8 @@ module ErrorPropagationProblemGenerators
         radius,
         radius_unc,
         uncertainty
-      )
+      ),
+      template_id: 6
     }
   end
 
@@ -282,7 +288,8 @@ module ErrorPropagationProblemGenerators
         [length, width, height],
         [length_unc, width_unc, height_unc],
         uncertainty
-      )
+      ),
+      template_id: 7
     }
   end
 
@@ -326,7 +333,8 @@ module ErrorPropagationProblemGenerators
         [mass, volume],
         [mass_unc, volume_unc],
         uncertainty
-      )
+      ),
+      template_id: 8
     }
   end
 
@@ -351,7 +359,8 @@ module ErrorPropagationProblemGenerators
         'h',
         0.5,
         velocity_percentage
-      )
+      ),
+      template_id: 9
     }
   end
 
@@ -374,7 +383,8 @@ module ErrorPropagationProblemGenerators
         'r',
         -2,
         force_percentage
-      )
+      ),
+      template_id: 10
     }
   end
 
@@ -397,7 +407,8 @@ module ErrorPropagationProblemGenerators
         'v',
         2,
         energy_percentage
-      )
+      ),
+      template_id: 11
     }
   end
 
@@ -410,7 +421,8 @@ module ErrorPropagationProblemGenerators
       question: "The speed of a yo-yo's center of mass is given by v = 2 × √(g×h/3). If the relative uncertainty of h is #{h_uncertainty}%, what is the relative uncertainty in the speed of a yo-yo's center of mass?",
       answer: (h_uncertainty.to_f / 2.0).round(1).to_s,
       explanation: ErrorPropagationQuestionText.fractional_error_explanation('v = 2 × √(g×h/3)', 'h', 0.5, (h_uncertainty.to_f / 2.0).round(1)),
-      field_label: 'Relative uncertainty in speed (%)'
+      field_label: 'Relative uncertainty in speed (%)',
+      template_id: 12
     }
   end
 end

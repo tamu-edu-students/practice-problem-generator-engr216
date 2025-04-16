@@ -26,8 +26,8 @@ module FiniteDifferencesProblemGenerators
     build_finite_differences_problem(
       question_text,
       rate_of_change,
-      data_table: data_table,
-      parameters: { answer: rate_of_change }
+      params: { data_table: data_table, parameters: { answer: rate_of_change } },
+      template_id: 10
     )
   end
 
@@ -79,8 +79,8 @@ module FiniteDifferencesProblemGenerators
     build_finite_differences_problem(
       question_text,
       differences[:centered],
-      parameters: differences,
-      input_fields: table_difference_input_fields
+      params: { parameters: differences, input_fields: table_difference_input_fields },
+      template_id: 6
     )
   end
 

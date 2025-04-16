@@ -13,8 +13,9 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         derivatives[:true_derivative],
-        parameters: derivatives,
-        input_fields: natural_log_input_fields
+        params: { parameters: derivatives,
+                  input_fields: natural_log_input_fields },
+        template_id: 8
       )
     end
 
@@ -48,7 +49,8 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         derivatives[:forward_diff],
-        parameters: derivatives
+        params: { parameters: derivatives },
+        template_id: 9
       )
     end
 

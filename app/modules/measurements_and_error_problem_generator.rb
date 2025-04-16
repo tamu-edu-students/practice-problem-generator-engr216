@@ -31,6 +31,7 @@ class MeasurementsAndErrorProblemGenerator
       type: 'measurements_error',
       question: data[:question],
       answer: data[:answer],
+      template_id: data[:template_id] || 0,
       input_fields: input_fields
     }
     result[:data_table] = data[:data_table] if data[:data_table]
@@ -43,6 +44,7 @@ class MeasurementsAndErrorProblemGenerator
       {
         question: 'Is there error in every measurement we take?',
         answer: 'A',
+        template_id: 1,
         options: [
           { value: 'A', label: 'Yes, every measurement has some uncertainty.' },
           { value: 'B', label: 'No, measurements can be perfectly exact.' },
@@ -54,6 +56,7 @@ class MeasurementsAndErrorProblemGenerator
       {
         question: 'Fill in the blank: The correct formula for the standard error is _____ .',
         answer: 'A',
+        template_id: 2,
         options: [
           { value: 'A', label: 'σ/√n' },
           { value: 'B', label: 'σ×√n' },
@@ -65,6 +68,7 @@ class MeasurementsAndErrorProblemGenerator
       {
         question: 'What are three ways to describe the center value of a dataset?',
         answer: 'A',
+        template_id: 3,
         options: [
           { value: 'A', label: 'Mean, Median, and Mode' },
           { value: 'B', label: 'Range, Standard Deviation, and Variance' },
@@ -76,6 +80,7 @@ class MeasurementsAndErrorProblemGenerator
       {
         question: 'What is the correct method to calculate the uncertainty of a measured value?',
         answer: 'A',
+        template_id: 4,
         options: [
           { value: 'A', label: 'Standard error = σ/√n' },
           { value: 'B', label: '(Highest value - Lowest value)/n' },
@@ -87,6 +92,7 @@ class MeasurementsAndErrorProblemGenerator
       {
         question: 'Fill in the blank: Calculate the sample mean for the values: x₁ = a + 3, x₂ = a, x₃ = a - 4, x₄ = a + 5, x₅ = a + 2. Express your answer in terms of a.',
         answer: 'A',
+        template_id: 5,
         options: [
           { value: 'A', label: 'a + 1.2' },
           { value: 'B', label: 'a + 1.4' },
@@ -123,6 +129,7 @@ class MeasurementsAndErrorProblemGenerator
                                               question: question_text,
                                               answer: computed_uncertainty.to_s,
                                               input_type: 'fill_in',
+                                              template_id: 6,
                                               field_label: 'Uncertainty in Q'
                                             })
   end
@@ -150,6 +157,7 @@ class MeasurementsAndErrorProblemGenerator
                                               question: question_text,
                                               answer: uncertainty.to_s,
                                               input_type: 'fill_in',
+                                              template_id: 7,
                                               field_label: 'Uncertainty in Q'
                                             })
   end
@@ -171,6 +179,7 @@ class MeasurementsAndErrorProblemGenerator
                                               question: question_text,
                                               answer: uncertainty.to_s,
                                               input_type: 'fill_in',
+                                              template_id: 8,
                                               field_label: 'Volume Uncertainty'
                                             })
   end
@@ -187,6 +196,7 @@ class MeasurementsAndErrorProblemGenerator
                                               question: question_text,
                                               answer: standard_error.to_s,
                                               input_type: 'fill_in',
+                                              template_id: 9,
                                               field_label: 'Standard Error'
                                             })
   end

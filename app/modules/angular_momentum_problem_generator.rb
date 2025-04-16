@@ -31,7 +31,8 @@ class AngularMomentumProblemGenerator
       type: 'angular_momentum',
       question: data[:question],
       answer: data[:answer],
-      input_fields: input_fields
+      input_fields: input_fields,
+      template_id: data[:template_id]
     }
   end
 
@@ -71,7 +72,8 @@ class AngularMomentumProblemGenerator
                   'What is the moment of inertia about this axis? (Use I = 1/3 mL²)',
         answer: '3.3',
         input_type: 'fill_in',
-        field_label: 'Moment of Inertia (gm²)'
+        field_label: 'Moment of Inertia (gm²)',
+        template_id: 1
       },
       {
         question: 'Two objects move as follows: Object 1 has m=6.0 kg, v=2.0 m/s, d=1.5 m; ' \
@@ -79,41 +81,47 @@ class AngularMomentumProblemGenerator
                   'What is the total angular momentum about point A?',
         answer: '8.25',
         input_type: 'fill_in',
-        field_label: 'Angular Momentum (kg·m²/s)'
+        field_label: 'Angular Momentum (kg·m²/s)',
+        template_id: 2
       },
       {
         question: 'A person stands on a rotating platform at 1.2 rev/s. ' \
                   'Moment of inertia decreases from 6.0 to 2.0 kg·m². What is the new angular speed?',
         answer: '3.6',
         input_type: 'fill_in',
-        field_label: 'New Angular Speed (rev/s)'
+        field_label: 'New Angular Speed (rev/s)',
+        template_id: 3
       },
       {
         question: 'A flywheel with I=0.140 kg·m² decreases from 3.00 to 0.800 kg·m²/s in 1.50 s. ' \
                   'What is the average torque?',
         answer: '-1.47',
         input_type: 'fill_in',
-        field_label: 'Torque (Nm)'
+        field_label: 'Torque (Nm)',
+        template_id: 4
       },
       {
         question: 'Using the same flywheel problem (I = 0.140 kg·m²), what is the angular displacement over 1.50 s ' \
                   'if angular acceleration is constant?',
         answer: '20.4',
         input_type: 'fill_in',
-        field_label: 'Angular Displacement (rad)'
+        field_label: 'Angular Displacement (rad)',
+        template_id: 5
       },
       {
         question: 'In the flywheel problem (I = 0.140 kg·m², L changes from 3.00 to 0.800 kg·m²/s), ' \
                   'what is the work done on the flywheel?',
         answer: '-29.9',
         input_type: 'fill_in',
-        field_label: 'Work Done (J)'
+        field_label: 'Work Done (J)',
+        template_id: 6
       },
       {
         question: 'What is the average power exerted on the flywheel from the same problem?',
         answer: '19.9',
         input_type: 'fill_in',
-        field_label: 'Power (W)'
+        field_label: 'Power (W)',
+        template_id: 7
       },
       {
         question: 'In a sprocket-chain system of a bicycle, all points on the chain have the same linear speed. ' \
@@ -121,7 +129,8 @@ class AngularMomentumProblemGenerator
                   'angular speeds (ω_front / ω_rear)?',
         answer: '0.625',
         input_type: 'fill_in',
-        field_label: 'Angular Speed Ratio'
+        field_label: 'Angular Speed Ratio',
+        template_id: 8
       },
       {
         question: 'A kid displaces a hula hoop from rest by an angle θ and lets go. ' \
@@ -133,7 +142,8 @@ class AngularMomentumProblemGenerator
           { value: 'B', label: 'gθ / r' },
           { value: 'C', label: 'ω² = r/g' },
           { value: 'D', label: '1/2 m r² ω²' }
-        ]
+        ],
+        template_id: 9
       }
     ]
     questions.map { |q| generate_am_problem_from_data(q) }
@@ -157,7 +167,8 @@ class AngularMomentumProblemGenerator
                                               "velocity #{omega} rad/s. What is its angular momentum?",
                                     answer: l.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Angular Momentum (kg·m²/s)'
+                                    field_label: 'Angular Momentum (kg·m²/s)',
+                                    template_id: 10
                                   })
   end
 
@@ -174,7 +185,8 @@ class AngularMomentumProblemGenerator
                                               'rad/s. What is its angular momentum?',
                                     answer: l.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Angular Momentum (kg·m²/s)'
+                                    field_label: 'Angular Momentum (kg·m²/s)',
+                                    template_id: 11
                                   })
   end
 

@@ -29,12 +29,13 @@ RSpec.describe ConfidenceIntervalProblemGenerators do
       end
 
       # Stub for build_confidence_interval_problem with parameter verification
-      def build_confidence_interval_problem(question_text, lower_bound, upper_bound, params)
+      def build_confidence_interval_problem(question_text, lower_bound, upper_bound, params, template_id)
         {
           type: 'confidence_interval',
           question: question_text,
           answers: { lower_bound: lower_bound, upper_bound: upper_bound },
-          parameters: params
+          parameters: params,
+          template_id: template_id
         }
       end
 

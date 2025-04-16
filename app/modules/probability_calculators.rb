@@ -16,12 +16,13 @@ module ProbabilityCalculators
     (StatisticsHelper.pnorm(upper_z) - StatisticsHelper.pnorm(lower_z)) * 100
   end
 
-  def build_probability_problem(question_text, probability)
+  def build_probability_problem(question_text, probability, template_id)
     {
       type: 'probability',
       question: question_text,
       answer: probability.round(2),
-      input_fields: nil
+      input_fields: nil,
+      template_id: template_id
     }
   end
 end

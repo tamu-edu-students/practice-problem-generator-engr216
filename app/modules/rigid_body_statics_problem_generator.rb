@@ -26,7 +26,8 @@ class RigidBodyStaticsProblemGenerator
       question: data[:question],
       answer: data[:answer],
       input_fields: input_fields,
-      image: data[:image] # include image if provided
+      image: data[:image], # include image if provided
+      template_id: data[:template_id]
     }
   end
 
@@ -72,7 +73,8 @@ class RigidBodyStaticsProblemGenerator
           { value: 'C', label: 'Non-zero in the presence of friction' },
           { value: 'D', label: 'Dependent on the support conditions' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 1
       },
       {
         question: 'Which condition is necessary for a rigid body to be in static equilibrium?',
@@ -83,7 +85,8 @@ class RigidBodyStaticsProblemGenerator
           { value: 'C', label: 'Only the sum of moments must be zero' },
           { value: 'D', label: 'Friction must be at its maximum' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 2
       }
     ]
     questions.map { |q| generate_rbs_problem_from_data(q) }
@@ -126,7 +129,8 @@ class RigidBodyStaticsProblemGenerator
                                      answer: reaction_d.to_s,
                                      input_type: 'fill_in',
                                      field_label: 'Reaction at D',
-                                     image: 'rigid1.png'
+                                     image: 'rigid1.png',
+                                     template_id: 3
                                    })
   end
 
@@ -152,7 +156,8 @@ class RigidBodyStaticsProblemGenerator
                                      answer: [theta.to_s, t_tension.to_s],
                                      input_type: 'fill_in',
                                      field_label: 'θ and Tension',
-                                     image: 'rigid2.png'
+                                     image: 'rigid2.png',
+                                     template_id: 4
                                    })
   end
 
@@ -179,7 +184,8 @@ class RigidBodyStaticsProblemGenerator
                                      answer: [t_ac_rounded.to_s, t_bc_rounded.to_s],
                                      input_type: 'fill_in',
                                      field_label: ['Tension in AC', 'Tension in BC'],
-                                     image: 'rigid3.png' # or your actual image filename
+                                     image: 'rigid3.png',
+                                     template_id: 5
                                    })
   end
 
@@ -220,7 +226,8 @@ class RigidBodyStaticsProblemGenerator
                                      question: question_text,
                                      answer: moment.to_s,
                                      input_type: 'fill_in',
-                                     field_label: 'Moment'
+                                     field_label: 'Moment',
+                                     template_id: 6
                                    })
   end
 
@@ -244,7 +251,8 @@ class RigidBodyStaticsProblemGenerator
                                      answer: theta.to_s, # placeholder answer
                                      input_type: 'fill_in',
                                      field_label: 'θ',
-                                     image: 'rigid4.png'
+                                     image: 'rigid4.png',
+                                     template_id: 7
                                    })
   end
 
@@ -275,7 +283,8 @@ class RigidBodyStaticsProblemGenerator
                                      answer: moment, # placeholder for the computed moment
                                      input_type: 'fill_in',
                                      field_label: 'Moment',
-                                     image: 'rigid5.png' # or specify an image filename if one exists
+                                     image: 'rigid5.png',
+                                     template_id: 8
                                    })
   end
 

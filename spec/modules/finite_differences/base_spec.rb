@@ -43,23 +43,23 @@ RSpec.describe FiniteDifferences::Base do
 
   describe '#build_finite_differences_problem' do
     it 'builds a problem with the correct type' do
-      problem = base.build_finite_differences_problem('Test question', 42)
+      problem = base.build_finite_differences_problem('Test question', 42,params: {}, template_id: 1)
       expect(problem[:type]).to eq('finite_differences')
     end
 
     it 'assigns the correct question text' do
-      problem = base.build_finite_differences_problem('Test question', 42)
+      problem = base.build_finite_differences_problem('Test question', 42,params: {}, template_id: 1)
       expect(problem[:question]).to eq('Test question')
     end
 
     it 'assigns the correct answer' do
-      problem = base.build_finite_differences_problem('Test question', 42)
+      problem = base.build_finite_differences_problem('Test question', 42,params: {}, template_id: 1)
       expect(problem[:answer]).to eq(42)
     end
 
     it 'includes a data table when provided' do
       data_table = [['x', '0', '1'], ['f(x)', '0', '1']]
-      problem = base.build_finite_differences_problem('Test question', 42, data_table: data_table)
+      problem = base.build_finite_differences_problem('Test question', 42, params: {data_table: data_table}, template_id: 1)
       expect(problem[:data_table]).to eq(data_table)
     end
   end

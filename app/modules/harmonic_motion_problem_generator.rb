@@ -25,7 +25,8 @@ class HarmonicMotionProblemGenerator
       type: 'simple_harmonic_motion',
       question: data[:question],
       answer: data[:answer],
-      input_fields: input_fields
+      input_fields: input_fields,
+      template_id: data[:template_id]
     }
   end
 
@@ -69,7 +70,8 @@ class HarmonicMotionProblemGenerator
           { value: 'C', label: 'T = 2πω' },
           { value: 'D', label: 'T = ω²/2π' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 1
       },
       {
         question: 'For a simple pendulum undergoing small oscillations, which parameters determine its period?',
@@ -80,7 +82,8 @@ class HarmonicMotionProblemGenerator
           { value: 'C', label: 'Mass and length' },
           { value: 'D', label: 'Amplitude and gravitational acceleration' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 2
       },
       {
         question: 'In a mass-spring system, if the mass is increased while the spring constant remains constant, the period:',
@@ -91,7 +94,8 @@ class HarmonicMotionProblemGenerator
           { value: 'C', label: 'Remains the same' },
           { value: 'D', label: 'Becomes zero' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 3
       },
       {
         question: 'The damping in a simple harmonic oscillator generally causes the frequency to:',
@@ -102,7 +106,8 @@ class HarmonicMotionProblemGenerator
           { value: 'C', label: 'Remain unchanged' },
           { value: 'D', label: 'Oscillate unpredictably' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 4
       },
       {
         question: 'Which statement is true regarding energy in an ideal (undamped) simple harmonic oscillator?',
@@ -113,7 +118,8 @@ class HarmonicMotionProblemGenerator
           { value: 'C', label: 'Energy continuously decreases' },
           { value: 'D', label: 'Energy is dissipated as heat' }
         ],
-        input_type: 'multiple_choice'
+        input_type: 'multiple_choice',
+        template_id: 5
       }
     ]
     questions.map { |q| generate_shm_problem_from_data(q) }
@@ -141,7 +147,8 @@ class HarmonicMotionProblemGenerator
                                      question: question_text,
                                      answer: '1',
                                      input_type: 'fill_in',
-                                     field_label: 'Period T'
+                                     field_label: 'Period T',
+                                     template_id: 6
                                    })
   end
 
@@ -156,7 +163,8 @@ class HarmonicMotionProblemGenerator
                                      question: question_text,
                                      answer: period.to_s,
                                      input_type: 'fill_in',
-                                     field_label: 'Period T'
+                                     field_label: 'Period T',
+                                     template_id: 7
                                    })
   end
 
@@ -170,7 +178,8 @@ class HarmonicMotionProblemGenerator
     generate_shm_problem_from_data({
                                      question: question_text,
                                      answer: [omega.round(3).to_s, period.to_s],
-                                     input_type: 'fill_in'
+                                     input_type: 'fill_in',
+                                     template_id: 8
                                    })
   end
 
@@ -183,7 +192,8 @@ class HarmonicMotionProblemGenerator
                                      question: question_text,
                                      answer: period.to_s,
                                      input_type: 'fill_in',
-                                     field_label: 'Period T'
+                                     field_label: 'Period T',
+                                     template_id: 9
                                    })
   end
 
@@ -197,7 +207,8 @@ class HarmonicMotionProblemGenerator
     generate_shm_problem_from_data({
                                      question: question_text,
                                      answer: [frequency.to_s, period.to_s],
-                                     input_type: 'fill_in'
+                                     input_type: 'fill_in',
+                                     template_id: 10
                                    })
   end
 
@@ -213,7 +224,8 @@ class HarmonicMotionProblemGenerator
                                      question: question_text,
                                      answer: period.to_s,
                                      input_type: 'fill_in',
-                                     field_label: 'Period T'
+                                     field_label: 'Period T',
+                                     template_id: 11
                                    })
   end
 
@@ -227,7 +239,8 @@ class HarmonicMotionProblemGenerator
     generate_shm_problem_from_data({
                                      question: question_text,
                                      answer: [omega.round(3).to_s, period.to_s],
-                                     input_type: 'fill_in'
+                                     input_type: 'fill_in',
+                                     template_id: 12
                                    })
   end
 
@@ -240,7 +253,8 @@ class HarmonicMotionProblemGenerator
                                      question: question_text,
                                      answer: period.to_s,
                                      input_type: 'fill_in',
-                                     field_label: 'Period T'
+                                     field_label: 'Period T',
+                                     template_id: 13
                                    })
   end
 
@@ -256,7 +270,8 @@ class HarmonicMotionProblemGenerator
     generate_shm_problem_from_data({
                                      question: question_text,
                                      answer: [freq.to_s, freq_undamped.to_s],
-                                     input_type: 'fill_in'
+                                     input_type: 'fill_in',
+                                     template_id: 14
                                    })
   end
 
@@ -270,7 +285,8 @@ class HarmonicMotionProblemGenerator
     generate_shm_problem_from_data({
                                      question: question_text,
                                      answer: [amplitude.to_s, period.to_s],
-                                     input_type: 'fill_in'
+                                     input_type: 'fill_in',
+                                     template_id: 15
                                    })
   end
 

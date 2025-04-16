@@ -11,13 +11,14 @@ module FiniteDifferences
     end
 
     # Build a finite differences problem with standard structure
-    def build_finite_differences_problem(question_text, answer, params = {})
+    def build_finite_differences_problem(question_text, answer, template_id:, params: {})
       result = {
         type: 'finite_differences',
         question: question_text,
         answer: answer,
         input_fields: params[:input_fields] || default_input_field,
-        parameters: params[:parameters] || {}
+        parameters: params[:parameters] || {},
+        template_id: template_id
       }
       result[:data_table] = params[:data_table] if params[:data_table]
       result

@@ -28,6 +28,20 @@ RSpec.describe FiniteDifferencesProblemGenerators do
         ]
       end
 
+      def build_finite_differences_problem(question_text, answer, template_id:, params: {})
+        result = {
+          type: 'finite_differences',
+          question: question_text,
+          answer: answer,
+          input_fields: params[:input_fields] || [{ label: 'Answer', key: 'answer' }],
+          parameters: params[:parameters] || {},
+          template_id: template_id
+        }
+        result[:data_table] = params[:data_table] if params[:data_table]
+        result[:debug_info] = 'Debug info' if defined?(Rails) && Rails.env.development?
+        result
+      end
+
       def advanced_generators_list
         %i[
           natural_log_derivative
@@ -44,15 +58,16 @@ RSpec.describe FiniteDifferencesProblemGenerators do
       end
 
       # Define the helper methods expected by the generators.
-      def build_finite_differences_problem(question_text, answer, opts = {})
+      def build_finite_differences_problem(question_text, answer, template_id:, params: {})
         result = {
           type: 'finite_differences',
           question: question_text,
           answer: answer,
-          input_fields: opts[:input_fields] || [{ label: 'Answer', key: 'answer' }],
-          parameters: opts[:parameters] || {}
+          input_fields: params[:input_fields] || [{ label: 'Answer', key: 'answer' }],
+          parameters: params[:parameters] || {},
+          template_id: template_id
         }
-        result[:data_table] = opts[:data_table] if opts[:data_table]
+        result[:data_table] = params[:data_table] if params[:data_table]
         # Append debug_info if Rails.env is development for testing.
         result[:debug_info] = 'Debug info' if defined?(Rails) && Rails.env.development?
         result
