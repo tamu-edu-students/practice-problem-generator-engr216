@@ -53,7 +53,8 @@ module DataStatisticsGenerators
       question: statistics_question_text,
       data_table: data,
       answers: statistics,
-      input_fields: statistics_input_fields
+      input_fields: statistics_input_fields,
+      template_id: 10
     }
   end
 

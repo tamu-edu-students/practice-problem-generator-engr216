@@ -72,8 +72,8 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         backward_diff,
-        data_table: data_table,
-        parameters: { answer: backward_diff }
+        params: { data_table: data_table, parameters: { answer: backward_diff } },
+        template_id: 2
       )
     end
 
@@ -97,8 +97,9 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         forward_diff,
-        data_table: data_table,
-        parameters: { answer: forward_diff }
+        params: { data_table: data_table,
+                  parameters: { answer: forward_diff } },
+        template_id: 3
       )
     end
 
@@ -122,8 +123,9 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         centered_diff,
-        data_table: data_table,
-        parameters: { answer: centered_diff }
+        params: { data_table: data_table,
+                  parameters: { answer: centered_diff } },
+        template_id: 7
       )
     end
 

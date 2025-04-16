@@ -76,7 +76,7 @@ RSpec.describe ConfidenceIntervalProblemGenerator, type: :model do
     let(:params) { { sample_size: 40, sample_mean: 100, pop_std: 15, confidence_level: 95 } }
 
     it 'builds a problem with the correct structure' do
-      problem = generator.send(:build_confidence_interval_problem, question, lower, upper, params)
+      problem = generator.send(:build_confidence_interval_problem, question, lower, upper, 1, params)
       expect(problem[:type]).to eq('confidence_interval')
     end
   end

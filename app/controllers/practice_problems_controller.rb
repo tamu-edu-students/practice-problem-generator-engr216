@@ -55,7 +55,7 @@ class PracticeProblemsController < ApplicationController
   end
 
   def essential_question_data
-    { type: @question[:type], question: @question[:question], answer: @question[:answer], field_label: @question[:field_label] }
+    { type: @question[:type], template_id: @question[:template_id], question: @question[:question], answer: @question[:answer], field_label: @question[:field_label] }
   end
 
   def check_answer
@@ -740,6 +740,7 @@ class PracticeProblemsController < ApplicationController
 
     # Create and save the answer record
     answer = Answer.create(
+      template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
       question_description: @question[:question],

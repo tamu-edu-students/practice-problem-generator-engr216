@@ -102,6 +102,7 @@ class HarmonicMotionProblemsController < ApplicationController
 
     # Create and save the answer record
     answer = Answer.create(
+      template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
       question_description: @question[:question],

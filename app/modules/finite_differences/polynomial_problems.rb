@@ -67,8 +67,9 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         differences[:true_value],
-        parameters: create_polynomial_parameters(differences),
-        input_fields: polynomial_input_fields
+        params: { parameters: create_polynomial_parameters(differences),
+                  input_fields: polynomial_input_fields },
+        template_id: 1
       )
     end
 
@@ -96,7 +97,7 @@ module FiniteDifferences
       # Define the correct answer
       true_value = 2 * a
 
-      build_finite_differences_problem(question_text, true_value)
+      build_finite_differences_problem(question_text, true_value, {}, 5)
     end
 
     private

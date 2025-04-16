@@ -51,7 +51,8 @@ class ErrorPropagationProblemGenerator
       question: data[:question],
       answer: data[:answer],
       input_fields: input_fields,
-      explanation: data[:explanation]
+      explanation: data[:explanation],
+      template_id: data[:template_id] || 0
     }
   end
 
