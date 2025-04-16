@@ -1,8 +1,9 @@
 # Module containing all UAE problem generators
 module UniversalAccountEquationsProblemGenerators
   # Create the basic structure for all UAE problems
-  def build_uae_problem(question_text, answer, params = {})
+  def build_uae_problem(question_text, answer, params = {}, template_id)
     {
+      template_id: template_id,
       type: 'universal_account_equations',
       question: question_text,
       answer: answer.round(2),
@@ -47,7 +48,7 @@ module UniversalAccountEquationsProblemGenerators
                         height: height,
                         distance: distance,
                         drag_force: drag_force
-                      })
+                      }, 1)
   end
 
   def generate_jam_production_cost_problem
@@ -82,7 +83,7 @@ module UniversalAccountEquationsProblemGenerators
                         blackberry_cost: blackberry_cost,
                         sugar_cost: sugar_cost,
                         target_jam_mass: target_jam_mass
-                      })
+                      }, 2)
   end
 
   def generate_fuel_efficiency_problem
@@ -112,7 +113,7 @@ module UniversalAccountEquationsProblemGenerators
                         wind_resistance: wind_resistance,
                         vehicle_mass: vehicle_mass,
                         rolling_resistance: rolling_resistance
-                      })
+                      }, 3)
   end
 
   def generate_mixing_solution_problem
@@ -148,7 +149,7 @@ module UniversalAccountEquationsProblemGenerators
                         evaporation_rate: evaporation_rate,
                         temperature: temperature,
                         mixing_time: mixing_time
-                      })
+                      }, 4)
   end
 
   def generate_simple_interest_problem
@@ -178,7 +179,7 @@ module UniversalAccountEquationsProblemGenerators
                         inflation_rate: inflation_rate,
                         tax_rate: tax_rate,
                         compounding_frequency: compounding_frequency
-                      })
+                      }, 5)
   end
 
   def generate_electricity_bill_problem
@@ -212,7 +213,7 @@ module UniversalAccountEquationsProblemGenerators
                         efficiency_factor: efficiency_factor,
                         peak_hour_multiplier: peak_hour_multiplier,
                         peak_hours_per_day: peak_hours_per_day
-                      })
+                      }, 6)
   end
 
   def generate_weight_conversion_problem
@@ -247,6 +248,6 @@ module UniversalAccountEquationsProblemGenerators
                         packaging_weight_percent: packaging_weight_percent,
                         fragile_item_multiplier: fragile_item_multiplier,
                         fragile_items_percent: fragile_items_percent
-                      })
+                      }, 7)
   end
 end

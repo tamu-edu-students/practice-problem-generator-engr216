@@ -65,13 +65,14 @@ class ConfidenceIntervalProblemGenerator
   end
 
   # Create the basic structure for all confidence interval problems
-  def build_confidence_interval_problem(question_text, lower_bound, upper_bound, params = {})
+  def build_confidence_interval_problem(question_text, lower_bound, upper_bound, template_id, params = {})
     {
       type: 'confidence_interval',
       question: question_text,
       answers: answer_data(lower_bound, upper_bound),
       input_fields: input_field_data,
-      parameters: extract_parameters(params)
+      parameters: extract_parameters(params),
+      template_id: template_id
     }
   end
 

@@ -8,7 +8,8 @@ module EngineeringEthicsQuestions
     [
       {
         question: '"Accountability" is imposed externally on an individual by some authority.',
-        answer: true
+        answer: true,
+        template_id: 1
       }
     ]
   end
@@ -22,7 +23,8 @@ module EngineeringEthicsQuestions
       {
         question: 'An engineer believes that a condition exists and accepts information that supports ' \
                   'the belief but rejects disproving information. This is an example of overconfidence bias.',
-        answer: false
+        answer: false,
+        template_id: 2
       }
     ]
   end
@@ -32,7 +34,8 @@ module EngineeringEthicsQuestions
       {
         question: 'Bad news, criticism, questions, and information outside of expectations are regarded as ' \
                   'negatives by the organization. This is an example of suppression of open communication.',
-        answer: true
+        answer: true,
+        template_id: 3
       }
     ]
   end
@@ -45,7 +48,8 @@ module EngineeringEthicsQuestions
     [
       {
         question: 'Engineers shall at all times strive to serve their employer.',
-        answer: false
+        answer: false,
+        template_id: 4
       }
     ]
   end
@@ -55,7 +59,8 @@ module EngineeringEthicsQuestions
       {
         question: 'It is ethically acceptable for an engineer to accept a large gift from a supplier ' \
                   'in exchange for awarding them a contract.',
-        answer: false
+        answer: false,
+        template_id: 5
       }
     ]
   end
@@ -65,7 +70,8 @@ module EngineeringEthicsQuestions
       {
         question: 'Professional codes of ethics require engineers to prioritize public safety, health, ' \
                   'and welfare above all else.',
-        answer: true
+        answer: true,
+        template_id: 6
       }
     ]
   end
@@ -75,7 +81,8 @@ module EngineeringEthicsQuestions
       {
         question: 'Whistleblowing is never justified if it violates the engineer\'s contractual ' \
                   'obligations to an employer.',
-        answer: false
+        answer: false,
+        template_id: 7
       }
     ]
   end
@@ -89,7 +96,8 @@ module EngineeringEthicsQuestions
       {
         question: 'An engineer has a duty to report any known safety violations to the proper authorities, ' \
                   'even if doing so may harm the employer\'s reputation.',
-        answer: true
+        answer: true,
+        template_id: 8
       }
     ]
   end
@@ -99,7 +107,8 @@ module EngineeringEthicsQuestions
       {
         question: 'Engineers can ignore legal requirements if they believe they have found a better ' \
                   'technical solution.',
-        answer: false
+        answer: false,
+        template_id: 9
       }
     ]
   end
@@ -108,7 +117,8 @@ module EngineeringEthicsQuestions
     [
       {
         question: 'When faced with a conflict of interest, an engineer should disclose it to all affected parties.',
-        answer: true
+        answer: true,
+        template_id: 10
       }
     ]
   end
@@ -135,7 +145,8 @@ class EngineeringEthicsProblemGenerator
       type: 'engineering_ethics',
       question: question_data[:question],
       answer: question_data[:answer],
-      input_fields: radio_input_fields
+      input_fields: radio_input_fields,
+      template_id: question_data[:template_id]
     }
   end
 

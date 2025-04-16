@@ -108,7 +108,7 @@ class CollisionProblemGenerator
   end
 
   # Build the question text for the problem
-  def build_collision_problem(question_text, *)
+  def build_collision_problem(question_text, *, template_id)
     # Calculate the answer based on problem parameters
     answer = calculate_answer(question_text, *)
 
@@ -117,7 +117,8 @@ class CollisionProblemGenerator
       question: question_text,
       answer: answer,
       input_fields: default_input_field,
-      parameters: format_parameters(*)
+      parameters: format_parameters(*),
+      template_id: template_id
     }
 
     # Add debug info if in development mode

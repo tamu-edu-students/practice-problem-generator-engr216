@@ -30,7 +30,8 @@ class ParticleStaticsProblemGenerator
       type: 'particle_statics',
       question: data[:question],
       answer: data[:answer],
-      input_fields: input_fields
+      input_fields: input_fields,
+      template_id: data[:template_id]
     }
   end
 
@@ -70,21 +71,24 @@ class ParticleStaticsProblemGenerator
                   'cable if the system is in equilibrium?',
         answer: %w[49 49],
         input_type: 'fill_in',
-        field_label: 'Tension (N)'
+        field_label: 'Tension (N)',
+        template_id: 1
       },
       {
         question: 'A 5 m beam is supported at both ends. A 500 N weight is placed 2 m from the left end. ' \
                   'What is the reaction force at the left support?',
         answer: '300',
         input_type: 'fill_in',
-        field_label: 'Left Support Force (N)'
+        field_label: 'Left Support Force (N)',
+        template_id: 2
       },
       {
         question: 'A ladder leans against a frictionless wall. What must be the minimum coefficient of friction ' \
                   'at the base to prevent slipping?',
         answer: '0.45',
         input_type: 'fill_in',
-        field_label: 'Coefficient of Friction'
+        field_label: 'Coefficient of Friction',
+        template_id: 3
       },
       {
         question: 'Which of the following is a condition for static equilibrium?',
@@ -95,7 +99,8 @@ class ParticleStaticsProblemGenerator
           { value: 'B', label: 'ΣF ≠ 0 and ΣM = 0' },
           { value: 'C', label: 'ΣF = 0 and ΣM ≠ 0' },
           { value: 'D', label: 'None of the above' }
-        ]
+        ],
+        template_id: 4
       },
       # Particle Statics Problems
       {
@@ -103,14 +108,16 @@ class ParticleStaticsProblemGenerator
                   '2 meters from the force?',
         answer: '200',
         input_type: 'fill_in',
-        field_label: 'Moment (Nm)'
+        field_label: 'Moment (Nm)',
+        template_id: 5
       },
       {
         question: 'A 50 kg object is in equilibrium. There are two forces acting on it. Force A is 100 N at an ' \
                   'angle of 30° and Force B is 150 N at 60°. What is the resultant force?',
         answer: '179.69',
         input_type: 'fill_in',
-        field_label: 'Resultant Force (N)'
+        field_label: 'Resultant Force (N)',
+        template_id: 6
       }
     ]
     questions.map { |q| generate_ps_problem_from_data(q) }
@@ -133,7 +140,8 @@ class ParticleStaticsProblemGenerator
                                               'vertical ropes. What is the tension in each rope?',
                                     answer: tension.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Tension (N)'
+                                    field_label: 'Tension (N)',
+                                    template_id: 7
                                   })
   end
 
@@ -147,7 +155,8 @@ class ParticleStaticsProblemGenerator
                                               "#{distance} m from a pivot. What is the moment about the pivot?",
                                     answer: moment.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Moment (Nm)'
+                                    field_label: 'Moment (Nm)',
+                                    template_id: 8
                                   })
   end
 
