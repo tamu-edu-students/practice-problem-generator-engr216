@@ -97,7 +97,7 @@
   <!-- Flash messages positioned fixed below the navbar -->
   <div id="flash-messages" class="fixed top-16 left-0 right-0 z-60 flex justify-center">
     <% flash.each do |key, message| %>
-      <div class="alert alert-<%= key %> p-4 mx-4 mb-2 text-center max-w-md bg-white text-black rounded shadow">
+      <div class="alert alert-<%= key %> p-4 mx-4 mb-2 text-center max-w-md bg-white text-white rounded shadow">
         <%= message %>
       </div>
     <% end %>
