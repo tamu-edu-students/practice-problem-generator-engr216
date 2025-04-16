@@ -87,10 +87,28 @@
         <!-- Submit button appears only if the form is active -->
         <% unless params[:commit].present? %>
           <div class="mt-8">
-            <%= form.submit "Check Answer", class: "px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-700 shadow-md transition-colors cursor-pointer" %>
+            <%= button_tag "Check Answer", 
+            id: "check-answer-btn",
+            type: "submit",
+            disabled: @disable_check_answer,
+            class: "px-6 py-2 rounded transition-colors cursor-pointer #{ @disable_check_answer ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600' }" %>
           </div>
         <% end %>
       <% end %>
+
+      <form action="<%= view_answer_practice_problems_path %>" method="post" class="mt-4">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <%= hidden_field_tag :category_id, @category %>
+        <button type="submit" id="view-answer-btn" class=" px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer">
+          View Answer
+        </button>
+      </form>
+        <% if @show_answer == true %>
+          <div class="mt-6 p-4 bg-green-100 text-green-800 rounded">
+            <h2 class="text-xl font-bold">Correct Answer:</h2>
+            <p class="text-lg"><%= @question[:answer] %></p>
+          </div>
+        <% end %>
       
       <!-- Feedback Message in a Box -->
       <% if @feedback_message.present? %>
@@ -105,7 +123,7 @@
     
     <div class="flex flex-col sm:flex-row gap-4 mt-6">
       <%= link_to "Change Category", practice_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
-      <%= link_to "Generate New Problem", generate_harmonic_motion_problems_path, class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Generate New Problem", generate_harmonic_motion_problems_path, id: "generate-problem-btn", class: "inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" %>
     </div>
   </div>
 </div>
