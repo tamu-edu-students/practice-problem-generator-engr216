@@ -203,6 +203,61 @@
           <% end %>
         </div>
       <% end %>
+      <% if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all" %>
+        <div class="bg-white shadow-lg rounded-xl p-6 mb-12">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
+            Class Performance in <%= @selected_category %>
+          </h2>
+          <p class="text-center text-gray-600 mb-6">
+            Out of <strong><%= @category_total_unique_questions %></strong> total unique problems in this category
+          </p>
+
+          <div class="flex flex-col md:flex-row gap-6 justify-center">
+            <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
+              <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Attempted</h3>
+              <canvas id="categoryAttemptedBarChart"></canvas>
+            </div>
+            <div class="flex-1 bg-gray-100 p-4 rounded-md shadow">
+              <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">Correct</h3>
+              <canvas id="categoryCorrectBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <% if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all" %>
+        <h2 class="text-2xl font-bold text-white text-center mb-8">Per-Question Breakdown in <%= @selected_category %></h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <% @category_question_data.each do |template_id, data| %>
+            <div class="bg-white shadow-md rounded-xl p-4">
+              <h3 class="text-xl font-bold text-gray-800 text-center mb-2">Problem <%= template_id %></h3>
+              <p class="text-center text-sm text-gray-600 mb-4">
+                Out of <strong><%= data[:attempted] + data[:not_attempted] %></strong> students
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <div class="flex-1 bg-gray-100 p-4 rounded shadow flex flex-col items-center">
+                  <h4 class="text-center font-semibold text-gray-700 mb-2">Attempted</h4>
+                  <div style="width: 180px; height: 180px;">
+                    <canvas id="attempted-question-<%= template_id.to_s.parameterize %>"></canvas>
+                  </div>
+                </div>
+
+                <div class="flex-1 bg-gray-100 p-4 rounded shadow flex flex-col items-center">
+                  <h4 class="text-center font-semibold text-gray-700 mb-2">Correct</h4>
+                  <div style="width: 180px; height: 180px;">
+                    <canvas id="correct-question-<%= template_id.to_s.parameterize %>"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+
+
+
 
 
 
@@ -431,6 +486,98 @@
     });
   </script>
 <% end %>
+<% if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all" %>
+  <% @category_question_data.each do |template_id, data| %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        new Chart(document.getElementById("attempted-question-<%= template_id.to_s.parameterize %>"), {
+          type: 'pie',
+          data: {
+            labels: ['Attempted', 'Not Attempted'],
+            datasets: [{
+              data: [<%= data[:attempted] %>, <%= data[:not_attempted] %>],
+              backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(211, 211, 211, 0.5)']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.label}: ${ctx.parsed}`
+                }
+              }
+            }
+          }
+        });
+
+        new Chart(document.getElementById("correct-question-<%= template_id.to_s.parameterize %>"), {
+          type: 'pie',
+          data: {
+            labels: ['Correct', 'Incorrect'],
+            datasets: [{
+              data: [<%= data[:correct] %>, <%= data[:incorrect] %>],
+              backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.6)']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.label}: ${ctx.parsed}`
+                }
+              }
+            }
+          }
+        });
+      });
+    </script>
+  <% end %>
+<% end %>
+
+<% if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all" %>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const catLabels = <%= raw @category_attempted_buckets.keys.to_json %>;
+      const catAttemptedData = <%= raw @category_attempted_buckets.values.to_json %>;
+      const catCorrectData = <%= raw @category_correct_buckets.values.to_json %>;
+
+      new Chart(document.getElementById("categoryAttemptedBarChart"), {
+        type: 'bar',
+        data: {
+          labels: catLabels,
+          datasets: [{
+            label: 'Students',
+            data: catAttemptedData,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      new Chart(document.getElementById("categoryCorrectBarChart"), {
+        type: 'bar',
+        data: {
+          labels: catLabels,
+          datasets: [{
+            label: 'Students',
+            data: catCorrectData,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    });
+  </script>
+<% end %>
+
 
 
 

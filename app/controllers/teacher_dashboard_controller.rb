@@ -115,6 +115,65 @@ class TeacherDashboardController < ApplicationController
       "75–99%" => 0,
       "100%" => 0
     }
+    if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all"
+      # Holistic view scoped to selected category
+      @category_total_unique_questions = Answer.where(category: @selected_category).select(:template_id).distinct.count
+    
+      buckets = { "<25%" => 0, "25–50%" => 0, "50–75%" => 0, "75–99%" => 0, "100%" => 0 }
+      correct_buckets = buckets.dup
+    
+      @students.each do |student|
+        answers = Answer.where(student_email: student.email, category: @selected_category)
+    
+        attempted = answers.select(:template_id).distinct.count
+        correct = answers.where(correctness: true).select(:template_id).distinct.count
+    
+        attempt_ratio = attempted.to_f / @category_total_unique_questions
+        correct_ratio = correct.to_f / @category_total_unique_questions
+    
+        def assign_bucket(r)
+          case r
+          when 1.0 then "100%"
+          when 0.75..0.99 then "75–99%"
+          when 0.5..0.75 then "50–75%"
+          when 0.25..0.5 then "25–50%"
+          else "<25%"
+          end
+        end
+    
+        buckets[assign_bucket(attempt_ratio)] += 1
+        correct_buckets[assign_bucket(correct_ratio)] += 1
+      end
+    
+      @category_attempted_buckets = buckets
+      @category_correct_buckets = correct_buckets
+    
+      # Subsection: per-question breakdown (template_id-level)
+      @category_question_data = {}
+
+      Answer.where(category: @selected_category).select(:template_id).distinct.each do |row|
+        template_id = row.template_id
+
+        total_students = @students.count
+        attempted_students = @students.count do |s|
+          Answer.exists?(student_email: s.email, template_id: template_id, category: @selected_category)
+        end
+
+        correct_students = @students.count do |s|
+          Answer.exists?(student_email: s.email, template_id: template_id, category: @selected_category, correctness: true)
+        end
+
+        @category_question_data[template_id] = {
+          attempted: attempted_students,
+          not_attempted: total_students - attempted_students,
+          correct: correct_students,
+          incorrect: total_students - correct_students
+        }
+      end
+
+
+    end
+    
 
     correct_buckets = buckets.dup
 
