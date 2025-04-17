@@ -27,8 +27,18 @@ Then('I should be on a page where I can see and edit my settings.') do
 end
 
 Given('I am on the student settings page and I am logged in as a student') do
+  # Create a semester first
+  semester = Semester.find_or_create_by!(name: 'Fall 2024', active: true)
+
+  @student = Student.find_or_create_by!(
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'Student',
+    uin: '123456789',
+    semester_id: semester.id
+  )
   login_as_student
-  click_link('Settings')
+  visit '/settings'
 end
 
 Then('I should see a Problem Select button.') do

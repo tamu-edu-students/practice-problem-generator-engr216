@@ -103,6 +103,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/teacher_dashboard/student_history', to: 'teacher_dashboard#student_history'
+
   # Add these routes if they don't exist already
   get 'practice_problems/engineering_ethics', to: 'practice_problems#engineering_ethics',
                                               as: :engineering_ethics_problems

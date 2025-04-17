@@ -69,12 +69,17 @@ Given('students are grouped by semester') do
 end
 
 When('I select {string} from the semester dropdown') do |semester_name|
-  # Find the semester id - ensure semester exists
-  semester = Semester.find_by(name: semester_name)
-  raise "Semester '#{semester_name}' not found" unless semester
+  if semester_name == 'All Semesters'
+    select semester_name, from: 'semester_id'
+    click_button 'Apply' if page.has_button?('Apply')
+  else
+    # Find the semester id - ensure semester exists
+    semester = Semester.find_by(name: semester_name)
+    raise "Semester '#{semester_name}' not found" unless semester
 
-  select semester_name, from: 'semester_id'
-  click_button 'Apply'
+    select semester_name, from: 'semester_id'
+    click_button 'Apply'
+  end
 end
 
 Then('I should see only students enrolled in Fall {int}') do |_year|

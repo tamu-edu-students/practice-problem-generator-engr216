@@ -769,7 +769,7 @@ class PracticeProblemsController < ApplicationController
     user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
-    Answer.create(
+    answer = Answer.create(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,

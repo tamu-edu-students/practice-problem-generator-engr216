@@ -21,7 +21,8 @@
     </nav>
 
     <!-- Back Arrow -->
-    <%= link_to "←", student_history_dashboard_path, id: "back-arrow", class: "back-arrow" %>
+    <% back_url = params[:semester_id].present? ? student_history_dashboard_path(semester_id: params[:semester_id]) : student_history_dashboard_path %>
+    <%= link_to "←", back_url, id: "back-arrow", class: "back-arrow" %>
 
     <!-- Title -->
     <main>

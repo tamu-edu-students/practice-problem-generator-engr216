@@ -19,21 +19,254 @@ class TeacherDashboardController < ApplicationController
     apply_semester_filter
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def student_history_dashboard
-    @all_students = current_teacher.students # All students for class stats
-    @students = @all_students # Filtered students for display
+    assign_bucket = lambda do |ratio|
+      case ratio
+      when 1.0 then '100%'
+      when 0.75..0.99 then '75–99%'
+      when 0.5..0.75 then '50–75%'
+      when 0.25..0.5 then '25–50%'
+      else '<25%'
+      end
+    end
 
-    apply_semester_filter
+    @selected_semester_id = params[:semester_id] || 'all'
+    @selected_student_email = params[:student_email]
+    @selected_category = params[:category] || 'all'
+
+    @all_students = current_teacher.students
+    @students = @all_students
+    if @selected_semester_id.present? && @selected_semester_id != 'all'
+      @students = @students.by_semester(@selected_semester_id)
+    end
+    @students_for_dropdown = @students.to_a
 
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
-      @students = @students.where('LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(email) LIKE ?',
-                                  search_term, search_term, search_term)
+      @students = @students.where(
+        'LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(email) LIKE ?',
+        search_term, search_term, search_term
+      )
     end
 
-    @category_summaries = build_category_summaries(@students) # Use filtered students
-    class_performance(@students) # Use filtered students
+    if @selected_student_email.present? && @selected_student_email != 'all'
+      selected_student = current_teacher.students.find_by(email: @selected_student_email)
+
+      if selected_student.nil?
+        flash.now[:alert] = t('teacher_dashboard.selected_student_missing')
+        @students = []
+        @student_category_pie_data = {}
+        return
+      end
+
+      if @selected_semester_id != 'all' && selected_student.semester_id.to_s != @selected_semester_id
+        flash.now[:alert] = t('teacher_dashboard.wrong_semester')
+        @students = []
+        @student_category_pie_data = {}
+        return
+      end
+
+      @students = [selected_student]
+      @student_selected_semester_id = selected_student.semester_id
+
+      @total_unique_problems = Answer.select(:category, :template_id).distinct.count
+      student_answers = Answer.where(student_email: selected_student.email)
+
+      @student_unique_attempts = student_answers.select(:category, :template_id).distinct.count
+      @student_unique_correct = student_answers.where(correctness: true).select(:category,
+                                                                                :template_id).distinct.count
+      @student_total_attempted = student_answers.count
+      @student_total_correct = student_answers.where(correctness: true).count
+      @student_total_incorrect = @student_total_attempted - @student_total_correct
+
+      @student_attempt_pie = {
+        attempted: @student_unique_attempts,
+        not_attempted: @total_unique_problems - @student_unique_attempts
+      }
+
+      @student_correct_pie = {
+        correct: @student_unique_correct,
+        incorrect: @total_unique_problems - @student_unique_correct
+      }
+
+      @student_category_pie_data = {}
+      categories = [
+        'Angular Momentum', 'Confidence Intervals', 'Engineering Ethics',
+        'Experimental Statistics', 'Finite Differences', 'Harmonic Motion',
+        'Measurement & Error', 'Momentum & Collisions', 'Particle Statics',
+        'Propagation of Error', 'Rigid Body Statics', 'Universal Accounting Equation'
+      ]
+
+      categories.each do |cat|
+        total_problems = Answer.where(category: cat).select(:template_id).distinct.count
+        student_cat_answers = student_answers.where(category: cat)
+        attempted = student_cat_answers.select(:template_id).distinct.count
+        correct = student_cat_answers.where(correctness: true).select(:template_id).distinct.count
+
+        @student_category_pie_data[cat] = {
+          total: total_problems,
+          attempted: attempted,
+          not_attempted: total_problems - attempted,
+          correct: correct,
+          incorrect: total_problems - correct
+        }
+      end
+    end
+
+    @all_answers = Answer.where(student_email: @students.pluck(:email))
+    @category_stats = {}
+    @holistic_participation = {}
+    @holistic_correctness = 0
+
+    buckets = {
+      '<25%' => 0, '25–50%' => 0, '50–75%' => 0, '75–99%' => 0, '100%' => 0
+    }
+
+    if @selected_student_email.present? && @selected_student_email != 'all' &&
+       @selected_category.present? && @selected_category != 'all'
+
+      @student = Student.find_by(email: @selected_student_email)
+      @problem_history = Answer.where(student_email: @student.email, category: @selected_category)
+
+      @template_ids = @problem_history.select(:template_id).distinct.pluck(:template_id).sort
+
+      unique_total = Answer.where(category: @selected_category).select(:template_id).distinct.count
+      unique_attempted = @problem_history.select(:template_id).distinct.count
+      unique_correct = @problem_history.where(correctness: true).select(:template_id).distinct.count
+
+      @unique_attempt_pie = {
+        attempted: unique_attempted,
+        not_attempted: unique_total - unique_attempted
+      }
+
+      @unique_correct_pie = {
+        correct: unique_correct,
+        incorrect: unique_total - unique_correct
+      }
+
+      total_attempted = @problem_history.count
+      total_correct = @problem_history.where(correctness: true).count
+
+      @total_attempt_pie = {
+        attempted: total_attempted,
+        not_attempted: 0
+      }
+
+      @total_correct_pie = {
+        correct: total_correct,
+        incorrect: total_attempted - total_correct
+      }
+    end
+
+    @student_emails = @students.pluck(:email)
+    if @selected_student_email == 'all' && @selected_category.present? && @selected_category != 'all'
+      @category_total_unique_questions = Answer.where(category: @selected_category).select(:template_id).distinct.count
+
+      buckets = { '<25%' => 0, '25–50%' => 0, '50–75%' => 0, '75–99%' => 0, '100%' => 0 }
+      correct_buckets = buckets.dup
+
+      @students.each do |student|
+        answers = Answer.where(student_email: student.email, category: @selected_category)
+
+        attempted = answers.select(:template_id).distinct.count
+        correct = answers.where(correctness: true).select(:template_id).distinct.count
+
+        attempt_ratio = attempted.to_f / @category_total_unique_questions
+        correct_ratio = correct.to_f / @category_total_unique_questions
+
+        buckets[assign_bucket.call(attempt_ratio)] += 1
+        correct_buckets[assign_bucket.call(correct_ratio)] += 1
+      end
+
+      @category_attempted_buckets = buckets
+      @category_correct_buckets = correct_buckets
+
+      @category_question_data = {}
+
+      Answer.where(category: @selected_category).select(:template_id).distinct.each do |row|
+        template_id = row.template_id
+        total_students = @students.count
+
+        attempted_students = @students.count do |s|
+          Answer.exists?(student_email: s.email, template_id: template_id, category: @selected_category)
+        end
+
+        correct_students = @students.count do |s|
+          Answer.exists?(student_email: s.email, template_id: template_id, category: @selected_category,
+                         correctness: true)
+        end
+
+        @category_question_data[template_id] = {
+          attempted: attempted_students,
+          not_attempted: total_students - attempted_students,
+          correct: correct_students,
+          incorrect: total_students - correct_students
+        }
+      end
+
+      @category_total_attempted = Answer.where(student_email: @student_emails, category: @selected_category).count
+      @category_total_correct = Answer.where(student_email: @student_emails, category: @selected_category,
+                                             correctness: true).count
+      @category_total_incorrect = @category_total_attempted - @category_total_correct
+    end
+
+    correct_buckets = buckets.dup
+    @total_unique_problems = Answer.select(:category, :template_id).distinct.count
+
+    @students.each do |student|
+      student_answers = Answer.where(student_email: student.email)
+      attempted = student_answers.select(:category, :template_id).distinct.count
+      correct = student_answers.where(correctness: true).select(:category, :template_id).distinct.count
+
+      attempt_ratio = attempted.to_f / @total_unique_problems
+      correct_ratio = correct.to_f / @total_unique_problems
+
+      buckets[assign_bucket.call(attempt_ratio)] += 1
+      correct_buckets[assign_bucket.call(correct_ratio)] += 1
+    end
+
+    @attempted_buckets = buckets
+    @correct_buckets = correct_buckets
+
+    categories = [
+      'Angular Momentum', 'Confidence Intervals', 'Engineering Ethics',
+      'Experimental Statistics', 'Finite Differences', 'Harmonic Motion',
+      'Measurement & Error', 'Momentum & Collisions', 'Particle Statics',
+      'Propagation of Error', 'Rigid Body Statics', 'Universal Accounting Equation'
+    ]
+
+    @category_bucket_data = {}
+
+    categories.each do |cat|
+      unique_problems = Answer.where(category: cat).select(:template_id).distinct.count
+      buckets = { '<25%' => 0, '25–50%' => 0, '50–75%' => 0, '75–99%' => 0, '100%' => 0 }
+      correct_buckets = buckets.dup
+
+      @students.each do |student|
+        student_answers = Answer.where(student_email: student.email, category: cat)
+        attempted = student_answers.select(:template_id).distinct.count
+        correct = student_answers.where(correctness: true).select(:template_id).distinct.count
+
+        attempt_ratio = unique_problems.zero? ? 0 : attempted.to_f / unique_problems
+        correct_ratio = unique_problems.zero? ? 0 : correct.to_f / unique_problems
+
+        buckets[assign_bucket.call(attempt_ratio)] += 1
+        correct_buckets[assign_bucket.call(correct_ratio)] += 1
+      end
+
+      @category_bucket_data[cat] = {
+        total: unique_problems,
+        attempted: buckets,
+        correct: correct_buckets
+      }
+    end
+
+    @total_attempted_all = @all_answers.count
+    @total_correct_all = @all_answers.where(correctness: true).count
+    @total_incorrect_all = @total_attempted_all - @total_correct_all
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def student_history
     # Verify that we have a valid student email
@@ -93,6 +326,18 @@ class TeacherDashboardController < ApplicationController
   def load_student_answers
     @completed_questions = Answer.where(student_email: @student.email)
                                  .order(created_at: :desc)
+
+    # Filter by semester if semester_id is provided
+    return if params[:semester_id].blank?
+
+    semester_students = Student.where(semester_id: params[:semester_id])
+    return unless semester_students.exists?(email: @student.email)
+
+    # If student belongs to the selected semester, filter their answers by semester
+    @semester = Semester.find_by(id: params[:semester_id])
+    return unless @semester&.start_date && @semester.end_date
+
+    @completed_questions = @completed_questions.where(created_at: @semester.start_date..@semester.end_date)
   end
 
   def current_teacher

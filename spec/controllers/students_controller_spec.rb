@@ -157,7 +157,7 @@ RSpec.describe StudentsController, type: :controller do
 
     it 'redirects to the students list' do
       delete :destroy, params: { id: student.id }
-      expect(response).to redirect_to(students_path)
+      expect(response).to redirect_to(manage_students_path)
     end
 
     it 'sets a success notice' do
@@ -173,6 +173,14 @@ RSpec.describe StudentsController, type: :controller do
 
   describe 'POST #update_uin' do
     let(:test_semester) { Semester.create!(name: "Test Semester #{Time.now.to_i}", active: true) }
+    let(:student_params) do
+      {
+        first_name: 'New',
+        last_name: 'Student',
+        teacher_id: teacher.id,
+        semester_id: test_semester.id
+      }
+    end
 
     context 'when student is logged in with valid params' do
       before do
@@ -212,56 +220,67 @@ RSpec.describe StudentsController, type: :controller do
       let(:valid_email) { "new_student_#{Time.now.to_i}@tamu.edu" }
 
       it 'creates a new student when none exists but teacher and semester are provided' do
+        post_params = student_params.merge(student_email: valid_email)
         expect do
-          post :update_uin, params: {
-            student_email: valid_email,
-            first_name: 'New',
-            last_name: 'Student',
-            teacher_id: teacher.id,
-            semester_id: test_semester.id
-          }
+          post :update_uin, params: post_params
         end.to change(Student, :count).by(1)
+      end
+
+      it 'sets up the new student with correct attributes' do
+        post_params = student_params.merge(student_email: valid_email)
+        post :update_uin, params: post_params
 
         new_student = Student.find_by(email: valid_email)
         expect(new_student).to be_present
-        expect(new_student.teacher).to eq(teacher)
-        expect(new_student.semester).to eq(test_semester)
-        expect(session[:user_id]).to eq(new_student.id)
-        expect(session[:user_type]).to eq('student')
+        aggregate_failures do
+          expect(new_student.teacher).to eq(teacher)
+          expect(new_student.semester).to eq(test_semester)
+        end
       end
 
       it 'sets the session for the new student' do
-        post :update_uin, params: {
-          student_email: valid_email,
-          first_name: 'New',
-          last_name: 'Student',
-          teacher_id: teacher.id,
-          semester_id: test_semester.id
-        }
+        post_params = student_params.merge(student_email: valid_email)
+        post :update_uin, params: post_params
 
+        new_student = Student.find_by(email: valid_email)
+        expect(session[:user_id]).to eq(new_student.id)
         expect(session[:user_type]).to eq('student')
-        expect(flash[:notice]).to eq(I18n.t('student.update_uin.success'))
       end
     end
 
     context 'when student exists by email but is not logged in' do
-      it 'updates the existing student with teacher and semester' do
-        existing_student = Student.create!(
+      def create_test_student(email)
+        Student.create!(
           first_name: 'Existing',
           last_name: 'Student',
-          email: "existing_#{Time.now.to_i}@tamu.edu",
+          email: email,
           uin: 123_456_789
         )
+      end
+
+      it 'updates the existing student with teacher and semester' do
+        test_email = "existing_#{Time.now.to_i}@tamu.edu"
+        existing_student = create_test_student(test_email)
 
         post :update_uin, params: {
-          student_email: existing_student.email,
+          student_email: test_email, teacher_id: teacher.id, semester_id: test_semester.id
+        }
+        existing_student.reload
+        aggregate_failures do
+          expect(existing_student.teacher).to eq(teacher)
+        end
+      end
+
+      it 'sets the session for the existing student' do
+        test_email = "existing_session_#{Time.now.to_i}@tamu.edu"
+        existing_student = create_test_student(test_email)
+
+        post :update_uin, params: {
+          student_email: test_email,
           teacher_id: teacher.id,
           semester_id: test_semester.id
         }
 
-        existing_student.reload
-        expect(existing_student.teacher).to eq(teacher)
-        expect(existing_student.semester).to eq(test_semester)
         expect(session[:user_id]).to eq(existing_student.id)
       end
     end

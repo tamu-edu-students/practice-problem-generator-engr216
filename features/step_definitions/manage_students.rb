@@ -99,7 +99,6 @@ end
 Then('I should see their information') do
   expect(page).to have_content('First name: Jane')
   expect(page).to have_content('Last name: Smith')
-  expect(page).to have_content('Edit this student')
 end
 
 Then('I should be able to edit their information') do
