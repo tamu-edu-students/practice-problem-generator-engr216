@@ -282,7 +282,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     it 'sets an error message when answer is too small' do
       post :check_answer, params: { category_id: category, answer: '50.0' }
-      expect(assigns(:error_message)).to eq('too small')
+      expect(assigns(:error_message)).to eq('Try again or press View Answer.')
     end
 
     it 'renders the statistics_problem template when answer is wrong' do
@@ -322,7 +322,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
     it 'sets an error message when mean is wrong' do
       params = { category_id: category, mean: '3.0', median: '2.5' }
       post :check_answer, params: params
-      expect(assigns(:error_message)).to include('mean')
+      expect(assigns(:error_message)).to include('Try again or press View Answer. Your answer was high')
     end
 
     it 'renders the statistics_problem template when an answer is wrong' do
@@ -417,13 +417,13 @@ RSpec.describe PracticeProblemsController, type: :controller do
     it 'sets an error message when lower bound is wrong' do
       params = { category_id: category, lower_bound: '90.0', upper_bound: '104.57' }
       post :check_answer, params: params
-      expect(assigns(:error_message)).to include('lower bound')
+      expect(assigns(:error_message)).to include('Try again or press View Answer.')
     end
 
     it 'sets an error message when upper bound is wrong' do
       # Make sure lower bound is correct so it checks upper bound
       post :check_answer, params: { category_id: category, lower_bound: '120.45', upper_bound: '140.0' }
-      expect(assigns(:error_message)).to include('upper bound')
+      expect(assigns(:error_message)).to include('Try again or press View Answer.')
     end
 
     it 'sets an error message when lower bound is blank' do
@@ -487,19 +487,19 @@ RSpec.describe PracticeProblemsController, type: :controller do
     it 'formats error message for string keys' do
       controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, 'mean', 5.0, 4.0)
-      expect(assigns(:error_message)).to eq('your mean is too high (correct answer: 4.0)')
+      expect(assigns(:error_message)).to eq('Try again or press View Answer. Your answer was high')
     end
 
     it 'formats error message for symbol keys' do
       controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, :standard_deviation, 3.0, 4.0)
-      expect(assigns(:error_message)).to eq('your standard deviation is too low (correct answer: 4.0)')
+      expect(assigns(:error_message)).to eq('Try again or press View Answer. Your answer was low')
     end
 
     it 'handles multi-word keys with humanize' do
       controller.instance_variable_set(:@question, { type: 'default' })
       controller.send(:set_error_message, 'lower_bound', 2.0, 3.0)
-      expect(assigns(:error_message)).to eq('your lower bound is too low (correct answer: 3.0)')
+      expect(assigns(:error_message)).to eq('Try again or press View Answer. Your answer was low')
     end
   end
 
@@ -608,12 +608,12 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message' do
         post :check_answer, params: { category_id: category, ethics_answer: 'false' }
-        expect(assigns(:error_message)).to include("That's incorrect")
+        expect(assigns(:error_message)).to include("Try again or press View Answer.")
       end
 
       it 'includes correct answer in error message' do
         post :check_answer, params: { category_id: category, ethics_answer: 'false' }
-        expect(assigns(:error_message)).to include('True')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
   end
@@ -675,7 +675,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message when answer is too small' do
         post :check_answer, params: { category_id: category, answer: '41.0' }
-        expect(assigns(:error_message)).to eq('too small')
+        expect(assigns(:error_message)).to eq('Try again or press View Answer.')
       end
     end
 
@@ -711,7 +711,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message when first field is incorrect' do
         post :check_answer, params: { category_id: category, field1: '9.0', field2: '20.0' }
-        expect(assigns(:error_message)).to include('too low')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
   end
@@ -740,7 +740,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
     it 'handles missing parameter definition' do
       post :check_answer, params: { category_id: category, field1: '10.0' }
-      expect(assigns(:error_message)).to include('Missing parameter definition')
+      expect(assigns(:error_message)).to include('Try again or press View Answer.')
     end
   end
 
@@ -849,7 +849,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message for small answer' do
         post :check_answer, params: { category_id: category, answer: '0.090' }
-        expect(assigns(:error_message)).to eq('too small')
+        expect(assigns(:error_message)).to eq('Try again or press View Answer.')
       end
 
       it 'renders the problem template' do
@@ -913,7 +913,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message when answer is too small' do
         post :check_answer, params: { category_id: category, answer: '4.0' }
-        expect(assigns(:error_message)).to include('too low')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
 
@@ -938,7 +938,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error messages when answers are wrong' do
         post :check_answer, params: { category_id: category, puck1: '1.5', puck2: '3.5' }
-        expect(assigns(:error_message)).to include('incorrect')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
   end
@@ -1015,7 +1015,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message when percentage answer is wrong' do
         post :check_answer, params: { category_id: category, answer: '15.0' }
-        expect(assigns(:error_message)).to include('too large')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
 
@@ -1049,7 +1049,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message when standard answer is wrong' do
         post :check_answer, params: { category_id: category, answer: '11.0' }
-        expect(assigns(:error_message)).to include('too large')
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
     end
   end

@@ -79,7 +79,7 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
 
       it 'returns incorrect feedback out of tolerance', :aggregate_failures do
         post :check_answer, params: { am_answer: '13.0' }
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is 12.0.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
 
       it 'returns incorrect feedback for a non-matching string', :aggregate_failures do
         post :check_answer, params: { am_answer: 'theta' }
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is omega.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -134,14 +134,14 @@ RSpec.describe AngularMomentumProblemsController, type: :controller do
         # rubocop:disable Naming/VariableNumber
         post :check_answer, params: { am_answer_1: '3.14', am_answer_2: '1.90' }
         # rubocop:enable Naming/VariableNumber
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is 3.14, 2.00.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
 
       it 'returns incorrect feedback if a part is a non-numeric mismatch', :aggregate_failures do
         # rubocop:disable Naming/VariableNumber
         post :check_answer, params: { am_answer_1: 'hello', am_answer_2: '2.00' }
         # rubocop:enable Naming/VariableNumber
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is 3.14, 2.00.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
   end
