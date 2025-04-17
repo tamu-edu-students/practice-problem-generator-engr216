@@ -57,7 +57,7 @@
                   <td><%= answer.date_completed %></td>
                   <td class="break-words"><%= answer.category %></td>
                   <td class="break-words"><%= answer.question_description %></td>
-                  <td class="break-words"><%= answer.answer %></td>
+                  <td class="break-words"><%= format_answer(answer.answer) %></td>
                   <td class="<%= answer.correctness ? 'correctness-yes' : 'correctness-no' %>">
                     <%= answer.correctness ? 'Correct' : 'Incorrect' %>
                   </td>

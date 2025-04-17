@@ -63,7 +63,8 @@ class PracticeProblemsController < ApplicationController
       field_label: @question[:field_label],
       input_fields: @question[:input_fields],
       data_table: @question[:data_table],
-      answers: @question[:answers]
+      answers: @question[:answers],
+      parameters: @question[:parameters]
     }
   end
 
@@ -764,7 +765,8 @@ class PracticeProblemsController < ApplicationController
 
     # Get user's answer based on the question type
     user_answer = extract_user_answer
-    user_answer = 'Answer Viewed By Student' if user_answer == ''
+    # Rails.logger.debug { "Extracted user answer: |#{user_answer}|" }
+    user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
     answer = Answer.create(

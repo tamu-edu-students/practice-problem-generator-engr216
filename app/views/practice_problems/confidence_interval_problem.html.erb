@@ -58,7 +58,12 @@
         <% if @show_answer == true %>
           <div class="mt-6 p-4 bg-green-100 text-green-800 rounded">
             <h2 class="text-xl font-bold">Correct Answer:</h2>
-            <p class="text-lg"><%= @question[:answer] %></p>
+            <% if @question[:answers] && @question[:answers][:lower_bound] && @question[:answers][:upper_bound] %>
+              <p class="text-lg">Lower bound: <%= @question[:answers][:lower_bound] %></p>
+              <p class="text-lg">Upper bound: <%= @question[:answers][:upper_bound] %></p>
+            <% else %>
+              <p class="text-lg">No answer available</p>
+            <% end %>
           </div>
         <% end %>
       
@@ -72,4 +77,4 @@
   </div>
 </div>
 
-<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %>

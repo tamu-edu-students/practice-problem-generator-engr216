@@ -175,8 +175,26 @@
       </form>
         <% if @show_answer == true %>
           <div class="mt-6 p-4 bg-green-100 text-green-800 rounded">
-            <h2 class="text-xl font-bold">Correct Answer:</h2>
-            <p class="text-lg"><%= @question[:answer] %></p>
+            <h2 class="text-xl font-bold">Correct Answer<%= @question[:input_fields].size > 1 ? 's' : '' %>:</h2>
+            
+            <% if @question[:input_fields].present? %>
+              <% @question[:input_fields].each do |field| %>
+                <p class="text-lg">
+                  <strong><%= field[:label] %>:</strong> 
+                  <% if @question[:parameters] && @question[:parameters][field[:key].to_sym] %>
+                    <%= @question[:parameters][field[:key].to_sym] %>
+                  <% else %>
+                    <% if @question[:answer].present? %>
+                      <%= @question[:answer] %>
+                    <% else %>
+                      Answer not available
+                    <% end %>
+                  <% end %>
+                </p>
+              <% end %>
+            <% else %>
+              <p class="text-lg"><%= @question[:answer] %></p>
+            <% end %>
           </div>
         <% end %>
       
@@ -190,4 +208,4 @@
   </div>
 </div>
 
-<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %> 
+<%= render 'shared/debug_info' if Rails.env.development? || Rails.env.test? %>
