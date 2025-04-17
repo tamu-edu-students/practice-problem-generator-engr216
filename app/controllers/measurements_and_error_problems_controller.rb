@@ -86,8 +86,6 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       rescue StandardError => e
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
-    else
-      Rails.logger.debug { 'No problem start time available' }
     end
 
     # Get user's answer based on the question type
@@ -100,7 +98,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     user_answer = 'Answer Viewed By Student' if user_answer.empty?
 
     # Create and save the answer record
-    answer = Answer.create(
+    Answer.create(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
@@ -112,7 +110,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
       time_spent: time_spent
     )
-    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+    # Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
 
     # if answer.save
     #   # Success

@@ -123,7 +123,7 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
       before { post :check_answer, params: { measurement_answer: '5' } }
 
       it 'assigns an incorrect feedback message' do
-        expect(assigns(:feedback_message)).to eq("Incorrect, try again or press View Answer.")
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 

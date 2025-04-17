@@ -608,7 +608,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
 
       it 'sets error message' do
         post :check_answer, params: { category_id: category, ethics_answer: 'false' }
-        expect(assigns(:error_message)).to include("Try again or press View Answer.")
+        expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end
 
       it 'includes correct answer in error message' do

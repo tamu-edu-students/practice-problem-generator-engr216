@@ -769,7 +769,7 @@ class PracticeProblemsController < ApplicationController
     user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
-    answer = Answer.create(
+    Answer.create(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
@@ -781,9 +781,9 @@ class PracticeProblemsController < ApplicationController
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
       time_spent: time_spent
     )
-    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+    # Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
 
-    Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
+    # Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
   end
 
   def extract_user_answer
