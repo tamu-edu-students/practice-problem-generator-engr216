@@ -65,4 +65,9 @@ en:
       semester_not_found: "Semester not found."
       no_semester_selected: "No semester selected."
 
-    
+  en:
+    teacher_dashboard:
+      delete_semester_students:
+        semester_not_found: "Semester not found."
+        no_semester_selected: "No semester selected."
+
