@@ -38,5 +38,5 @@ Then('a new "Angular Momentum" problem should be dynamically generated for momen
 end
 
 Then('I should receive feedback on my angular momentum answer') do
-  expect(page).to have_content(/Correct, the answer .* is right!|Incorrect, the correct answer is .*/)
+  expect(page).to have_content(/Correct.*answer.*is right!|Incorrect.*try again.*View Answer/, wait: 5)
 end
