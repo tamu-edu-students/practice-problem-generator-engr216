@@ -13,17 +13,15 @@ RSpec.describe TeacherDashboardController, type: :controller do
     Semester.find_or_create_by!(name: 'Spring 2024') { |s| s.active = true }
   end
 
-  let(:john_student) do
-    Student.create!(first_name: 'John', last_name: 'Doe', email: 'john@example.com', uin: 123_456_789,
-                    semester: fall_semester, teacher: teacher)
-  end
+  # let(:john_student) do
+  #   Student.create!(first_name: 'John', last_name: 'Doe', email: 'john@example.com', uin: 123_456_789,
+  #                   semester: fall_semester, teacher: teacher)
+  # end
 
-  let(:jane_student) do
-    Student.create!(first_name: 'Jane', last_name: 'Smith', email: 'jane@example.com', uin: 987_654_321,
-                    semester: spring_semester, teacher: teacher)
-  end
-  let(:fall_semester) { Semester.find_or_create_by!(name: 'Fall 2024') { |s| s.active = true } }
-  let(:spring_semester) { Semester.find_or_create_by!(name: 'Spring 2024') { |s| s.active = true } }
+  # let(:jane_student) do
+  #   Student.create!(first_name: 'Jane', last_name: 'Smith', email: 'jane@example.com', uin: 987_654_321,
+  #                   semester: spring_semester, teacher: teacher)
+  # end
   let(:john_student) do
     Student.create!(
       first_name: 'John',

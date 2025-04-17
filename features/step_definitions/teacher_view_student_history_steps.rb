@@ -40,8 +40,8 @@ Given('I am on a Student\'s Problem History') do
     t.name = 'Test Teacher'
   end
 
-#   # Create a semester first
-#   @semester = Semester.find_or_create_by!(name: 'Spring 2024', active: true)
+  #   # Create a semester first
+  #   @semester = Semester.find_or_create_by!(name: 'Spring 2024', active: true)
 
   # Seed a student with fixed data for reliable testing
   @student = Student.find_or_create_by!(email: 'history_student@example.com') do |student|
@@ -158,4 +158,3 @@ end
 #   # Ensure the specific question text seeded for this student is visible
 #   expect(page).to have_content('What is the standard deviation?')
 # end
-
