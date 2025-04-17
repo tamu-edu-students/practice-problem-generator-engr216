@@ -60,6 +60,77 @@ end
     semester_id: assigned_semester.id
   )
 end
+physics_categories = {
+   'Measurement & Error' => [
+     'What is the difference between systematic and random errors?',
+     'How can precision and accuracy be distinguished in measurements?',
+     'Describe methods to reduce measurement errors in experiments.'
+   ],
+   'Propagation of Error' => [
+     'How do errors propagate in calculations involving addition and subtraction?',
+     'Explain the formula for error propagation in multiplication and division of measured values.',
+     'Provide an example of how error propagation can affect experimental outcomes.'
+   ],
+   'Finite Differences' => [
+     'What is the finite difference method and how is it applied in numerical analysis?',
+     'Compare forward, backward, and central differences in approximating derivatives.',
+     'How can finite differences be used to solve differential equations numerically?'
+   ],
+   'Experimental Statistics' => [
+     'What statistical methods are essential for analyzing experimental data?',
+     'How do you determine if a dataset follows a normal distribution?',
+     'Explain the impact of outliers on experimental statistics.'
+   ],
+   'Confidence Intervals' => [
+     'What is a confidence interval and how is it interpreted in the context of experimental data?',
+     'How do you calculate a confidence interval for a mean value?',
+     'Discuss the factors that influence the width of a confidence interval.'
+   ],
+   'Universal Accounting Equation' => [
+     'What is the universal accounting equation and how does it relate to financial analysis?',
+     'Explain the relationship between assets, liabilities, and equity using the universal accounting equation.',
+     'How can the universal accounting equation be applied to assess the financial stability of an engineering project?'
+   ],
+   'Particle Statics' => [
+     'What is the principle of particle statics in mechanics?',
+     'How do you analyze forces acting on a particle in equilibrium?',
+     'Provide an example problem involving particle statics and its solution.'
+   ],
+   'Momentum & Collisions' => [
+     'What is the law of conservation of momentum?',
+     'How do elastic and inelastic collisions differ regarding momentum conservation?',
+     'Describe how impulse relates to momentum in collision scenarios.'
+   ],
+   'Rigid Body Statics' => [
+     'What are the conditions necessary for equilibrium in rigid body statics?',
+     'Explain how to determine the center of gravity of a rigid body.',
+     'How do you analyze torque in rigid body statics?'
+   ],
+   'Angular Momentum' => [
+     'Define angular momentum and state the law of its conservation.',
+     'How is angular momentum calculated for a rotating system?',
+     "Discuss the effects of external torques on a system's angular momentum."
+   ],
+   'Harmonic Motion' => [
+     'What defines simple harmonic motion?',
+     'How do amplitude, frequency, and phase influence harmonic motion?',
+     'Explain the energy transformations that occur in a system undergoing harmonic motion.'
+   ],
+   'Engineering Ethics' => [
+     'Why is engineering ethics critical in professional practice?',
+     'Discuss a real-world case where ethical considerations impacted an engineering decision.',
+     'How can engineers balance innovation with ethical responsibilities?'
+   ]
+ }
+
+ physics_categories.each do |category, questions|
+  questions.each do |q_text|
+    q = Question.create!(category: category, question: q_text)
+    # Set the answer_choices attribute to an array
+    q.write_attribute(:answer_choices, ['TBD'])
+    q.save!
+  end
+end
 
 #----------------------------------------------
 # Dynamic Answer Seeding Using Generator Mapping
