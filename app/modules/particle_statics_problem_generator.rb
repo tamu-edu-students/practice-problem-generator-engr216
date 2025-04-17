@@ -30,7 +30,8 @@ class ParticleStaticsProblemGenerator
       type: 'particle_statics',
       question: data[:question],
       answer: data[:answer],
-      input_fields: input_fields
+      input_fields: input_fields,
+      template_id: data[:template_id]
     }
   end
 
@@ -64,56 +65,82 @@ class ParticleStaticsProblemGenerator
   end
 
   def static_questions
-    questions = [
+    questions = basic_static_questions + advanced_static_questions
+    questions.map { |q| generate_ps_problem_from_data(q) }
+  end
+
+  def basic_static_questions
+    [
       {
         question: 'A 10 kg object is suspended by two cables. What is the tension in each' \
                   'cable if the system is in equilibrium?',
         answer: %w[49 49],
         input_type: 'fill_in',
-        field_label: 'Tension (N)'
+        field_label: 'Tension (N)',
+        template_id: 1
       },
       {
         question: 'A 5 m beam is supported at both ends. A 500 N weight is placed 2 m from the left end. ' \
                   'What is the reaction force at the left support?',
         answer: '300',
         input_type: 'fill_in',
-        field_label: 'Left Support Force (N)'
+        field_label: 'Left Support Force (N)',
+        template_id: 2
       },
       {
         question: 'A ladder leans against a frictionless wall. What must be the minimum coefficient of friction ' \
                   'at the base to prevent slipping?',
         answer: '0.45',
         input_type: 'fill_in',
-        field_label: 'Coefficient of Friction'
-      },
-      {
-        question: 'Which of the following is a condition for static equilibrium?',
-        answer: 'A',
-        input_type: 'multiple_choice',
-        options: [
-          { value: 'A', label: 'ΣF = 0 and ΣM = 0' },
-          { value: 'B', label: 'ΣF ≠ 0 and ΣM = 0' },
-          { value: 'C', label: 'ΣF = 0 and ΣM ≠ 0' },
-          { value: 'D', label: 'None of the above' }
-        ]
-      },
-      # Particle Statics Problems
-      {
-        question: 'A 100 N force is applied at the edge of a beam. What is the moment about the point of support ' \
-                  '2 meters from the force?',
-        answer: '200',
-        input_type: 'fill_in',
-        field_label: 'Moment (Nm)'
-      },
-      {
-        question: 'A 50 kg object is in equilibrium. There are two forces acting on it. Force A is 100 N at an ' \
-                  'angle of 30° and Force B is 150 N at 60°. What is the resultant force?',
-        answer: '179.69',
-        input_type: 'fill_in',
-        field_label: 'Resultant Force (N)'
+        field_label: 'Coefficient of Friction',
+        template_id: 3
       }
     ]
-    questions.map { |q| generate_ps_problem_from_data(q) }
+  end
+
+  def advanced_static_questions
+    [
+      multiple_choice_question,
+      moment_question,
+      resultant_force_question
+    ]
+  end
+
+  def multiple_choice_question
+    {
+      question: 'Which of the following is a condition for static equilibrium?',
+      answer: 'A',
+      input_type: 'multiple_choice',
+      options: [
+        { value: 'A', label: 'ΣF = 0 and ΣM = 0' },
+        { value: 'B', label: 'ΣF ≠ 0 and ΣM = 0' },
+        { value: 'C', label: 'ΣF = 0 and ΣM ≠ 0' },
+        { value: 'D', label: 'None of the above' }
+      ],
+      template_id: 4
+    }
+  end
+
+  def moment_question
+    {
+      question: 'A 100 N force is applied at the edge of a beam. What is the moment about the point of support ' \
+                '2 meters from the force?',
+      answer: '200',
+      input_type: 'fill_in',
+      field_label: 'Moment (Nm)',
+      template_id: 5
+    }
+  end
+
+  def resultant_force_question
+    {
+      question: 'A 50 kg object is in equilibrium. There are two forces acting on it. Force A is 100 N at an ' \
+                'angle of 30° and Force B is 150 N at 60°. What is the resultant force?',
+      answer: '179.69',
+      input_type: 'fill_in',
+      field_label: 'Resultant Force (N)',
+      template_id: 6
+    }
   end
 
   def dynamic_questions
@@ -133,7 +160,8 @@ class ParticleStaticsProblemGenerator
                                               'vertical ropes. What is the tension in each rope?',
                                     answer: tension.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Tension (N)'
+                                    field_label: 'Tension (N)',
+                                    template_id: 7
                                   })
   end
 
@@ -147,7 +175,8 @@ class ParticleStaticsProblemGenerator
                                               "#{distance} m from a pivot. What is the moment about the pivot?",
                                     answer: moment.to_s,
                                     input_type: 'fill_in',
-                                    field_label: 'Moment (Nm)'
+                                    field_label: 'Moment (Nm)',
+                                    template_id: 8
                                   })
   end
 

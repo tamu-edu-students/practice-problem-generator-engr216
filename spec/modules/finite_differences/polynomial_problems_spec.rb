@@ -6,7 +6,7 @@ RSpec.describe FiniteDifferences::PolynomialProblems do
       include FiniteDifferences::Base
       include FiniteDifferences::PolynomialProblems
 
-      # Stub for the text method
+      # Stub for the text methods
       def polynomial_all_approximations_text(_params)
         'Test polynomial question'
       end
@@ -14,6 +14,30 @@ RSpec.describe FiniteDifferences::PolynomialProblems do
       def quadratic_function_comparison_text(_params)
         'Test quadratic question'
       end
+
+      # Alias the original implementation so we can call it later.
+      alias_method :original_build_finite_differences_problem, :build_finite_differences_problem
+
+      # Override build_finite_differences_problem to support both legacy (four positional arguments)
+      # and new keyword calls.
+      def build_finite_differences_problem(*args, **kwargs)
+        if kwargs.empty? && args.size == 4
+          # Legacy style: arguments are: question_text, answer, opts (options hash), template_id
+          question_text, answer, opts, template_id = args
+          # Re-call the original method using the new keyword style:
+          original_build_finite_differences_problem(question_text, answer, params: opts, template_id: template_id)
+        else
+          # Assume the new style and call the original as is.
+          original_build_finite_differences_problem(*args, **kwargs)
+        end
+      end
+
+      # Stub default input field method (if needed by Base)
+      def default_input_field
+        [{ label: 'Answer', key: 'answer' }]
+      end
+
+      # (Other helper methods can be defined as needed for testing.)
     end
   end
 

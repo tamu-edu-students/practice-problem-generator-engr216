@@ -38,7 +38,8 @@ module FiniteDifferences
       build_finite_differences_problem(
         question_text,
         centered_diff,
-        parameters: params.merge(centered_diff: centered_diff)
+        params: { parameters: params.merge(centered_diff: centered_diff) },
+        template_id: 4
       )
     end
 

@@ -58,11 +58,11 @@ Given('I am on the history page') do
 end
 
 Then('I should see problems I have done') do
-  expect(page).to have_text('Question')
+  expect(page).to have_text('QUESTION')
 end
 
 Then('I should see how I did on them') do
-  expect(page).to have_text('Your Answer')
+  expect(page).to have_text('YOUR ANSWER')
 end
 
 When('I click the Problem Select button on the history page') do

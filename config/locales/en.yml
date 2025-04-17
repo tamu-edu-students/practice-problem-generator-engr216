@@ -48,6 +48,10 @@ en:
   sessions:
     invalid_user_type: "Invalid user type."
     logged_out: "You are logged out."
+    login_failed: "Login failed. Please make sure you are logging in using a @tamu.edu email."
+    login_failed_teacher: "Login failed. This email is not registered as a teacher."
+    login_failed_student: "Login failed. You must use your @tamu.edu student email."
+    invalid_domain: "Invalid email domain. Use a @tamu.edu email."
   history:
     login_required_teacher: "You must be logged in as a teacher to view student history."
   practice_problems:
@@ -61,4 +65,9 @@ en:
       semester_not_found: "Semester not found."
       no_semester_selected: "No semester selected."
 
-    
+  en:
+    teacher_dashboard:
+      delete_semester_students:
+        semester_not_found: "Semester not found."
+        no_semester_selected: "No semester selected."
+

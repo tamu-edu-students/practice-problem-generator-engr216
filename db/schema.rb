@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_162409) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_181506) do
   create_table "answers", force: :cascade do |t|
     t.integer "question_id"
     t.string "category"
@@ -23,6 +23,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_162409) do
     t.string "time_spent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "template_id", default: 0, null: false
+    t.index ["category", "template_id"], name: "index_answers_on_category_and_template_id"
   end
 
   create_table "questions", force: :cascade do |t|

@@ -1,8 +1,9 @@
 # Module containing all UAE problem generators
 module UniversalAccountEquationsProblemGenerators
   # Create the basic structure for all UAE problems
-  def build_uae_problem(question_text, answer, params = {})
+  def build_uae_problem(question_text, answer, template_id, params = {})
     {
+      template_id: template_id,
       type: 'universal_account_equations',
       question: question_text,
       answer: answer.round(2),
@@ -42,7 +43,7 @@ module UniversalAccountEquationsProblemGenerators
     velocity = Math.sqrt(velocity_squared)
 
     question_text = roller_coaster_velocity_question_text(mass, height, distance, drag_force)
-    build_uae_problem(question_text, velocity, {
+    build_uae_problem(question_text, velocity, 1, {
                         mass: mass,
                         height: height,
                         distance: distance,
@@ -72,7 +73,7 @@ module UniversalAccountEquationsProblemGenerators
       final_solids_percent, blackberry_cost, sugar_cost,
       target_jam_mass
     )
-    build_uae_problem(question_text, blackberry_cost_total, {
+    build_uae_problem(question_text, blackberry_cost_total, 2, {
                         blackberry_ratio: blackberry_ratio,
                         sugar_ratio: sugar_ratio,
                         blackberry_water_percent: blackberry_water_percent,
@@ -105,7 +106,7 @@ module UniversalAccountEquationsProblemGenerators
       vehicle_mass,
       rolling_resistance
     )
-    build_uae_problem(question_text, efficiency, {
+    build_uae_problem(question_text, efficiency, 3, {
                         distance: distance,
                         fuel_used: fuel_used,
                         fuel_cost: fuel_cost,
@@ -140,7 +141,7 @@ module UniversalAccountEquationsProblemGenerators
       temperature,
       mixing_time
     )
-    build_uae_problem(question_text, final_concentration, {
+    build_uae_problem(question_text, final_concentration, 4, {
                         solution_a_volume: solution_a_volume,
                         solution_a_concentration: solution_a_concentration,
                         solution_b_volume: solution_b_volume,
@@ -171,7 +172,7 @@ module UniversalAccountEquationsProblemGenerators
       tax_rate,
       compounding_frequency
     )
-    build_uae_problem(question_text, interest, {
+    build_uae_problem(question_text, interest, 5, {
                         principal: principal,
                         rate: rate,
                         time: time,
@@ -204,7 +205,7 @@ module UniversalAccountEquationsProblemGenerators
       peak_hour_multiplier,
       peak_hours_per_day
     )
-    build_uae_problem(question_text, total_cost, {
+    build_uae_problem(question_text, total_cost, 6, {
                         power_rating: power_rating,
                         hours_per_day: hours_per_day,
                         days: days,
@@ -240,7 +241,7 @@ module UniversalAccountEquationsProblemGenerators
       num_items, weight_per_item, shipping_cost_per_kg,
       packaging_weight_percent, fragile_item_multiplier, fragile_items_percent
     )
-    build_uae_problem(question_text, total_cost, {
+    build_uae_problem(question_text, total_cost, 7, {
                         num_items: num_items,
                         weight_per_item: weight_per_item,
                         shipping_cost_per_kg: shipping_cost_per_kg,

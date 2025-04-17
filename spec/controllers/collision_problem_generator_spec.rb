@@ -57,21 +57,17 @@ RSpec.describe CollisionProblemGenerator, type: :model do
     end
 
     it 'correctly calculates velocity from height' do
-      # For height in meters
       result = generator.send(:calculate_velocity_from_height, 10, false)
       expect(result).to be_within(0.001).of(Math.sqrt(2 * 9.8 * 10))
 
-      # For height in centimeters
       result = generator.send(:calculate_velocity_from_height, 1000, true)
       expect(result).to be_within(0.001).of(Math.sqrt(2 * 9.8 * 10))
     end
 
     it 'correctly calculates height from velocity' do
-      # Return height in meters
       result = generator.send(:calculate_height_from_velocity, 14, false)
       expect(result).to be_within(0.001).of((14**2) / (2 * 9.8))
 
-      # Return height in centimeters
       result = generator.send(:calculate_height_from_velocity, 14, true)
       expect(result).to be_within(0.001).of(((14**2) / (2 * 9.8)) * 100)
     end
@@ -159,56 +155,65 @@ RSpec.describe CollisionProblemGenerator, type: :model do
   describe '#calculate_answer' do
     it 'uses the bullet block handler for bullet problems' do
       question_text = 'A bullet moving at 400 m/s strikes a block.'
-      expect(generator).to receive(:calculate_bullet_block_collision).with(1, 2, 3, 4)
+      allow(generator).to receive(:calculate_bullet_block_collision)
       generator.send(:calculate_answer, question_text, 1, 2, 3, 4)
+      expect(generator).to have_received(:calculate_bullet_block_collision).with(1, 2, 3, 4)
     end
 
     it 'uses the hydrogen atom handler for hydrogen atom problems' do
       question_text = 'An alpha particle undergoes an elastic collision with an initially stationary hydrogen atom.'
-      expect(generator).to receive(:calculate_hydrogen_atom_collision).with(4)
+      allow(generator).to receive(:calculate_hydrogen_atom_collision)
       generator.send(:calculate_answer, question_text, 4)
+      expect(generator).to have_received(:calculate_hydrogen_atom_collision).with(4)
     end
 
     it 'uses the soccer ball handler for soccer ball problems' do
       question_text = 'A soccer ball with mass 0.5 kg is dropped.'
-      expect(generator).to receive(:calculate_soccer_ball_collision).with(0.5, 0.3, 2)
+      allow(generator).to receive(:calculate_soccer_ball_collision)
       generator.send(:calculate_answer, question_text, 0.5, 0.3, 2)
+      expect(generator).to have_received(:calculate_soccer_ball_collision).with(0.5, 0.3, 2)
     end
 
     it 'uses the car collision handler for car problems' do
       question_text = 'Two cars stick together after a collision.'
-      expect(generator).to receive(:calculate_car_collision).with(1500, 20, 1200, -15)
+      allow(generator).to receive(:calculate_car_collision)
       generator.send(:calculate_answer, question_text, 1500, 20, 1200, -15)
+      expect(generator).to have_received(:calculate_car_collision).with(1500, 20, 1200, -15)
     end
 
     it 'uses the pool ball handler for pool ball problems' do
       question_text = 'A pool ball of mass 0.2 kg strikes another ball.'
-      expect(generator).to receive(:calculate_pool_ball_collision).with(0.2, 5, 30)
+      allow(generator).to receive(:calculate_pool_ball_collision)
       generator.send(:calculate_answer, question_text, 0.2, 5, 30)
+      expect(generator).to have_received(:calculate_pool_ball_collision).with(0.2, 5, 30)
     end
 
     it 'uses the pendulum handler for pendulum problems' do
       question_text = 'A pendulum bob is released from a height.'
-      expect(generator).to receive(:calculate_pendulum_collision).with(0.1, 0.2, 20)
+      allow(generator).to receive(:calculate_pendulum_collision)
       generator.send(:calculate_answer, question_text, 0.1, 0.2, 20)
+      expect(generator).to have_received(:calculate_pendulum_collision).with(0.1, 0.2, 20)
     end
 
     it 'uses the puck handler for puck problems' do
       question_text = 'A puck on a frictionless horizontal surface collides with another puck.'
-      expect(generator).to receive(:calculate_puck_collision).with(0.3, 10, 0.3)
+      allow(generator).to receive(:calculate_puck_collision)
       generator.send(:calculate_answer, question_text, 0.3, 10, 0.3)
+      expect(generator).to have_received(:calculate_puck_collision).with(0.3, 10, 0.3)
     end
 
     it 'uses the projectile handler for projectile problems' do
       question_text = 'A projectile traveling horizontally strikes a target.'
-      expect(generator).to receive(:calculate_projectile_collision).with(0.1, 0.9, 50)
+      allow(generator).to receive(:calculate_projectile_collision)
       generator.send(:calculate_answer, question_text, 0.1, 0.9, 50)
+      expect(generator).to have_received(:calculate_projectile_collision).with(0.1, 0.9, 50)
     end
 
     it 'uses the falling object handler for falling object problems' do
       question_text = 'A ball is dropped onto a floor.'
-      expect(generator).to receive(:calculate_falling_object_collision).with(0.1, 0.2, 2, 0.8)
+      allow(generator).to receive(:calculate_falling_object_collision)
       generator.send(:calculate_answer, question_text, 0.1, 0.2, 2, 0.8)
+      expect(generator).to have_received(:calculate_falling_object_collision).with(0.1, 0.2, 2, 0.8)
     end
 
     it 'returns default value when no handler matches' do
@@ -230,16 +235,28 @@ RSpec.describe CollisionProblemGenerator, type: :model do
   end
 
   describe 'full problem generation flow' do
-    it 'generates a valid problem' do
-      # Mock the random selection to ensure test consistency
-      allow(generator).to receive_messages(generator_list: [:generate_bullet_block_question], generate_bullet_block_question: {
-                                             type: 'momentum & collisions',
-                                             question: 'Test question',
-                                             answer: 5.0
-                                           })
+    let(:mocked_result) do
+      {
+        type: 'momentum & collisions',
+        question: 'Test question',
+        answer: 5.0
+      }
+    end
 
+    before do
+      allow(generator).to receive_messages(
+        generator_list: [:generate_bullet_block_question],
+        generate_bullet_block_question: mocked_result
+      )
+    end
+
+    it 'returns a generated question with correct type' do
       result = generator.generate_questions.first
       expect(result[:type]).to eq('momentum & collisions')
+    end
+
+    it 'returns a generated question with correct content' do
+      result = generator.generate_questions.first
       expect(result[:question]).to eq('Test question')
       expect(result[:answer]).to eq(5.0)
     end

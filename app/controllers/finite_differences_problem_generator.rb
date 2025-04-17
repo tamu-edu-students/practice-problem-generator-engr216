@@ -94,15 +94,17 @@ class FiniteDifferencesProblemGenerator
   end
 
   # Build the base structure for finite differences problems
-  def build_finite_differences_problem(question_text, answer, params = {})
+  def build_finite_differences_problem(question_text, answer, template_id:, params: {})
     result = {
       type: 'finite_differences',
       question: question_text,
       answer: answer,
       input_fields: params[:input_fields] || default_input_field,
-      parameters: params[:parameters] || {}
+      parameters: params[:parameters] || {},
+      template_id: template_id
     }
     result[:data_table] = params[:data_table] if params[:data_table]
+    Rails.logger.debug { "Built finite differences problem: #{result.inspect}" }
     result
   end
 

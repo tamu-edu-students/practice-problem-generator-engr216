@@ -6,8 +6,7 @@ Given('I am on the "Angular Momentum" page for momentum') do
     uin: '123456789'
   )
   login_as_student
-  visit practice_problems_path
-  click_link 'Angular Momentum'
+  visit generate_practice_problems_path(category_id: 'Angular Momentum')
 end
 
 When('I click the angular momentum new problem button') do

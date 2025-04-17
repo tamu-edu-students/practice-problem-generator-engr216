@@ -51,37 +51,16 @@ class MeasurementsAndErrorProblemsController < ApplicationController
   end
 
   def save_answer_to_database(is_correct)
-    # Rails.logger.debug { "Saving answer to database: correct=#{is_correct}" }
-
     student = Student.find_by(id: session[:user_id])
-    # if student
-    #   Rails.logger.debug { "Student found: #{student.email}" }
-    # else
-    #   Rails.logger.debug { "No student found with ID: #{session[:user_id]}" }
-    #   return # Don't save if no student is logged in
-    # end
 
-    # Calculate time spent on the problem
-    time_spent = nil
-    if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-        # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
-      rescue StandardError => e
-        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
-      end
-    else
-      Rails.logger.debug { 'No problem start time available' }
-    end
-
-    # Get user's answer based on the question type
-    # user_answer = params[:measurement_answer]
-    # Rails.logger.debug { "Extracted user answer: #{user_answer}" }
+    # Get calculated time spent
+    time_spent = calculate_time_spent
 
     Rails.logger.debug { "Creating Answer record for category: #{@category}" }
 
     # Create and save the answer record
     answer = Answer.create(
+      template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
       question_description: @question[:question],
@@ -93,14 +72,17 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       time_spent: time_spent
     )
     Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+  end
 
-    # if answer.save
-    #   # Success
-    # else
-    #   Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.inspect}" }
-    # end
+  def calculate_time_spent
+    return nil unless session[:problem_start_time]
 
-    # Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
+    begin
+      (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+    rescue StandardError => e
+      Rails.logger.debug { "Error calculating time spent: #{e.message}" }
+      nil
+    end
   end
 
   def extract_answer_choices

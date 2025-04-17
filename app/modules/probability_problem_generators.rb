@@ -8,7 +8,7 @@ module ProbabilityProblemGenerators
     probability = upper_tail_probability(mean, std_dev, threshold)
 
     question_text = machine_repair_question_text(mean, std_dev, threshold)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 1)
   end
 
   def generate_produce_weight_problem
@@ -20,7 +20,7 @@ module ProbabilityProblemGenerators
     probability = between_probability(mean, sd, lower_bound, upper_bound)
 
     question_text = produce_weight_question_text(mean, sd, lower_bound, upper_bound)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 2)
   end
 
   def generate_assembly_line_problem
@@ -31,7 +31,7 @@ module ProbabilityProblemGenerators
     probability = upper_tail_probability(mean, sd, threshold)
 
     question_text = assembly_line_question_text(mean, sd, threshold)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 3)
   end
 
   def generate_battery_lifespan_problem
@@ -42,7 +42,7 @@ module ProbabilityProblemGenerators
     probability = lower_tail_probability(mean, sd, threshold)
 
     question_text = battery_lifespan_question_text(mean, sd, threshold)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 4)
   end
 
   def generate_customer_wait_time_problem
@@ -54,7 +54,7 @@ module ProbabilityProblemGenerators
     probability = between_probability(mean, sd, lower_bound, upper_bound)
 
     question_text = customer_wait_time_question_text(mean, sd, lower_bound, upper_bound)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 5)
   end
 
   def generate_package_weight_problem
@@ -65,7 +65,7 @@ module ProbabilityProblemGenerators
     probability = upper_tail_probability(mean, sd, threshold)
 
     question_text = package_weight_question_text(mean, sd, threshold)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 6)
   end
 
   def generate_exam_score_problem
@@ -76,7 +76,7 @@ module ProbabilityProblemGenerators
     probability = upper_tail_probability(mean, sd, pass_score)
 
     question_text = exam_score_question_text(mean, sd, pass_score)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 7)
   end
 
   def generate_component_lifetime_problem
@@ -88,7 +88,7 @@ module ProbabilityProblemGenerators
     probability = between_probability(mean, sd, lower_bound, upper_bound)
 
     question_text = component_lifetime_question_text(mean, sd, lower_bound, upper_bound)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 8)
   end
 
   def generate_medication_dosage_problem
@@ -99,6 +99,6 @@ module ProbabilityProblemGenerators
     probability = upper_tail_probability(mean, sd, threshold)
 
     question_text = medication_dosage_question_text(mean, sd, threshold)
-    build_probability_problem(question_text, probability)
+    build_probability_problem(question_text, probability, 9)
   end
 end

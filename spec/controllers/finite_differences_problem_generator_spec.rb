@@ -352,7 +352,9 @@ RSpec.describe FiniteDifferencesProblemGenerator do
   describe '#build_finite_differences_problem' do
     let(:question_text) { 'What is the derivative of f(x) = x^2 at x = 2?' }
     let(:answer) { 4 }
-    let(:result) { generator.send(:build_finite_differences_problem, question_text, answer) }
+    let(:result) do
+      generator.send(:build_finite_differences_problem, question_text, answer, params: {}, template_id: 1)
+    end
 
     it 'sets the correct problem type' do
       expect(result[:type]).to eq('finite_differences')
@@ -379,7 +381,8 @@ RSpec.describe FiniteDifferencesProblemGenerator do
 
     it 'uses the provided input fields' do
       result = generator.send(:build_finite_differences_problem, question_text, answer,
-                              input_fields: custom_fields)
+                              params: { input_fields: custom_fields }, template_id: 1)
+
       expect(result[:input_fields]).to eq(custom_fields)
     end
   end
@@ -396,7 +399,8 @@ RSpec.describe FiniteDifferencesProblemGenerator do
 
     it 'includes the data table in the problem' do
       result = generator.send(:build_finite_differences_problem, question_text, answer,
-                              data_table: data_table)
+                              params: { data_table: data_table }, template_id: 1)
+
       expect(result[:data_table]).to eq(data_table)
     end
   end
