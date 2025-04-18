@@ -45,5 +45,5 @@ end
 
 Then('I should receive feedback on my Rigid Body Statics answer') do
   # Check that a feedback message is displayed, assuming it uses a border class for color.
-  expect(page).to have_content(/Correct, the answer .* is right!|Incorrect, the correct answer is .*/)
+  expect(page).to have_content(/Correct.*answer.*is right!|Incorrect.*try again.*View Answer/, wait: 5)
 end

@@ -1,4 +1,20 @@
 class MeasurementsAndErrorProblemsController < ApplicationController
+  def view_answer
+    @category = 'Measurement & Error'
+    @question = parse_question_from_session
+
+    if @question
+      save_answer_to_database(false) # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_measurements_and_error_problems_path) and return
+    end
+
+    render 'practice_problems/measurements_error_problem'
+  end
+
   # GET /measurements_and_error_problems/generate
   def generate
     @category = 'Measurement & Error'
@@ -23,10 +39,10 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     @feedback_message = if handle_measurements_error
                           'Correct, your answer is right!'
                         else
-                          "Incorrect, the correct answer is #{@question[:answer]}."
+                          'Incorrect, try again or press View Answer.'
                         end
 
-    save_answer_to_database(handle_measurements_error)
+    save_answer_to_database(handle_measurements_error) if handle_measurements_error
     # Render the same view with the feedback displayed
     render 'practice_problems/measurements_error_problem'
   end
@@ -58,6 +74,9 @@ class MeasurementsAndErrorProblemsController < ApplicationController
 
     Rails.logger.debug { "Creating Answer record for category: #{@category}" }
 
+    user_answer = params[:measurement_answer].to_s.strip
+    user_answer = 'Answer Viewed By Student' if user_answer.empty?
+
     # Create and save the answer record
     answer = Answer.create(
       template_id: @question[:template_id] || 0,
@@ -65,7 +84,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       category: @category,
       question_description: @question[:question],
       answer_choices: extract_answer_choices,
-      answer: params[:measurement_answer],
+      answer: user_answer,
       correctness: is_correct,
       student_email: student.email,
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),

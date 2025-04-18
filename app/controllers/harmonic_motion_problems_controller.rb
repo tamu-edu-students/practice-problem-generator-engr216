@@ -1,4 +1,20 @@
 class HarmonicMotionProblemsController < ApplicationController
+  def view_answer
+    @category = 'Harmonic Motion'
+    @question = JSON.parse(session[:current_question], symbolize_names: true)
+
+    if @question
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_harmonic_motion_problems_path) and return
+    end
+
+    render 'practice_problems/harmonic_motion_problem'
+  end
+
   def generate
     @category = 'Harmonic Motion'
     @question = HarmonicMotionProblemGenerator.new(@category).generate_questions.first
@@ -39,14 +55,14 @@ class HarmonicMotionProblemsController < ApplicationController
     rescue ArgumentError, TypeError
       false
     end
-    submitted_ans_str = submitted_answers.join(', ')
+    submitted_answers.join(', ')
 
     if all_correct
       save_answer_to_database(true, correct_answers.join(', '))
       "Correct, the answer #{correct_answers.join(', ')} is right!"
     else
-      save_answer_to_database(false, submitted_ans_str)
-      "Incorrect, the correct answer is #{correct_answers.join(', ')}."
+      # save_answer_to_database(false, submitted_ans_str)
+      'Incorrect, try again or press View Answer.'
     end
   end
 
@@ -57,15 +73,15 @@ class HarmonicMotionProblemsController < ApplicationController
         save_answer_to_database(true, submitted_ans)
         "Correct, the answer #{correct_ans} is right!"
       else
-        save_answer_to_database(false, submitted_ans)
-        "Incorrect, the correct answer is #{correct_ans}."
+        # save_answer_to_database(false, submitted_ans)
+        'Incorrect, try again or press View Answer.'
       end
     elsif submitted_ans == correct_ans.to_s.strip
       save_answer_to_database(true, submitted_ans)
       "Correct, the answer #{correct_ans} is right!"
     else
-      save_answer_to_database(false, submitted_ans)
-      "Incorrect, the correct answer is #{correct_ans}."
+      # save_answer_to_database(false, submitted_ans)
+      'Incorrect, try again or press View Answer.'
     end
   end
 

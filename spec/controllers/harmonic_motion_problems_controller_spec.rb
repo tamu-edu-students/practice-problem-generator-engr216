@@ -75,7 +75,7 @@ RSpec.describe HarmonicMotionProblemsController, type: :controller do
 
       it 'returns incorrect feedback for an answer out of tolerance', :aggregate_failures do
         post :check_answer, params: { shm_answer: '1.1' }
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is 1.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe HarmonicMotionProblemsController, type: :controller do
 
       it 'returns incorrect feedback when the submitted answer does not match', :aggregate_failures do
         post :check_answer, params: { shm_answer: 'two' }
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is one.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe HarmonicMotionProblemsController, type: :controller do
 
       it 'rescues the error and returns incorrect feedback', :aggregate_failures do
         post :check_answer, params: { shm_answer_1: 'x', shm_answer_2: 'y' }
-        expect(assigns(:feedback_message)).to eq('Incorrect, the correct answer is 3.14, 1.00.')
+        expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -158,13 +158,13 @@ RSpec.describe HarmonicMotionProblemsController, type: :controller do
       it 'returns incorrect feedback if one part is out of tolerance', :aggregate_failures do
         post :check_answer, params: { shm_answer_1: '3.14', shm_answer_2: '1.1' }
         expect(assigns(:feedback_message))
-          .to eq('Incorrect, the correct answer is 3.14, 1.00.')
+          .to eq('Incorrect, try again or press View Answer.')
       end
 
       it 'returns incorrect feedback if a submitted part is non-numeric', :aggregate_failures do
         post :check_answer, params: { shm_answer_1: 'abc', shm_answer_2: '1.00' }
         expect(assigns(:feedback_message))
-          .to eq('Incorrect, the correct answer is 3.14, 1.00.')
+          .to eq('Incorrect, try again or press View Answer.')
       end
     end
   end
