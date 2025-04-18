@@ -8,10 +8,16 @@ Question.destroy_all
 Answer.destroy_all
 
 # Reset SQLite autoincrement during testing in development
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='students'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='teachers'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
-ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='answers'")
+case ActiveRecord::Base.connection.adapter_name
+when 'SQLite'
+  %w[students teachers questions answers].each do |t|
+    ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='#{t}'")
+  end
+when 'PostgreSQL'
+  %w[students teachers questions answers].each do |t|
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{t} RESTART IDENTITY CASCADE")
+  end
+end
 
 # Seed Semesters
 semesters_data = [
