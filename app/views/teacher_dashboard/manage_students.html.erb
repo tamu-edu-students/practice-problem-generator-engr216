@@ -1,8 +1,8 @@
-<head>
+<% content_for :head do %>
   <%= stylesheet_link_tag 'manage_students', media: 'all', 'data-turbolinks-track': 'reload' %>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-</head>
+<% end %>
+
 
 <div class="w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5; min-height: 100vh;">
   <!-- Navbar -->
@@ -61,18 +61,24 @@
         </form>
       <% end %>
     </div>
+
+    <!-- sort‑arrow indicators -->
+    <style>
+      th.asc::after  { content: " ▲"; }
+      th.desc::after { content: " ▼"; }
+    </style>
     
     <!-- Scrollable Table Container -->
     <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
-      <table class="table w-full">
-        <thead>
-          <tr class="text-white border-b border-gray-500">
-            <th class="p-2 text-left">Student Name</th>
-            <th class="p-2 text-left">Email</th>
-            <th class="p-2 text-left">Semester</th>
-            <th class="p-2 text-center">Actions</th>
-          </tr>
-        </thead>
+      <table class="table w-full sortable">
+      <thead>
+        <tr class="text-white border-b border-gray-500">
+          <th class="p-2 text-left">Student Name</th>
+          <th class="p-2 text-left">Email</th>
+          <th class="p-2 text-left">Semester</th>
+          <th class="p-2 text-center no-sort">Actions</th>
+        </tr>
+      </thead>
         <tbody>
           <% @students.each do |student| %>
             <tr class="border-b border-gray-700">
