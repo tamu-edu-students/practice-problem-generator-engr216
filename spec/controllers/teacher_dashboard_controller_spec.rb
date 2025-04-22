@@ -166,15 +166,14 @@ RSpec.describe TeacherDashboardController, type: :controller do
     it 'builds category summaries based on filtered students' do
       # isolate only john_student
       Answer.where(student_email: john_student.email).destroy_all
-    
+
       create_answer_for_student(john_student, 'Physics', true)
-    
+
       summaries = controller.send(:build_category_summaries, [john_student])
-    
+
       expect(summaries['Physics'][:attempted]).to eq(1)
       expect(summaries['Physics'][:correct]).to eq(1)
     end
-    
   end
 
   describe '#student_history' do

@@ -21,7 +21,6 @@ class PracticeProblemsController < ApplicationController
   def semester_options
     Semester.order(:name)
   end
-  
 
   def generate
     @category = params[:category_id] || 'default' # Fallback if nil
