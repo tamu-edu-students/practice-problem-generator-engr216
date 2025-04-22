@@ -13,16 +13,15 @@ class PracticeProblemsController < ApplicationController
     Rails.logger.debug { "Student Semester: #{@student&.semester_id}" }
     Rails.logger.debug { "Student Teacher: #{@student&.teacher_id}" }
     @teachers = Teacher.all
-    @semesters = Semester.active.order(:name)
+    @semesters = Semester.order(:name)
 
     render :index
   end
 
   def semester_options
-    (2023..2026).flat_map do |year|
-      ["Spring #{year}", "Fall #{year}"]
-    end
+    Semester.order(:name)
   end
+  
 
   def generate
     @category = params[:category_id] || 'default' # Fallback if nil

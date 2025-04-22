@@ -41,7 +41,7 @@
               <label class="block text-white mb-1">Semester</label>
               <select id="semesterDropdown" name="semester_id" class="p-2 rounded border-gray-300">
                 <option value="" disabled <%= "selected" if @selected_semester_id.blank? %>>Select a semester...</option>
-                <option value="all" <%= "selected" if @selected_semester_id == "all" %>>All</option>
+                <option value="all" <%= "selected" if @selected_semester_id == "all" %>>All Semesters</option>
                 <% @semesters.each do |sem| %>
                   <% disabled = @student_selected_semester_id.present? && @student_selected_semester_id != sem.id %>
                   <option value="<%= sem.id %>" <%= "selected" if sem.id.to_s == @selected_semester_id %> <%= "disabled" if disabled %>>
