@@ -64,7 +64,7 @@ RSpec.describe HistoryController, type: :controller do
   end
 
   describe 'GET #teacher_view' do
-    let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Test Teacher') }
+    let(:teacher) { Teacher.create!(email: 'teacher@tamu.edu', name: 'Test Teacher') }
     let(:student) do
       Student.create!(email: 'student@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
     end

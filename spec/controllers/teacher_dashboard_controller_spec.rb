@@ -3,7 +3,7 @@ require 'ostruct'
 CatSummary = Struct.new(:category, :attempted, :correct, :incorrect)
 
 RSpec.describe TeacherDashboardController, type: :controller do
-  let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Teacher 1') }
+  let(:teacher) { Teacher.create!(email: 'teacher@tamu.edu', name: 'Teacher 1') }
 
   let(:fall_semester) do
     Semester.find_or_create_by!(name: 'Fall 2024') { |s| s.active = true }

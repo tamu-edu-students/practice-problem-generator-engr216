@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Student, type: :model do
-  let(:teacher) { Teacher.create!(name: 'Test Teacher', email: "teacher_#{Time.now.to_i}@example.com") }
+  let(:teacher) { Teacher.create!(name: 'Test Teacher', email: "teacher_#{Time.now.to_i}@tamu.edu") }
   let(:semester) { Semester.create!(name: "Test Semester #{Time.now.to_i}", active: true) }
 
   describe 'validations' do

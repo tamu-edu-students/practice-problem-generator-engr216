@@ -1,5 +1,5 @@
 Given('I am logged in as a teacher') do
-  @teacher = Teacher.create!(name: 'Test Teacher', email: 'teacher@example.com')
+  @teacher = Teacher.create!(name: 'Test Teacher', email: 'teacher@tamu.edu')
 
   # Instead of using allow_any_instance_of which is RSpec specific,
   # set up the session directly for Cucumber
@@ -10,7 +10,7 @@ Given('I am logged in as a teacher') do
 end
 
 Given('I am on the student management page') do
-  @teacher ||= Teacher.find_by(email: 'teacher@example.com') # Ensure teacher exists from previous step
+  @teacher ||= Teacher.find_by(email: 'teacher@tamu.edu') # Ensure teacher exists from previous step
   raise 'Teacher not found' unless @teacher
 
   # Use find_or_create_by! for Semesters

@@ -45,6 +45,9 @@ en:
   teacher:
     logged_in: "You are logged in as a teacher."
     student_not_found: "Student not found."
+    created: "Teacher was successfully created."
+    creation_error: "Error creating teacher. Please check the form."
+    invalid_domain: "Email must be a @tamu.edu address."
   sessions:
     invalid_user_type: "Invalid user type."
     logged_out: "You are logged out."
@@ -56,7 +59,14 @@ en:
     login_required_teacher: "You must be logged in as a teacher to view student history."
   practice_problems:
     login_required: "Please log in as a student"
-  
+
+  activerecord:
+    errors:
+      models:
+        teacher:
+          attributes:
+            email:
+              invalid_domain: "must be a valid @tamu.edu address"
 
   teacher_dashboard:
     student_not_found: "Student not found."
@@ -70,4 +80,3 @@ en:
       delete_semester_students:
         semester_not_found: "Semester not found."
         no_semester_selected: "No semester selected."
-

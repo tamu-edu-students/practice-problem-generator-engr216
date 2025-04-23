@@ -11,7 +11,7 @@ RSpec.describe StudentsController, type: :controller do
   end
   let(:invalid_attributes) { { first_name: '', last_name: '', email: '', uin: '' } }
   let!(:student) { Student.create!(valid_attributes) }
-  let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Test Teacher') }
+  let(:teacher) { Teacher.create!(email: 'teacher@tamu.edu', name: 'Test Teacher') }
 
   describe 'GET #index' do
     it 'assigns all students as @students' do
