@@ -1,7 +1,7 @@
 Given('I am on the student history dashboard') do
   # Ensure teacher exists
-  @teacher ||= Teacher.find_by(email: 'teacher@example.com')
-  @teacher ||= Teacher.create!(name: 'Test Teacher', email: 'teacher@example.com')
+  @teacher ||= Teacher.find_by(email: 'teacher@tamu.edu')
+  @teacher ||= Teacher.create!(name: 'Test Teacher', email: 'teacher@tamu.edu')
 
   # Set up the session directly for Cucumber
   page.set_rack_session(user_type: 'teacher', user_id: @teacher.id)

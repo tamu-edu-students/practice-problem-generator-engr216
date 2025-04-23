@@ -31,7 +31,7 @@ RSpec.describe Semester, type: :model do
 
     context 'when destroyed' do
       let(:semester) { described_class.create!(name: 'Fall 2024 Test 3', active: true) }
-      let(:teacher) { Teacher.create!(name: 'Test Teacher', email: 'teacher_test3@example.com') }
+      let(:teacher) { Teacher.create!(name: 'Test Teacher', email: 'teacher_test3@tamu.edu') }
       let(:student) do
         Student.create!(
           first_name: 'John',
