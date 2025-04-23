@@ -7,7 +7,7 @@ class SettingsController < ApplicationController
   end
 
   def semester_options
-    Semester.where(active: true).order(:name)
+    Semester.order(:name)
   end
 
   def update

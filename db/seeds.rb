@@ -35,7 +35,6 @@ end
 
 # Seed Teachers
 teachers_data = [
-  { email: 'test_teacher@tamu.edu', first_name: 'test', last_name: 'teacher' },
   { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi' },
   { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci' },
   { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk' },
@@ -61,7 +60,7 @@ end
     uin: Faker::Number.number(digits: 9).to_i,
     teacher: assigned_teacher,
     teacher_id: assigned_teacher.id,
-    authenticate: [true, false].sample,
+    authenticate: true,
     semester: assigned_semester,
     semester_id: assigned_semester.id
   )
