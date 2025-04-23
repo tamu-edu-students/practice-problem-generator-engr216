@@ -7,18 +7,24 @@
 <body style="background-color: #9aa8c5;">
   <div class="student-history">
     <!-- Navbar -->
-    <nav>
-      <div class="container">
-        <a href="/teacher_dashboard">Dashboard</a>
-        <div class="dropdown">
-          <button>Account ▼</button>
-          <ul class="dropdown-content">
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/logout">Logout</a></li>
+    <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+      <div class="flex-1">
+        <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Dashboard
+        </a>
+      </div>
+      <div class="flex-none">
+        <div class="dropdown dropdown-end">
+          <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+            Account ▼
+          </button>
+          <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+            <li><a href="/dashboard" class="text-white hover:bg-blue-500">Dashboard</a></li>
+            <li><a href="/logout" class="text-white hover:bg-blue-500">Logout</a></li>
           </ul>
         </div>
       </div>
-    </nav>
+    </div>
 
     <!-- Back Arrow -->
     <% back_url = params[:semester_id].present? ? student_history_dashboard_path(semester_id: params[:semester_id]) : student_history_dashboard_path %>

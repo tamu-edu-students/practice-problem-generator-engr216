@@ -114,17 +114,13 @@ class AngularMomentumProblemsController < ApplicationController
         time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
         # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
       rescue StandardError => e
-        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
     else
-      Rails.logger.debug { 'No problem start time available' }
     end
 
     # Get user's answer based on the question type
     user_answer = answer
     # Rails.logger.debug { "Extracted user answer: #{user_answer}" }
-
-    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
 
     # Create and save the answer record
     answer = Answer.create(

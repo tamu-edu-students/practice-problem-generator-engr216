@@ -1,4 +1,4 @@
-<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5;">
 
   <!-- Navbar -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
@@ -50,7 +50,7 @@
               <%= f.select :teacher_id,
                 options_from_collection_for_select(@teachers, :id, :name, @student.teacher_id),
                 { prompt: "Select a teacher" },
-                class: "select select-sm bg-gray-700 text-white border-gray-600"
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
               %>
             </li>
             
@@ -60,7 +60,7 @@
               <%= f.select :semester_id,
                 options_from_collection_for_select(@semesters, :id, :name, @student.semester_id),
                 { prompt: "Select a semester" },
-                class: "select select-sm bg-gray-700 text-white border-gray-600"
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
               %>
             </li>
 

@@ -1,6 +1,6 @@
 <div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
   <!-- Navbar (Fixed at Top) -->
-  <div class="navbar bg-black text-white px-6 w-full fixed top-0">
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
     <!-- Left: Past Problems Button -->
     <div class="flex-1">
       <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition" onclick="window.location='<%= history_path %>'">
@@ -13,9 +13,9 @@
         <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
           Account ▼
         </button>
-        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36 z-50">
+          <li><a href="/settings" class="text-white hover:bg-blue-500">Settings</a></li>
+          <li><a href="/logout" class="text-white hover:bg-blue-500">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -53,7 +53,7 @@
         <select
           name="teacher_id"
           id="teacher_id"
-          class="select w-full mb-4 bg-gray-700 text-white border border-gray-500"
+          class="select w-full mb-4 bg-gray-700 text-black border border-gray-500"
           required
         >
           <option disabled selected value="">Select a teacher</option>
@@ -69,7 +69,7 @@
         <select
           name="semester_id"
           id="semester_id"
-          class="select w-full mb-4 bg-gray-700 text-white border border-gray-500"
+          class="select w-full mb-4 bg-gray-700 text-black border border-gray-500"
           required
         >
           <option disabled selected value="">Select a semester</option>

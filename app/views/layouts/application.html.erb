@@ -95,9 +95,14 @@
 
 <body class="min-h-screen w-full">
   <!-- Flash messages positioned fixed below the navbar -->
-  <div id="flash-messages" class="fixed top-16 left-0 right-0 z-60 flex justify-center">
+  <div id="flash-messages" class="fixed top-16 left-0 right-0 z-60 flex flex-col items-center space-y-2">
     <% flash.each do |key, message| %>
-      <div class="alert alert-<%= key %> p-4 mx-4 mb-2 text-center max-w-md bg-white text-white rounded shadow">
+      <% alert_class = case key.to_s
+                       when 'notice' then 'bg-green-100 text-green-800 border border-green-300'
+                       when 'alert', 'error' then 'bg-red-100 text-red-800 border border-red-300'
+                       else 'bg-gray-100 text-gray-800 border border-gray-300' # Default styling
+                       end %>
+      <div class="alert p-4 mx-4 mb-2 text-center max-w-md rounded shadow <%= alert_class %>">
         <%= message %>
       </div>
     <% end %>

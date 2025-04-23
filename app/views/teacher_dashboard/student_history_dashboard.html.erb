@@ -1,34 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
+<% content_for :head do %>
   <%= stylesheet_link_tag 'student_history_dashboard', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body style="background-color: #9aa8c5;">
+<% end %>
+
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
   <!-- Navbar -->
-    <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
-      <div class="flex-1">
-        <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-          Dashboard
-        </a>
-      </div>
-      <div class="flex-none">
-        <div class="dropdown dropdown-hover dropdown-end">
-          <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
-            Account ▼
-          </button>
-          <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </div>
+  <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
+    <div class="flex-1">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+        Dashboard
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
+          Account ▼
+        </button>
+        <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
+          <li><a href="/logout" class="text-white hover:bg-blue-500">Logout</a></li>
+        </ul>
       </div>
     </div>
-  <div class="student-history-dashboard">
+  </div>
 
+  <div class="student-history-dashboard">
     <!-- ✅ Back Button -->
-    <%= link_to "←", teacher_dashboard_path, class: "back-arrow fixed left-4 top-16 text-2xl z-50" %>
+    <%= link_to "←", teacher_dashboard_path, class: "back-arrow fixed left-4 top-24 text-2xl z-50" %>
 
     <main class="pt-24 p-4">
       <!-- ✅ Filter Form -->
@@ -38,8 +35,8 @@
 
             <!-- Semester Filter -->
             <div>
-              <label class="block text-white mb-1">Semester</label>
-              <select id="semesterDropdown" name="semester_id" class="p-2 rounded border-gray-300">
+              <label class="block text-white mb-1 font-semibold">Semester</label>
+              <select id="semesterDropdown" name="semester_id" class="p-2 rounded-md border border-blue-300 bg-white text-black shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-52">
                 <option value="" disabled <%= "selected" if @selected_semester_id.blank? %>>Select a semester...</option>
                 <option value="all" <%= "selected" if @selected_semester_id == "all" %>>All Semesters</option>
                 <% @semesters.each do |sem| %>
@@ -55,8 +52,8 @@
 
             <!-- Student Filter -->
             <div>
-              <label class="block text-white mb-1">Student</label>
-              <select id="studentDropdown" name="student_email" class="p-2 rounded border-gray-300" <%= 'disabled' if @selected_semester_id.blank? %>>
+              <label class="block text-white mb-1 font-semibold">Student</label>
+              <select id="studentDropdown" name="student_email" class="p-2 rounded-md border border-blue-300 bg-white text-black shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-52" <%= 'disabled' if @selected_semester_id.blank? %>>
                 <option value="all" <%= "selected" if @selected_student_email == "all" %>>All</option>
                 <% @students_for_dropdown.each do |student| %>
                   <option value="<%= student.email %>" <%= "selected" if student.email == @selected_student_email %>>
@@ -70,8 +67,8 @@
 
             <!-- Category Filter -->
             <div>
-              <label class="block text-white mb-1">Category</label>
-              <select id="categoryDropdown" name="category" class="p-2 rounded border-gray-300" disabled>
+              <label class="block text-white mb-1 font-semibold">Category</label>
+              <select id="categoryDropdown" name="category" class="p-2 rounded-md border border-blue-300 bg-white text-black shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-52" disabled>
                 <option value="all" <%= "selected" if @selected_category == "all" %>>All</option>
                 <% [
                   "Angular Momentum", "Confidence Intervals", "Engineering Ethics",
@@ -85,8 +82,8 @@
             </div>
 
 
-            <div class="mt-6 md:mt-0">
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Apply</button>
+            <div class="mt-6 md:mt-0 self-end">
+              <button type="submit" class="btn btn-primary px-8 shadow-md hover:shadow-lg transition-all">Apply</button>
             </div>
           </div>
         <% end %>
@@ -140,7 +137,7 @@
             </p>
 
             <% if data[:attempted] == 0 %>
-              <p class="text-center text-gray-500 italic">This student hasn’t attempted anything in this category.</p>
+              <p class="text-center text-gray-500 italic">This student hasn't attempted anything in this category.</p>
             <% else %>
               <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <div class="flex-1 bg-gray-100 p-4 rounded shadow flex flex-col items-center">
@@ -785,5 +782,4 @@
 
 
 
-</body>
-</html>
+</div>
