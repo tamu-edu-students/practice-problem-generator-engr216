@@ -1,4 +1,4 @@
-Given('I am on the student history dashboard') do
+Given('I am on the student history dashboard to filter by semester') do
   # Ensure teacher exists
   @teacher ||= Teacher.find_by(email: 'teacher@example.com')
   @teacher ||= Teacher.create!(name: 'Test Teacher', email: 'teacher@example.com')

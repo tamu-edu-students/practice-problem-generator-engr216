@@ -115,8 +115,8 @@ Given('there are students in the {string} semester') do |semester_name|
   expect(Student.where(semester: @semester).count).to be_positive
 end
 
-When(/^I click the "(Apply|Drop All Students in .*)" button$/) do |button_text|
-  click_button button_text
+When('I click the "Drop All Students in {string}" button') do |semester_name|
+  click_button "Drop All Students in #{semester_name}"
 end
 
 Then('all students in the {string} semester should be deleted') do |semester_name|

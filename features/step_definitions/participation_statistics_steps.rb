@@ -1,4 +1,4 @@
-Given('I am on the student history dashboard') do
+Given('I am on the student history dashboard to see participation statistics') do
   visit '/teacher_dashboard/student_history_dashboard'
 end
 
