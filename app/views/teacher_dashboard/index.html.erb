@@ -28,6 +28,19 @@
 
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto pt-24 p-4 flex flex-col items-center min-h-screen">
+    <!-- Flash Messages -->
+    <% if flash[:notice] %>
+      <div class="alert alert-success w-full mb-6 p-4 rounded-lg bg-green-100 border-l-4 border-green-500 text-green-700">
+        <p><%= flash[:notice] %></p>
+      </div>
+    <% end %>
+    
+    <% if flash[:alert] %>
+      <div class="alert alert-error w-full mb-6 p-4 rounded-lg bg-red-100 border-l-4 border-red-500 text-red-700">
+        <p><%= flash[:alert] %></p>
+      </div>
+    <% end %>
+    
     <!-- Title just below the navbar -->
     <h1 class="w-full text-center text-5xl font-bold text-gray-800 mb-8">
       Teacher Dashboard
@@ -39,6 +52,9 @@
       </a>
       <a href="<%= student_history_dashboard_path %>" class="btn bg-gray-500 hover:bg-gray-600 text-white px-6 py-3">
         Student Problem History
+      </a>
+      <a href="<%= new_teacher_path %>" class="btn bg-blue-500 hover:bg-blue-600 text-white px-6 py-3">
+        Add New Teacher
       </a>
     </div>
   </main>
