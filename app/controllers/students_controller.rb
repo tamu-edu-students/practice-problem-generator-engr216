@@ -87,7 +87,7 @@ class StudentsController < ApplicationController
                  Semester.find_by(name: semester_param)
                end
 
-    authenticate = ActiveModel::Type::Boolean.new.cast(params[:authenticate])
+    authenticate = true
 
     Rails.logger.debug do
       "UPDATE_UIN DEBUG: student=#{student&.id}, teacher=#{teacher&.id}, " \
@@ -132,7 +132,7 @@ class StudentsController < ApplicationController
       update_attributes = {
         teacher_id: teacher.id,
         teacher: teacher,
-        authenticate: authenticate
+        authenticate: true
       }
 
       # Handle both semester object and semester_id
@@ -171,7 +171,7 @@ class StudentsController < ApplicationController
   end
 
   def load_semesters
-    @semesters = Semester.active.order(:name)
+    @semesters = Semester.order(:name)
   end
 
   def student_params
