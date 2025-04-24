@@ -1,33 +1,79 @@
 class MeasurementsAndErrorProblemsController < ApplicationController
-  # GET /measurements_and_error_problems/generate
   def generate
     @category = 'Measurement & Error'
-    @question = generate_measurements_error_question
+    tries = 0
 
-    # Store the current question in session for later validation
+    loop do
+      @question = generate_measurements_error_question
+      tries += 1
+      break unless (@question[:input_fields].blank? || @question[:input_fields].any?(&:nil?)) && tries < 5
+    end
+
+    Array(@question[:input_fields]).each do |field|
+      if field[:type] == "radio" && field[:options].is_a?(Array)
+        original_options = field[:options].dup
+        correct_label = @question[:answer]  # e.g., "A"
+
+        label_map = {
+          "A" => 0,
+          "B" => 1,
+          "C" => 2,
+          "D" => 3
+        }
+
+        if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
+          actual_value = original_options[label_map[correct_label]][:value]
+          @question[:answer] = actual_value
+        end
+
+        field[:options] = field[:options].shuffle
+      end
+    end
+
     session[:current_question] = @question.to_json
     session[:problem_start_time] = Time.current.to_s
-
-    # Render the view (which is located in app/views/practice_problems/)
     render 'practice_problems/measurements_error_problem'
   end
 
-  # POST /measurements_and_error_problems/check_answer
   def check_answer
     @category = 'Measurement & Error'
     @question = parse_question_from_session
 
     redirect_to generate_measurements_and_error_problems_path and return unless @question
 
-    # Check the answer and set a feedback message
-    @feedback_message = if handle_measurements_error
-                          'Correct, your answer is right!'
+    tolerance = 0.05
+    correct_ans = @question[:answer]
+    submitted_ans = params[:measurement_answer].to_s.strip
+
+    correct_letter = '?'
+    submitted_letter = '?'
+
+    if @question[:input_fields]&.any? { |f| f[:type] == "radio" }
+      field = @question[:input_fields].find { |f| f[:type] == "radio" }
+
+      correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
+      submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
+
+      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
+      submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
+    end
+
+    is_correct = false
+
+    if numeric?(submitted_ans) && numeric?(correct_ans)
+      is_correct = (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+    else
+      is_correct = submitted_ans == correct_ans.to_s.strip
+    end
+
+    save_answer_to_database(is_correct, submitted_ans)
+
+    @feedback_message = if is_correct
+                          "Correct, the answer #{submitted_letter} is right!"
                         else
-                          "Incorrect, the correct answer is #{@question[:answer]}."
+                          "Incorrect, the correct answer is #{correct_letter}."
                         end
 
-    save_answer_to_database(handle_measurements_error)
-    # Render the same view with the feedback displayed
     render 'practice_problems/measurements_error_problem'
   end
 
@@ -44,64 +90,47 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     nil
   end
 
-  def handle_measurements_error
-    user_answer = params[:measurement_answer]
-    correct_answer = @question[:answer]
-    user_answer == correct_answer
+  def numeric?(str)
+    Float(str)
+    true
+  rescue ArgumentError, TypeError
+    false
   end
 
-  def save_answer_to_database(is_correct)
-    # Rails.logger.debug { "Saving answer to database: correct=#{is_correct}" }
-
+  def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
-    # if student
-    #   Rails.logger.debug { "Student found: #{student.email}" }
-    # else
-    #   Rails.logger.debug { "No student found with ID: #{session[:user_id]}" }
-    #   return # Don't save if no student is logged in
-    # end
-
-    # Calculate time spent on the problem
     time_spent = nil
+
     if session[:problem_start_time]
       begin
         time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-        # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
       rescue StandardError => e
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
-    else
-      Rails.logger.debug { 'No problem start time available' }
     end
 
-    # Get user's answer based on the question type
-    # user_answer = params[:measurement_answer]
-    # Rails.logger.debug { "Extracted user answer: #{user_answer}" }
+    letter = '?'
+    final_value = submitted_value
 
-    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
+    if @question[:input_fields]&.any? { |f| f[:type] == "radio" }
+      field = @question[:input_fields].find { |f| f[:type] == "radio" }
+      index = field[:options]&.index { |opt| opt[:value] == submitted_value }
+      letter = index ? ('A'.ord + index).chr : '?'
+      final_value = letter
+    end
 
-    # Create and save the answer record
-    answer = Answer.create(
+    Answer.create!(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
       question_description: @question[:question],
       answer_choices: extract_answer_choices,
-      answer: params[:measurement_answer],
+      answer: final_value,
       correctness: is_correct,
-      student_email: student.email,
+      student_email: student&.email,
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
       time_spent: time_spent
     )
-    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
-
-    # if answer.save
-    #   # Success
-    # else
-    #   Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.inspect}" }
-    # end
-
-    # Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
   end
 
   def extract_answer_choices

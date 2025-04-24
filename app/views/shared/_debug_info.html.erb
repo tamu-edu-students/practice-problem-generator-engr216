@@ -24,7 +24,15 @@
     <% if @question[:debug_info] %>
       <div class="text-green-400"><%= @question[:debug_info] %></div>
     <% else %>
-      <div>Answer: <%= @question[:answer].inspect %></div>
+      <% if @question[:input_fields]&.any? { |f| f[:type] == "radio" } %>
+        <% field = @question[:input_fields].find { |f| f[:type] == "radio" } %>
+        <% correct_value = @question[:answer] %>
+        <% index = field[:options]&.index { |opt| opt[:value] == correct_value } %>
+        <% letter = index ? ('A'.ord + index).chr : '?' %>
+        <div>Answer: <%= letter %></div>
+      <% else %>
+        <div>Answer: <%= @question[:answer].inspect %></div>
+      <% end %>
       <% if @question[:parameters] && @question[:parameters].is_a?(Hash) %>
         <div>Parameters: <%= @question[:parameters].inspect %></div>
       <% end %>

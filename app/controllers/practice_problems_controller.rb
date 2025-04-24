@@ -3,7 +3,20 @@ class PracticeProblemsController < ApplicationController
   before_action :require_student_login
   # List unique category names from the questions table.
   def index
-    @categories = Question.distinct.pluck(:category)
+    @categories = [
+      "Angular Momentum",
+      "Confidence Intervals",
+      "Engineering Ethics",
+      "Experimental Statistics",
+      "Finite Differences",
+      "Harmonic Motion",
+      "Measurement & Error",
+      "Momentum & Collisions",
+      "Particle Statics",
+      "Propagation of Error",
+      "Rigid Body Statics",
+      "Universal Accounting Equation"
+    ]
     @semesters = semester_options
     @student = Student.find_by(id: session[:user_id])
     # Only prompt if the student needs to select a teacher AND semester
