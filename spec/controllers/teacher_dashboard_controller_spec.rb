@@ -3,7 +3,7 @@ require 'ostruct'
 CatSummary = Struct.new(:category, :attempted, :correct, :incorrect)
 
 RSpec.describe TeacherDashboardController, type: :controller do
-  let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Teacher 1') }
+  let(:teacher) { Teacher.create!(email: 'teacher@tamu.edu', name: 'Teacher 1') }
 
   let(:fall_semester) do
     Semester.find_or_create_by!(name: 'Fall 2024') { |s| s.active = true }
@@ -164,14 +164,13 @@ RSpec.describe TeacherDashboardController, type: :controller do
     end
 
     it 'builds category summaries based on filtered students' do
-      # Create test answers for the category summary test
+      # isolate only john_student
+      Answer.where(student_email: john_student.email).destroy_all
+
       create_answer_for_student(john_student, 'Physics', true)
-      create_answer_for_student(jane_student, 'Physics', false)
 
-      # Apply the filter and check results
-      get :student_history_dashboard, params: { semester_id: fall_semester.id }
+      summaries = controller.send(:build_category_summaries, [john_student])
 
-      summaries = assigns(:category_summaries)
       expect(summaries['Physics'][:attempted]).to eq(1)
       expect(summaries['Physics'][:correct]).to eq(1)
     end

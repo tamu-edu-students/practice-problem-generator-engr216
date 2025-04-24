@@ -1,4 +1,4 @@
-<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5;">
 
   <!-- Navbar -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
@@ -29,6 +29,15 @@
       <div class="bg-gray-800 p-6 rounded-lg">
         <%= form_with model: @student, url: settings_path, method: :put, local: true do |f| %>
           <ul class="space-y-6">
+
+            <!-- Name Row -->
+            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
+              <span class="font-medium text-white">Name</span>
+              <span class="text-white"><%= "#{@student.first_name} #{@student.last_name}" %></span>
+            </li>
+
+
+
             <!-- Email Row -->
             <li class="flex justify-between items-center border-b border-gray-700 pb-4">
               <span class="font-medium text-white">Email</span>
@@ -41,7 +50,7 @@
               <%= f.select :teacher_id,
                 options_from_collection_for_select(@teachers, :id, :name, @student.teacher_id),
                 { prompt: "Select a teacher" },
-                class: "select select-sm bg-gray-700 text-white border-gray-600"
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
               %>
             </li>
             
@@ -51,28 +60,8 @@
               <%= f.select :semester_id,
                 options_from_collection_for_select(@semesters, :id, :name, @student.semester_id),
                 { prompt: "Select a semester" },
-                class: "select select-sm bg-gray-700 text-white border-gray-600"
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
               %>
-            </li>
-
-            <!-- Authenticate Toggle Row with info icon and status label -->
-            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
-              <div class="flex items-center space-x-2">
-                <span class="font-medium text-white">Authenticate Teacher</span>
-
-                <!-- Info icon -->
-                <div class="tooltip tooltip-bottom" data-tip="When enabled, your linked teacher can view your progress and activity.">
-                  <span class="text-sm font-bold bg-gray-600 text-white rounded-full px-2 cursor-pointer">i</span>
-                </div>
-              </div>
-
-              <!-- Toggle + Status Label -->
-              <div class="flex items-center space-x-3">
-                <%= f.check_box :authenticate, class: "toggle toggle-primary toggle-lg" %>
-                <span class="font-semibold <%= @student.authenticate ? 'text-blue-400' : 'text-red-400' %>">
-                  <%= @student.authenticate ? 'Enabled' : 'Disabled' %>
-                </span>
-              </div>
             </li>
 
             <!-- Save Button Row -->
