@@ -595,51 +595,55 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       <% @student_category_pie_data.each do |cat, data| %>
-        new Chart(document.getElementById("student-cat-attempted-<%= cat.parameterize %>"), {
-          type: 'pie',
-          data: {
-            labels: ['Attempted', 'Not Attempted'],
-            datasets: [{
-              data: [<%= data[:attempted] %>, <%= data[:not_attempted] %>],
-              backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(211, 211, 211, 0.5)']
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: (ctx) => `${ctx.label}: ${ctx.parsed}`
-                }
-              }
-            }
-          }
-        });
+        // only attempt to draw if this student has actually attempted something
+        if (<%= data[:attempted] %> > 0) {
+          const attemptedEl = document.getElementById("student-cat-attempted-<%= cat.parameterize %>");
+          const correctEl   = document.getElementById("student-cat-correct-<%= cat.parameterize %>");
 
-        new Chart(document.getElementById("student-cat-correct-<%= cat.parameterize %>"), {
-          type: 'pie',
-          data: {
-            labels: ['Correct', 'Incorrect'],
-            datasets: [{
-              data: [<%= data[:correct] %>, <%= data[:incorrect] %>],
-              backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.6)']
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: (ctx) => `${ctx.label}: ${ctx.parsed}`
+          if (attemptedEl) {
+            new Chart(attemptedEl, {
+              type: 'pie',
+              data: {
+                labels: ['Attempted', 'Not Attempted'],
+                datasets: [{
+                  data: [<%= data[:attempted] %>, <%= data[:not_attempted] %>],
+                  backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(211, 211, 211, 0.5)']
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed}` } }
                 }
               }
-            }
+            });
           }
-        });
+
+          if (correctEl) {
+            new Chart(correctEl, {
+              type: 'pie',
+              data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                  data: [<%= data[:correct] %>, <%= data[:incorrect] %>],
+                  backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.6)']
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed}` } }
+                }
+              }
+            });
+          }
+        }
       <% end %>
     });
   </script>
 <% end %>
+
+          
 <% if @selected_student_email == "all" && @selected_category.present? && @selected_category != "all" %>
   <% @category_question_data.each do |template_id, data| %>
     <script>
