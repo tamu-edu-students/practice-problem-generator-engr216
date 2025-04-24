@@ -110,12 +110,10 @@ class AngularMomentumProblemsController < ApplicationController
     # Calculate time spent on the problem
     time_spent = nil
     if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-        # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
-      rescue StandardError => e
-      end
-    else
+
+      time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+      # Rails.logger.debug { "Time spent on problem: #{time_spent} seconds" }
+
     end
 
     # Get user's answer based on the question type

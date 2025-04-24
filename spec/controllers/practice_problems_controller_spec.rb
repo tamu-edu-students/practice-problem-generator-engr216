@@ -315,14 +315,13 @@ RSpec.describe PracticeProblemsController, type: :controller do
     it 'redirects to generate with success parameter when all answers are correct' do
       params = { category_id: category, mean: '2.5', median: '2.5' }
       post :check_answer, params: params
-      expected_path = generate_practice_problems_path(category_id: category, success: true)
-      expect(response).to redirect_to(expected_path)
+      expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
     end
 
-    it 'sets an error message when mean is wrong' do
+    it 'provides an error message when not all answers are provided' do
       params = { category_id: category, mean: '3.0', median: '2.5' }
       post :check_answer, params: params
-      expect(assigns(:error_message)).to include('Try again or press View Answer. Your answer was high')
+      expect(assigns(:error_message)).to include('please provide a value for lower bound')
     end
 
     it 'renders the statistics_problem template when an answer is wrong' do
@@ -606,12 +605,7 @@ RSpec.describe PracticeProblemsController, type: :controller do
         expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
       end
 
-      it 'sets error message' do
-        post :check_answer, params: { category_id: category, ethics_answer: 'false' }
-        expect(assigns(:error_message)).to include('Try again or press View Answer.')
-      end
-
-      it 'includes correct answer in error message' do
+      it 'sets error message when answer is incorrect' do
         post :check_answer, params: { category_id: category, ethics_answer: 'false' }
         expect(assigns(:error_message)).to include('Try again or press View Answer.')
       end

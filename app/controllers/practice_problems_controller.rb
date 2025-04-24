@@ -729,10 +729,9 @@ class PracticeProblemsController < ApplicationController
     # Calculate time spent on the problem
     time_spent = nil
     if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-      rescue StandardError => e
-      end
+
+      time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+
     end
 
     # Get user's answer based on the question type
@@ -740,7 +739,7 @@ class PracticeProblemsController < ApplicationController
     user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
-    answer = Answer.create(
+    Answer.create(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
@@ -791,6 +790,23 @@ class PracticeProblemsController < ApplicationController
     @question[:answer_choices].to_json
   rescue StandardError
     nil
+  end
+
+  def check_confidence_interval_answers
+    answers = @question[:answers]
+    initialize_debug_info
+    return handle_blank_inputs if blank_input_present?
+
+    extract_and_log_problem_parameters if @question[:question].present?
+    check_confidence_bounds(answers)
+    session[:debug_info] = @debug_info
+    if @error_message.nil?
+      redirect_to_success
+    else
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
+      nil
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength, Layout/LineLength
