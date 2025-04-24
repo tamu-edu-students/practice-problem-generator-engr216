@@ -40,7 +40,9 @@ teachers_data = [
   { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk' },
   { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani' },
   { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarapu' },
-  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar' }
+  { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar' },
+  { email: 'susindar@tamu.edu', first_name: 'philip', last_name: 'ritchey' },
+  { email: 'pcr@tamu.edu', first_name: 'sahinya', last_name: 'susindar' }
 ]
 
 teachers = teachers_data.map do |teacher_data|
@@ -195,7 +197,7 @@ categories = [
 Student.find_each do |student|
   categories.each do |category|
     # Generate 10-20 questions per category for each student.
-    rand(10..20).times do
+    rand(0..20).times do
       generated_question = generate_question_for(category)
       # Skip if no valid question is generated.
       next unless generated_question && generated_question[:question].present?
