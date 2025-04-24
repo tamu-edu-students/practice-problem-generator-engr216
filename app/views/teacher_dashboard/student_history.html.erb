@@ -27,8 +27,10 @@
     </div>
 
     <!-- Back Arrow -->
-    <% back_url = params[:semester_id].present? ? student_history_dashboard_path(semester_id: params[:semester_id]) : student_history_dashboard_path %>
-    <%= link_to "←", back_url, id: "back-arrow", class: "back-arrow" %>
+    <%= link_to "←", teacher_dashboard_path, 
+      id: "back-arrow",
+      class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+      style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
 
     <!-- Title -->
     <main>

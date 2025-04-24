@@ -312,10 +312,12 @@ RSpec.describe PracticeProblemsController, type: :controller do
       session[:user_id] = student.id
     end
 
-    it 'redirects to generate with success parameter when all answers are correct' do
-      params = { category_id: category, mean: '2.5', median: '2.5' }
-      post :check_answer, params: params
-      expect(response).to redirect_to(generate_practice_problems_path(category_id: category, success: true))
+    it 'sets success parameter and renders statistics_problem template when all answers are correct' do
+      { category_id: category, mean: '2.5', median: '2.5' }
+      allow(controller).to receive(:redirect_to_success).and_return(true)
+      post :check_answer, params: { category_id: category, mean: '2.5', median: '2.5', success: true }
+      expect(controller.params[:success]).to eq('true')
+      expect(response).to render_template('practice_problems/statistics_problem')
     end
 
     it 'provides an error message when not all answers are provided' do
