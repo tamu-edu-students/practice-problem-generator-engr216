@@ -8,10 +8,6 @@ class PracticeProblemsController < ApplicationController
     @student = Student.find_by(id: session[:user_id])
     # Only prompt if the student needs to select a teacher AND semester
     @prompt_for_uin = @student&.teacher_id.nil? || @student&.semester_id.nil?
-    Rails.logger.debug { "Session User ID: #{session[:user_id]}" }
-    Rails.logger.debug { "Student UIN: #{@student&.uin}" }
-    Rails.logger.debug { "Student Semester: #{@student&.semester_id}" }
-    Rails.logger.debug { "Student Teacher: #{@student&.teacher_id}" }
     @teachers = Teacher.all
     @semesters = Semester.order(:name)
 
@@ -89,7 +85,6 @@ class PracticeProblemsController < ApplicationController
       @show_answer = true
       @disable_check_answer = true
     else
-      Rails.logger.error { 'No question found in session, redirecting to generate path' }
       redirect_to(generate_practice_problems_path(category_id: @category))
     end
 
@@ -370,26 +365,6 @@ class PracticeProblemsController < ApplicationController
   end
 
   def check_data_statistics_answers
-    answers = @question[:answers]
-
-    all_correct = answers.each_key.all? do |key|
-      next true if params[key].blank?
-
-      user_val = params[key].to_f
-      (user_val - answers[key]).abs <= 0.01
-    end
-    unless all_correct
-      answers.each_key do |key|
-        next unless answer_incorrect?(key, answers[key])
-
-        set_error_message(key, params[key].to_f, answers[key])
-        break
-      end
-    end
-    redirect_to_success if all_correct
-  end
-
-  def check_confidence_interval_answers
     answers = @question[:answers]
     initialize_debug_info
     return handle_blank_inputs if blank_input_present?
@@ -754,16 +729,13 @@ class PracticeProblemsController < ApplicationController
     # Calculate time spent on the problem
     time_spent = nil
     if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-      rescue StandardError => e
-        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
-      end
+
+      time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+
     end
 
     # Get user's answer based on the question type
     user_answer = extract_user_answer
-    # Rails.logger.debug { "Extracted user answer: |#{user_answer}|" }
     user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
@@ -818,6 +790,23 @@ class PracticeProblemsController < ApplicationController
     @question[:answer_choices].to_json
   rescue StandardError
     nil
+  end
+
+  def check_confidence_interval_answers
+    answers = @question[:answers]
+    initialize_debug_info
+    return handle_blank_inputs if blank_input_present?
+
+    extract_and_log_problem_parameters if @question[:question].present?
+    check_confidence_bounds(answers)
+    session[:debug_info] = @debug_info
+    if @error_message.nil?
+      redirect_to_success
+    else
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
+      nil
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength, Layout/LineLength

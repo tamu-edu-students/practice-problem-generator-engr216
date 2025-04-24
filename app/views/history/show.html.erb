@@ -1,8 +1,6 @@
-<head>
+<% content_for :head do %>
   <%= stylesheet_link_tag 'student_history', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-</head>
+<% end %>
 
 <div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5;">
   <!-- Navbar (Fixed at Top) -->
@@ -20,8 +18,8 @@
           Account ▼
         </button>
         <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="/settings" class="text-white hover:bg-blue-500">Settings</a></li>
+          <li><a href="/logout" class="text-white hover:bg-blue-500">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -59,17 +57,21 @@
     </div>
     
     <!-- Questions Table Container -->
-    <div class="w-full max-w-6xl bg-black text-white shadow-lg rounded-lg p-6 overflow-hidden">
+    <div class="w-full max-w-7xl bg-black text-white shadow-lg rounded-lg p-6 overflow-hidden">
       <% if @completed_questions.any? %>
         <div class="overflow-x-auto">
-          <table class="table w-full table-fixed">
+          <table
+            class="table table-fixed w-full"
+            style="table-layout: auto !important;"
+          >
             <thead class="sticky top-0 bg-gray-900 z-10">
               <tr class="text-white border-b border-gray-700">
-                <th class="p-2 text-left w-40 sticky left-0 bg-gray-900">DATE</th>
-                <th class="p-2 text-left w-1/2">QUESTION</th>
-                <th class="p-2 text-center w-28">YOUR ANSWER</th>
-                <th class="p-2 text-center w-28">RESULT</th>
-                <th class="p-2 text-center w-20">TIME</th>
+                <th class="p-2 text-left w-24 sticky left-0 bg-gray-900">DATE</th>
+                <th class="p-2 text-left w-1/3">QUESTION</th>
+                <th class="p-2 text-center w-24">YOUR ANSWER</th>
+                <th class="p-2 text-center w-24">RESULT</th>
+                <th class="p-2 text-center w-24">TIME SPENT</th>
+                <th class="p-2 text-center w-28">TIME COMPLETED</th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +93,10 @@
                           <%= answer.category %>
                         </span>
                       <% end %>
-                      <span class="text-white"><%= truncate(answer.question_description, length: 80, omission: "...") %></span>
+                      <span class="text-gray-300 text-sm cursor-pointer hover:text-white transition-colors" 
+                            onclick="showQuestionPopup(this, '<%= j answer.question_description %>')">
+                        <%= truncate(answer.question_description, length: 50, omission: "...") %>
+                      </span>
                     </div>
                   </td>
                   <td class="p-3 text-center">
@@ -104,6 +109,9 @@
                   </td>
                   <td class="p-3 text-center text-sm text-gray-300">
                     <%= answer.time_spent || "N/A" %>
+                  </td>
+                  <td class="p-3 text-center text-sm text-gray-300">
+                    <%= answer.created_at.strftime("%H:%M:%S") %>
                   </td>
                 </tr>
               <% end %>
@@ -119,3 +127,47 @@
     </div>
   </div>
 </div>
+
+<!-- Question Details Popup -->
+<div id="questionPopup" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 relative">
+    <button onclick="closeQuestionPopup()" class="absolute top-2 right-3 text-gray-400 hover:text-white text-2xl">&times;</button>
+    <h3 class="text-xl font-bold text-white mb-4">Question Details</h3>
+    <p id="popupQuestionText" class="text-gray-200"></p>
+    <div class="mt-6 text-right">
+      <button onclick="closeQuestionPopup()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showQuestionPopup(element, questionText) {
+    // Decode any HTML entities
+    const decodedText = document.createElement('textarea');
+    decodedText.innerHTML = questionText;
+    const cleanText = decodedText.value;
+    
+    document.getElementById('popupQuestionText').textContent = cleanText;
+    document.getElementById('questionPopup').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+  
+  function closeQuestionPopup() {
+    document.getElementById('questionPopup').classList.add('hidden');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+  
+  // Close popup when clicking outside the content
+  document.getElementById('questionPopup').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeQuestionPopup();
+    }
+  });
+  
+  // Close popup with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('questionPopup').classList.contains('hidden')) {
+      closeQuestionPopup();
+    }
+  });
+</script>

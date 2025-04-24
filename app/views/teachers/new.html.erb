@@ -1,32 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Add New Teacher</title>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-700 font-sans" style="background-color: #9aa8c5;">
+<% content_for :title do %>Add New Teacher<% end %>
+
+<div class="min-h-screen w-full flex flex-col" style="background-color: #9aa8c5;">
   <!-- Navbar -->
   <nav class="navbar bg-black text-white px-6 fixed top-0 z-50 w-full">
     <div class="flex-1">
-      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 transition">
+      <a href="/teacher_dashboard" class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
         Dashboard
       </a>
     </div>
     <div class="flex-none">
       <div class="dropdown dropdown-end">
-        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 transition">
+        <button class="btn bg-transparent text-white border-transparent hover:border-blue-700 hover:bg-blue-500 hover:text-white transition">
           Account ▼
         </button>
         <ul class="dropdown-content menu p-2 shadow bg-black text-white rounded-box w-36">
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="/logout" class="text-white hover:bg-blue-500">Logout</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
+  <!-- Fixed Floating Back Arrow -->
+  <%= link_to "←", teacher_dashboard_path, 
+    id: "back-arrow",
+    class: "fixed left-5 top-24 text-black text-2xl inline-block z-50", 
+    style: "text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;" %>
+
   <!-- Main Content -->
-  <main class="max-w-3xl mx-auto pt-24 p-4 flex flex-col items-center min-h-screen">
+  <main class="max-w-4xl mx-auto pt-24 p-4 flex flex-col items-center min-h-screen">
     <!-- Title just below the navbar -->
     <h1 class="w-full text-center text-4xl font-bold text-gray-800 mb-8">
       Add New Teacher
@@ -48,16 +49,16 @@
     <div class="bg-white shadow-md rounded-lg p-8 w-full">
       <%= form_with(model: @teacher, local: true, class: "space-y-6") do |form| %>
         <div class="form-control">
-          <%= form.label :name, class: "label" %>
-          <%= form.text_field :name, class: "input input-bordered w-full", required: true, 
+          <%= form.label :name, class: "label text-gray-700" %>
+          <%= form.text_field :name, class: "input input-bordered w-full bg-white text-black placeholder-gray-500", required: true, 
               placeholder: "Enter teacher's full name" %>
         </div>
 
         <div class="form-control">
-          <%= form.label :email, class: "label" %>
-          <%= form.email_field :email, class: "input input-bordered w-full", required: true,
+          <%= form.label :email, class: "label text-gray-700" %>
+          <%= form.email_field :email, class: "input input-bordered w-full bg-white text-black placeholder-gray-500", required: true,
               placeholder: "Enter teacher's @tamu.edu email" %>
-          <p class="text-sm text-gray-500 mt-1">Email must be a valid @tamu.edu address</p>
+          <p class="text-sm text-gray-600 mt-1">Email must be a valid @tamu.edu address</p>
         </div>
 
         <div class="form-control mt-8">
@@ -70,5 +71,4 @@
       </div>
     </div>
   </main>
-</body>
-</html>
+</div>
