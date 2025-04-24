@@ -64,6 +64,7 @@ class ParticleStaticsProblemGenerator
     [{ label: 'Your Answer', key: 'ps_answer', type: 'radio', options: data[:options] }]
   end
 
+  # rubocop:disable Metrics/MethodLength
   def static_questions
     questions = [
       {
@@ -122,6 +123,7 @@ class ParticleStaticsProblemGenerator
     ]
     questions.map { |q| generate_ps_problem_from_data(q) }
   end
+  # rubocop:enable Metrics/MethodLength
 
   def dynamic_questions
     [

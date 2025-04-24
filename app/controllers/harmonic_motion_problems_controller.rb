@@ -1,4 +1,5 @@
 class HarmonicMotionProblemsController < ApplicationController
+  # rubocop:disable Metrics/AbcSize
   def generate
     @category = 'Harmonic Motion'
     tries = 0
@@ -10,30 +11,31 @@ class HarmonicMotionProblemsController < ApplicationController
     end
 
     Array(@question[:input_fields]).each do |field|
-      if field[:type] == "radio" && field[:options].is_a?(Array)
-        original_options = field[:options].dup
-        correct_label = @question[:answer]  # e.g., "A"
+      next unless field[:type] == 'radio' && field[:options].is_a?(Array)
 
-        label_map = {
-          "A" => 0,
-          "B" => 1,
-          "C" => 2,
-          "D" => 3
-        }
+      original_options = field[:options].dup
+      correct_label = @question[:answer] # e.g., "A"
 
-        if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
-          actual_value = original_options[label_map[correct_label]][:value]
-          @question[:answer] = actual_value
-        end
+      label_map = {
+        'A' => 0,
+        'B' => 1,
+        'C' => 2,
+        'D' => 3
+      }
 
-        field[:options] = field[:options].shuffle
+      if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
+        actual_value = original_options[label_map[correct_label]][:value]
+        @question[:answer] = actual_value
       end
+
+      field[:options] = field[:options].shuffle
     end
 
     session[:current_question] = @question.to_json
     session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/harmonic_motion_problem'
   end
+  # rubocop:enable Metrics/AbcSize
 
   def check_answer
     @category = 'Harmonic Motion'
@@ -78,13 +80,14 @@ class HarmonicMotionProblemsController < ApplicationController
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def check_single_answer(correct_ans, tolerance)
     submitted_ans = params[:shm_answer].to_s.strip
     correct_letter = '?'
     submitted_letter = '?'
 
-    if @question[:input_fields]&.any? { |f| f[:type] == "radio" }
-      field = @question[:input_fields].find { |f| f[:type] == "radio" }
+    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
 
       correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
       submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
@@ -93,13 +96,11 @@ class HarmonicMotionProblemsController < ApplicationController
       submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
     end
 
-    is_correct = false
-
-    if numeric?(submitted_ans) && numeric?(correct_ans)
-      is_correct = (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
-    else
-      is_correct = submitted_ans == correct_ans.to_s.strip
-    end
+    is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
+                   (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+                 else
+                   submitted_ans == correct_ans.to_s.strip
+                 end
 
     save_answer_to_database(is_correct, submitted_ans)
 
@@ -110,6 +111,7 @@ class HarmonicMotionProblemsController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
   def numeric?(str)
     Float(str)
     true
@@ -117,6 +119,7 @@ class HarmonicMotionProblemsController < ApplicationController
     false
   end
 
+  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
     time_spent = nil
@@ -128,12 +131,10 @@ class HarmonicMotionProblemsController < ApplicationController
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
     end
-
-    letter = '?'
     final_value = submitted_value
 
-    if @question[:input_fields]&.any? { |f| f[:type] == "radio" }
-      field = @question[:input_fields].find { |f| f[:type] == "radio" }
+    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
       index = field[:options]&.index { |opt| opt[:value] == submitted_value }
       letter = index ? ('A'.ord + index).chr : '?'
       final_value = letter
@@ -153,6 +154,7 @@ class HarmonicMotionProblemsController < ApplicationController
     )
   end
 
+  # rubocop:enable Metrics/AbcSize
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]
 

@@ -4,18 +4,18 @@ class PracticeProblemsController < ApplicationController
   # List unique category names from the questions table.
   def index
     @categories = [
-      "Angular Momentum",
-      "Confidence Intervals",
-      "Engineering Ethics",
-      "Experimental Statistics",
-      "Finite Differences",
-      "Harmonic Motion",
-      "Measurement & Error",
-      "Momentum & Collisions",
-      "Particle Statics",
-      "Propagation of Error",
-      "Rigid Body Statics",
-      "Universal Accounting Equation"
+      'Angular Momentum',
+      'Confidence Intervals',
+      'Engineering Ethics',
+      'Experimental Statistics',
+      'Finite Differences',
+      'Harmonic Motion',
+      'Measurement & Error',
+      'Momentum & Collisions',
+      'Particle Statics',
+      'Propagation of Error',
+      'Rigid Body Statics',
+      'Universal Accounting Equation'
     ]
     @semesters = semester_options
     @student = Student.find_by(id: session[:user_id])
