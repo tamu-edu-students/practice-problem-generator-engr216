@@ -43,6 +43,10 @@ class MeasurementsAndErrorProblemsController < ApplicationController
                         end
 
     save_answer_to_database(handle_measurements_error) if handle_measurements_error
+
+    # Disable the view answer button if the answer is correct
+    @disable_view_answer = true if @feedback_message.include?('Correct')
+
     # Render the same view with the feedback displayed
     render 'practice_problems/measurements_error_problem'
   end

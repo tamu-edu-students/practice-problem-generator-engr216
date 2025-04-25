@@ -29,6 +29,10 @@ class RigidBodyStaticsProblemsController < ApplicationController
     tolerance = 0.05
 
     @feedback_message = evaluate_answer(@question[:answer], tolerance)
+
+    # Disable the view answer button if the answer is correct
+    @disable_view_answer = true if @feedback_message.include?('Correct')
+
     render 'practice_problems/rigid_body_statics_problem'
   end
 
