@@ -6,6 +6,7 @@ Feature: Category Difficulty Statistics and Visualization
 
   Background:
     Given I am logged in as a teacher
+    And I have a semester named "Fall 2024"
     And I am on the student history dashboard
     And I have selected "All" for both student and category
 

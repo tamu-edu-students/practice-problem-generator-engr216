@@ -1,11 +1,12 @@
 Feature: Filter Student Statistics by Semester
-
   As a teacher
   I want to filter student statistics by semester
   So that I can analyze class performance for specific academic terms
 
   Background:
     Given I am logged in as a teacher
+    And I have a semester named "Fall 2024"
+    And I have students enrolled in "Fall 2024"
     And I am on the student history dashboard
 
   Scenario: View statistics for all semesters
@@ -27,4 +28,4 @@ Feature: Filter Student Statistics by Semester
     When I select "Fall 2024" from the semester dropdown
     And I search for "Smith" in the search field
     Then I should see only "Fall 2024" students with "Smith" in their name or email
-    And the semester filter should be maintained 
+    And the semester filter should be maintained
