@@ -14,14 +14,9 @@ class HarmonicMotionProblemsController < ApplicationController
       next unless field[:type] == 'radio' && field[:options].is_a?(Array)
 
       original_options = field[:options].dup
-      correct_label = @question[:answer] # e.g., "A"
+      correct_label = @question[:answer]
 
-      label_map = {
-        'A' => 0,
-        'B' => 1,
-        'C' => 2,
-        'D' => 3
-      }
+      label_map = { 'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3 }
 
       if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
         actual_value = original_options[label_map[correct_label]][:value]
@@ -69,6 +64,7 @@ class HarmonicMotionProblemsController < ApplicationController
     rescue ArgumentError, TypeError
       false
     end
+
     submitted_ans_str = submitted_answers.join(', ')
 
     if all_correct
@@ -81,10 +77,9 @@ class HarmonicMotionProblemsController < ApplicationController
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/PerceivedComplexity
   def check_single_answer(correct_ans, tolerance)
     submitted_ans = params[:shm_answer].to_s.strip
-    correct_letter = '?'
-    submitted_letter = '?'
 
     if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
       field = @question[:input_fields].find { |f| f[:type] == 'radio' }
@@ -94,24 +89,35 @@ class HarmonicMotionProblemsController < ApplicationController
 
       correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
       submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
-    end
 
-    is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
-                   (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
-                 else
-                   submitted_ans == correct_ans.to_s.strip
-                 end
+      is_correct = submitted_index == correct_index
 
-    save_answer_to_database(is_correct, submitted_ans)
+      save_answer_to_database(is_correct, submitted_ans)
 
-    if is_correct
-      "Correct, the answer #{submitted_letter} is right!"
+      if is_correct
+        "Correct, the answer #{submitted_letter} is right!"
+      else
+        "Incorrect, the correct answer is #{correct_letter}."
+      end
     else
-      "Incorrect, the correct answer is #{correct_letter}."
+      # Handle numeric or string answers properly
+      is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
+                     (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+                   else
+                     submitted_ans == correct_ans.to_s.strip
+                   end
+
+      save_answer_to_database(is_correct, submitted_ans)
+
+      if is_correct
+        "Correct, the answer #{correct_ans} is right!"
+      else
+        "Incorrect, the correct answer is #{correct_ans}."
+      end
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
-  # rubocop:enable Metrics/AbcSize
   def numeric?(str)
     Float(str)
     true
@@ -119,7 +125,6 @@ class HarmonicMotionProblemsController < ApplicationController
     false
   end
 
-  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
     time_spent = nil
@@ -131,6 +136,7 @@ class HarmonicMotionProblemsController < ApplicationController
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
     end
+
     final_value = submitted_value
 
     if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
@@ -153,8 +159,8 @@ class HarmonicMotionProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
-
   # rubocop:enable Metrics/AbcSize
+
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]
 

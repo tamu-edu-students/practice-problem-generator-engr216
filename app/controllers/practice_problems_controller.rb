@@ -3,30 +3,11 @@ class PracticeProblemsController < ApplicationController
   before_action :require_student_login
   # List unique category names from the questions table.
   def index
-    @categories = [
-      'Angular Momentum',
-      'Confidence Intervals',
-      'Engineering Ethics',
-      'Experimental Statistics',
-      'Finite Differences',
-      'Harmonic Motion',
-      'Measurement & Error',
-      'Momentum & Collisions',
-      'Particle Statics',
-      'Propagation of Error',
-      'Rigid Body Statics',
-      'Universal Accounting Equation'
-    ]
-    @semesters = semester_options
-    @student = Student.find_by(id: session[:user_id])
-    # Only prompt if the student needs to select a teacher AND semester
-    @prompt_for_uin = @student&.teacher_id.nil? || @student&.semester_id.nil?
-    Rails.logger.debug { "Session User ID: #{session[:user_id]}" }
-    Rails.logger.debug { "Student UIN: #{@student&.uin}" }
-    Rails.logger.debug { "Student Semester: #{@student&.semester_id}" }
-    Rails.logger.debug { "Student Teacher: #{@student&.teacher_id}" }
-    @teachers = Teacher.all
+    @categories = Question.distinct.pluck(:category).sort
     @semesters = Semester.active.order(:name)
+    @teachers = Teacher.all # ← Add this line back
+    @student = Student.find_by(id: session[:user_id])
+    @prompt_for_uin = @student&.teacher_id.nil? || @student&.semester_id.nil?
 
     render :index
   end

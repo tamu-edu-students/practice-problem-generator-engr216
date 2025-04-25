@@ -1,5 +1,3 @@
-# app/controllers/angular_momentum_problems_controller.rb
-
 class AngularMomentumProblemsController < ApplicationController
   # rubocop:disable Metrics/AbcSize
   def generate
@@ -15,7 +13,6 @@ class AngularMomentumProblemsController < ApplicationController
     Array(@question[:input_fields]).each do |field|
       next unless field[:type] == 'radio' && field[:options].is_a?(Array)
 
-      # Handle answer like "A", "B", etc.
       original_options = field[:options].dup
       correct_label = @question[:answer] # e.g., "A"
 
@@ -31,7 +28,6 @@ class AngularMomentumProblemsController < ApplicationController
         @question[:answer] = actual_value
       end
 
-      # Shuffle AFTER getting the correct value
       field[:options] = field[:options].shuffle
     end
 
@@ -86,12 +82,10 @@ class AngularMomentumProblemsController < ApplicationController
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/PerceivedComplexity
   def check_single_answer(correct_ans, tolerance)
     submitted_ans = params[:am_answer].to_s.strip
-    correct_letter = '?'
-    submitted_letter = '?'
 
-    # Check if it's a multiple choice (radio)
     if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
       field = @question[:input_fields].find { |f| f[:type] == 'radio' }
 
@@ -100,32 +94,34 @@ class AngularMomentumProblemsController < ApplicationController
 
       correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
       submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
-    end
 
-    is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
-                   (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
-                 else
-                   submitted_ans == correct_ans.to_s.strip
-                 end
+      is_correct = submitted_index == correct_index
 
-    save_answer_to_database(is_correct, submitted_ans)
+      save_answer_to_database(is_correct, submitted_ans)
 
-    if is_correct
-      "Correct, the answer #{submitted_letter} is right!"
+      if is_correct
+        "Correct, the answer #{submitted_letter} is right!"
+      else
+        "Incorrect, the correct answer is #{correct_letter}."
+      end
     else
-      "Incorrect, the correct answer is #{correct_letter}."
+      # Handle numeric or string answers
+      is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
+                     (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+                   else
+                     submitted_ans == correct_ans.to_s.strip
+                   end
+
+      save_answer_to_database(is_correct, submitted_ans)
+
+      if is_correct
+        "Correct, the answer #{correct_ans} is right!"
+      else
+        "Incorrect, the correct answer is #{correct_ans}."
+      end
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
-  def numeric?(str)
-    Float(str)
-    true
-  rescue ArgumentError, TypeError
-    false
-  end
-
-  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
     time_spent = nil
@@ -138,7 +134,6 @@ class AngularMomentumProblemsController < ApplicationController
       end
     end
 
-    # Handle radio button (multiple choice) saving as letter
     final_value = submitted_value
 
     if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
@@ -162,6 +157,7 @@ class AngularMomentumProblemsController < ApplicationController
     )
   end
   # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]
@@ -169,5 +165,12 @@ class AngularMomentumProblemsController < ApplicationController
     @question[:answer_choices].to_json
   rescue StandardError
     nil
+  end
+
+  def numeric?(str)
+    Float(str)
+    true
+  rescue ArgumentError, TypeError
+    false
   end
 end

@@ -14,14 +14,9 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       next unless field[:type] == 'radio' && field[:options].is_a?(Array)
 
       original_options = field[:options].dup
-      correct_label = @question[:answer] # e.g., "A"
+      correct_label = @question[:answer]
 
-      label_map = {
-        'A' => 0,
-        'B' => 1,
-        'C' => 2,
-        'D' => 3
-      }
+      label_map = { 'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3 }
 
       if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
         actual_value = original_options[label_map[correct_label]][:value]
@@ -35,10 +30,9 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/measurements_error_problem'
   end
-
   # rubocop:enable Metrics/AbcSize
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/PerceivedComplexity
+
+  # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
   def check_answer
     @category = 'Measurement & Error'
     @question = parse_question_from_session
@@ -49,19 +43,6 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     correct_ans = @question[:answer]
     submitted_ans = params[:measurement_answer].to_s.strip
 
-    correct_letter = '?'
-    submitted_letter = '?'
-
-    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
-      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
-
-      correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
-      submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
-
-      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
-      submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
-    end
-
     is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
                    (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
                  else
@@ -70,16 +51,32 @@ class MeasurementsAndErrorProblemsController < ApplicationController
 
     save_answer_to_database(is_correct, submitted_ans)
 
-    @feedback_message = if is_correct
-                          "Correct, the answer #{submitted_letter} is right!"
-                        else
-                          "Incorrect, the correct answer is #{correct_letter}."
-                        end
+    # 🎯 Adjusted feedback logic
+    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+
+      correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
+      submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
+
+      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
+      submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
+
+      @feedback_message = if is_correct
+                            "Correct, the answer #{submitted_letter} is right!"
+                          else
+                            "Incorrect, the correct answer is #{correct_letter}."
+                          end
+    else
+      @feedback_message = if is_correct
+                            'Correct, your answer is right!'
+                          else
+                            "Incorrect, the correct answer is #{correct_ans}."
+                          end
+    end
 
     render 'practice_problems/measurements_error_problem'
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   private
 
@@ -113,6 +110,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
         Rails.logger.debug { "Error calculating time spent: #{e.message}" }
       end
     end
+
     final_value = submitted_value
 
     if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
@@ -135,8 +133,8 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
-
   # rubocop:enable Metrics/AbcSize
+
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]
 
