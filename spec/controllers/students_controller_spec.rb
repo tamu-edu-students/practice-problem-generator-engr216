@@ -155,7 +155,7 @@ RSpec.describe StudentsController, type: :controller do
       end.to change(Student, :count).by(-1)
     end
 
-    it 'redirects to the students list' do
+    it 'redirects to the manage students page' do
       delete :destroy, params: { id: student.id }
       expect(response).to redirect_to(manage_students_path)
     end

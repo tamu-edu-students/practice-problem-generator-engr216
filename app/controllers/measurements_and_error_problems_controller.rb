@@ -1,10 +1,12 @@
 class MeasurementsAndErrorProblemsController < ApplicationController
+  # rubocop:disable Metrics/AbcSize
+
   def view_answer
     @category = 'Measurement & Error'
     @question = parse_question_from_session
 
     if @question
-      save_answer_to_database(false) # Mark as incorrect
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
       @show_answer = true
       @disable_check_answer = true
     else
@@ -15,43 +17,93 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     render 'practice_problems/measurements_error_problem'
   end
 
-  # GET /measurements_and_error_problems/generate
   def generate
     @category = 'Measurement & Error'
-    @question = generate_measurements_error_question
+    tries = 0
 
-    # Store the current question in session for later validation
+    loop do
+      @question = generate_measurements_error_question
+      tries += 1
+      break unless (@question[:input_fields].blank? || @question[:input_fields].any?(&:nil?)) && tries < 5
+    end
+
+    Array(@question[:input_fields]).each do |field|
+      next unless field[:type] == 'radio' && field[:options].is_a?(Array)
+
+      original_options = field[:options].dup
+      correct_label = @question[:answer]
+
+      label_map = { 'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3 }
+
+      if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
+        actual_value = original_options[label_map[correct_label]][:value]
+        @question[:answer] = actual_value
+      end
+
+      field[:options] = field[:options].shuffle
+    end
+
     session[:current_question] = @question.to_json
     session[:problem_start_time] = Time.current.to_s
-
-    # Render the view (which is located in app/views/practice_problems/)
     render 'practice_problems/measurements_error_problem'
   end
 
-  # POST /measurements_and_error_problems/check_answer
   def check_answer
     @category = 'Measurement & Error'
     @question = parse_question_from_session
 
     redirect_to generate_measurements_and_error_problems_path and return unless @question
 
-    # Check the answer and set a feedback message
-    @feedback_message = if handle_measurements_error
-                          'Correct, your answer is right!'
+    tolerance = 0.05
+    correct_ans = @question[:answer]
+    submitted_ans = params[:measurement_answer].to_s.strip
+
+    is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
+                   (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
+                 else
+                   submitted_ans == correct_ans.to_s.strip
+                 end
+
+    save_answer_to_database(is_correct, submitted_ans)
+
+    @feedback_message = if is_correct
+                          if radio_question?
+                            "Correct, the answer #{submitted_letter(correct_ans)} is right!"
+                          else
+                            'Correct, your answer is right!'
+                          end
                         else
-                          'Incorrect, try again or press View Answer.'
+                          standard_incorrect_message.to_s
                         end
 
-    save_answer_to_database(handle_measurements_error) if handle_measurements_error
-
-    # Disable the view answer button if the answer is correct
     @disable_view_answer = true if @feedback_message.include?('Correct')
 
-    # Render the same view with the feedback displayed
     render 'practice_problems/measurements_error_problem'
   end
 
+  # rubocop:enable Metrics/AbcSize
+
   private
+
+  def standard_incorrect_message
+    'Incorrect, try again or press View Answer.'
+  end
+
+  def radio_question?
+    @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+  end
+
+  def correct_letter(correct_ans)
+    field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+    correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
+    correct_index ? ('A'.ord + correct_index).chr : '?'
+  end
+
+  def submitted_letter(submitted_ans)
+    field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+    submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans.to_s.strip }
+    submitted_index ? ('A'.ord + submitted_index).chr : '?'
+  end
 
   def generate_measurements_error_question
     generator = MeasurementsAndErrorProblemGenerator.new(@category)
@@ -64,37 +116,36 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     nil
   end
 
-  def handle_measurements_error
-    user_answer = params[:measurement_answer]
-    correct_answer = @question[:answer]
-    user_answer == correct_answer
+  def numeric?(str)
+    Float(str)
+    true
+  rescue ArgumentError, TypeError
+    false
   end
 
-  def save_answer_to_database(is_correct)
+  def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
-
-    # Get calculated time spent
     time_spent = calculate_time_spent
 
-    Rails.logger.debug { "Creating Answer record for category: #{@category}" }
+    final_value = submitted_value
+    if radio_question?
+      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+      index = field[:options]&.index { |opt| opt[:value] == submitted_value }
+      final_value = index ? ('A'.ord + index).chr : '?'
+    end
 
-    user_answer = params[:measurement_answer].to_s.strip
-    user_answer = 'Answer Viewed By Student' if user_answer.empty?
-
-    # Create and save the answer record
-    answer = Answer.create(
+    Answer.create!(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
       question_description: @question[:question],
       answer_choices: extract_answer_choices,
-      answer: user_answer,
+      answer: final_value,
       correctness: is_correct,
-      student_email: student.email,
+      student_email: student&.email,
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
       time_spent: time_spent
     )
-    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
   end
 
   def calculate_time_spent
