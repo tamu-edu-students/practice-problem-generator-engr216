@@ -16,7 +16,7 @@ Then('I should see statistics only for students in {string}') do |semester_name|
   expect(page).to have_content('Total Completed:')
 end
 
-Then('the class performance data should reflect only {string} students') do |semester_name|
+Then('the class performance data should reflect only {string} students') do |_semester_name|
   within('div.bg-white.shadow-lg.rounded-xl', text: 'Class Performance Overview') do
     expect(page).to have_content('Total Completed')
   end
@@ -60,17 +60,20 @@ end
 
 Then('I should see only {string} students with {string} in their name or email') do |semester_name, search_term|
   expect(page).to have_select('semester_id', selected: semester_name)
-  if semester_name == 'Fall 2024' && search_term == 'Smith'
-    # No students should match, dropdown should only have "All"
-    expect(page).to have_select('student_email', with_options: ['All'])
-  else
-    # Handle other cases if needed
-    expected_options = ['All']
-    student = @student1 if semester_name == 'Fall 2024' && (@student1.last_name.include?(search_term) || @student1.first_name.include?(search_term) || @student1.email.include?(search_term))
-    student = @student2 if semester_name == 'Spring 2024' && (@student2.last_name.include?(search_term) || @student2.first_name.include?(search_term) || @student2.email.include?(search_term))
-    expected_options << "#{student.first_name} #{student.last_name}" if student
-    expect(page).to have_select('student_email', with_options: expected_options)
+  expected_options = ['All']
+
+  # Check for matching students based on semester and search term
+  if semester_name == 'Fall 2024' && search_term != 'Smith'
+    if [@student1.last_name, @student1.first_name, @student1.email].any? { |field| field.include?(search_term) }
+      expected_options << "#{@student1.first_name} #{@student1.last_name}"
+    end
+  elsif semester_name == 'Spring 2024'
+    if [@student2.last_name, @student2.first_name, @student2.email].any? { |field| field.include?(search_term) }
+      expected_options << "#{@student2.first_name} #{@student2.last_name}"
+    end
   end
+
+  expect(page).to have_select('student_email', with_options: expected_options)
 end
 
 Then('the semester filter should be maintained') do

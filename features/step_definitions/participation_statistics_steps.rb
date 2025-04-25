@@ -1,13 +1,18 @@
+# features/step_definitions/participation_statistics_steps.rb
+
 Given('I am on the student history dashboard to see participation statistics') do
   visit '/teacher_dashboard/student_history_dashboard'
 end
 
-# features/step_definitions/participation_statistics_steps.rb
 Given('I have selected {string} for both student and category') do |option|
   # Ensure semester exists
   semester = Semester.find_or_create_by!(name: 'Fall 2024') { |s| s.active = true }
   # Visit the URL with query parameters directly
-  visit "/teacher_dashboard/student_history_dashboard?semester_id=#{semester.id}&student_email=#{option.downcase}&category=#{option.downcase}"
+  url = '/teacher_dashboard/student_history_dashboard' \
+        "?semester_id=#{semester.id}" \
+        "&student_email=#{option.downcase}" \
+        "&category=#{option.downcase}"
+  visit url
   expect(page).to have_current_path(/student_history_dashboard/, wait: 5)
   expect(page).to have_text('Class Performance Overview')
 end

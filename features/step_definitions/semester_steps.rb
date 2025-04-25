@@ -143,6 +143,7 @@ end
 Given('I have students enrolled in {string}') do |semester_name|
   @teacher ||= Teacher.find_by(email: 'teacher@tamu.edu')
   raise 'Teacher not found' unless @teacher
+
   semester = Semester.find_or_create_by!(name: semester_name) { |s| s.active = true }
   @fall_semester = semester if semester_name == 'Fall 2024' # Ensure @fall_semester is set
   spring_semester = Semester.find_or_create_by!(name: 'Spring 2024') { |s| s.active = true }
