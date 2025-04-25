@@ -1,7 +1,7 @@
 class AngularMomentumProblemsController < ApplicationController
   def view_answer
     @category = 'Angular Momentum'
-    @question = JSON.parse(session[:current_question], symbolize_names: true)
+    @question = session[:current_question] ? JSON.parse(session[:current_question], symbolize_names: true) : nil
 
     if @question
       save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect

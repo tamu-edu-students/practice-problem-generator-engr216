@@ -31,7 +31,6 @@ RSpec.describe MeasurementsAndErrorProblemGenerator, type: :model do
 
     context 'when multiple choice' do
       let(:mc_question) do
-        # Stub generate_questions to return a multiple choice question
         question.merge(input_fields: [{ options: [{ value: 'A' }, { value: 'B' }] }], answer: 'A')
       end
 
@@ -136,6 +135,103 @@ RSpec.describe MeasurementsAndErrorProblemsController, type: :controller do
       it 'redirects to the generate action' do
         expect(response).to redirect_to(generate_measurements_and_error_problems_path)
       end
+    end
+  end
+
+  describe 'GET #view_answer' do
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'test', last_name: 'student', uin: '123456789')
+    end
+
+    before do
+      session[:user_id] = student.id
+    end
+
+    context 'when a question exists in session' do
+      before do
+        session[:current_question] = dummy_question.to_json
+        get :view_answer
+      end
+
+      it 'marks the answer as incorrect and shows the answer' do
+        expect(assigns(:show_answer)).to be true
+        expect(assigns(:disable_check_answer)).to be true
+        expect(response).to render_template('practice_problems/measurements_error_problem')
+      end
+    end
+
+    context 'when no question exists in session' do
+      before { get :view_answer }
+
+      it 'redirects to generate path' do
+        expect(response).to redirect_to(generate_measurements_and_error_problems_path)
+      end
+    end
+  end
+
+  describe 'GET #generate with radio question' do
+    let(:radio_question) do
+      {
+        question: 'Select the correct option',
+        answer: 'B', # This will trigger the label_map logic
+        type: 'measurements_error',
+        input_fields: [
+          { type: 'radio', options: [
+            { value: 'Option A' },
+            { value: 'Option B' },
+            { value: 'Option C' },
+            { value: 'Option D' }
+          ] }
+        ]
+      }
+    end
+
+    before do
+      allow(MeasurementsAndErrorProblemGenerator).to receive(:new)
+        .and_return(instance_double(MeasurementsAndErrorProblemGenerator, generate_questions: [radio_question]))
+      get :generate
+    end
+
+    it 'processes radio options and shuffles them' do
+      expect(assigns(:question)[:input_fields].first[:options].size).to eq(4)
+      expect(session[:current_question]).to be_present
+      expect(response).to render_template('practice_problems/measurements_error_problem')
+    end
+  end
+
+  describe 'POST #check_answer with radio question' do
+    let(:radio_question) do
+      {
+        question: 'Pick one',
+        answer: 'CorrectValue',
+        type: 'measurements_error',
+        input_fields: [
+          { type: 'radio', options: [
+            { value: 'WrongValue' },
+            { value: 'CorrectValue' },
+            { value: 'AnotherWrong' }
+          ] }
+        ]
+      }
+    end
+
+    let!(:student) do
+      Student.create!(email: 'test@example.com', first_name: 'Test', last_name: 'Student', uin: '987654321')
+    end
+
+    before do
+      session[:user_id] = student.id
+      session[:current_question] = radio_question.to_json
+    end
+
+    it 'returns correct feedback when correct radio option is selected' do
+      post :check_answer, params: { measurement_answer: 'CorrectValue' }
+      expect(assigns(:feedback_message)).to match(/Correct, the answer [A-Z] is right!/)
+    end
+
+    it 'returns incorrect feedback when wrong radio option is selected' do
+      post :check_answer, params: { measurement_answer: 'WrongValue' }
+      expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
     end
   end
 end
