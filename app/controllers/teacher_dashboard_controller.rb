@@ -326,6 +326,18 @@ class TeacherDashboardController < ApplicationController
   def load_student_answers
     @completed_questions = Answer.where(student_email: @student.email)
                                  .order(created_at: :desc)
+
+    # Filter by semester if semester_id is provided
+    return if params[:semester_id].blank?
+
+    semester_students = Student.where(semester_id: params[:semester_id])
+    return unless semester_students.exists?(email: @student.email)
+
+    # If student belongs to the selected semester, filter their answers by semester
+    @semester = Semester.find_by(id: params[:semester_id])
+    return unless @semester&.start_date && @semester.end_date
+
+    @completed_questions = @completed_questions.where(created_at: @semester.start_date..@semester.end_date)
   end
 
   def current_teacher

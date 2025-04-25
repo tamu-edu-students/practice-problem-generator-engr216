@@ -1,5 +1,22 @@
 class MeasurementsAndErrorProblemsController < ApplicationController
   # rubocop:disable Metrics/AbcSize
+
+  def view_answer
+    @category = 'Measurement & Error'
+    @question = parse_question_from_session
+
+    if @question
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_measurements_and_error_problems_path) and return
+    end
+
+    render 'practice_problems/measurements_error_problem'
+  end
+
   def generate
     @category = 'Measurement & Error'
     tries = 0
@@ -30,9 +47,7 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/measurements_error_problem'
   end
-  # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
   def check_answer
     @category = 'Measurement & Error'
     @question = parse_question_from_session
@@ -51,34 +66,44 @@ class MeasurementsAndErrorProblemsController < ApplicationController
 
     save_answer_to_database(is_correct, submitted_ans)
 
-    # 🎯 Adjusted feedback logic
-    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
-      field = @question[:input_fields].find { |f| f[:type] == 'radio' }
-
-      correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
-      submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
-
-      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
-      submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
-
-      @feedback_message = if is_correct
-                            "Correct, the answer #{submitted_letter} is right!"
+    @feedback_message = if is_correct
+                          if radio_question?
+                            "Correct, the answer #{submitted_letter(correct_ans)} is right!"
                           else
-                            "Incorrect, the correct answer is #{correct_letter}."
-                          end
-    else
-      @feedback_message = if is_correct
                             'Correct, your answer is right!'
-                          else
-                            "Incorrect, the correct answer is #{correct_ans}."
                           end
-    end
+                        else
+                          standard_incorrect_message.to_s
+                        end
+
+    @disable_view_answer = true if @feedback_message.include?('Correct')
 
     render 'practice_problems/measurements_error_problem'
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
+
+  # rubocop:enable Metrics/AbcSize
 
   private
+
+  def standard_incorrect_message
+    'Incorrect, try again or press View Answer.'
+  end
+
+  def radio_question?
+    @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+  end
+
+  def correct_letter(correct_ans)
+    field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+    correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
+    correct_index ? ('A'.ord + correct_index).chr : '?'
+  end
+
+  def submitted_letter(submitted_ans)
+    field = @question[:input_fields].find { |f| f[:type] == 'radio' }
+    submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans.to_s.strip }
+    submitted_index ? ('A'.ord + submitted_index).chr : '?'
+  end
 
   def generate_measurements_error_question
     generator = MeasurementsAndErrorProblemGenerator.new(@category)
@@ -98,26 +123,15 @@ class MeasurementsAndErrorProblemsController < ApplicationController
     false
   end
 
-  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
-    time_spent = nil
-
-    if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-      rescue StandardError => e
-        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
-      end
-    end
+    time_spent = calculate_time_spent
 
     final_value = submitted_value
-
-    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+    if radio_question?
       field = @question[:input_fields].find { |f| f[:type] == 'radio' }
       index = field[:options]&.index { |opt| opt[:value] == submitted_value }
-      letter = index ? ('A'.ord + index).chr : '?'
-      final_value = letter
+      final_value = index ? ('A'.ord + index).chr : '?'
     end
 
     Answer.create!(
@@ -133,7 +147,17 @@ class MeasurementsAndErrorProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def calculate_time_spent
+    return nil unless session[:problem_start_time]
+
+    begin
+      (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+    rescue StandardError => e
+      Rails.logger.debug { "Error calculating time spent: #{e.message}" }
+      nil
+    end
+  end
 
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]

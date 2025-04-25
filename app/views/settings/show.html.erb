@@ -1,4 +1,4 @@
-<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]">
+<div class="min-h-screen w-full flex flex-col bg-[#9aa8c5]" style="background-color: #9aa8c5;">
 
   <!-- Navbar -->
   <div class="navbar bg-black text-white px-6 w-full fixed top-0 z-50">
@@ -18,77 +18,59 @@
     </div>
   </div>
 
-  <!-- Spacer between navbar and content -->
-  <div class="h-24"></div>
+  <!-- Title Container with Increased Top Margin -->
+  <div class="w-full mt-28 px-6 flex items-center justify-center">
+    <h1 class="text-4xl font-bold text-black">Settings</h1>
+  </div>
 
   <!-- Settings Content -->
-  <div class="flex flex-col items-center justify-center flex-grow w-full text-center">
-    <div class="w-3/4 mx-auto mt-8 bg-white shadow-md rounded p-8">
-      <h1 class="text-center text-3xl font-bold mb-6">Settings</h1>
+  <div class="flex flex-col items-center justify-center flex-grow w-full text-center p-6">
+    <div class="w-full max-w-4xl bg-black text-white shadow-lg rounded-lg p-6 overflow-y-auto">
+      <div class="bg-gray-800 p-6 rounded-lg">
+        <%= form_with model: @student, url: settings_path, method: :put, local: true do |f| %>
+          <ul class="space-y-6">
 
-
-  <%= form_with model: @student, url: settings_path, method: :put, local: true do |f| %>
-
-        <ul class="space-y-4">
-          <!-- Email Row -->
-          <li class="flex justify-between items-center border-b border-gray-300 pb-2">
-            <span class="font-medium text-gray-700">Email</span>
-            <span class="text-gray-900"><%= @student.email %></span>
-          </li>
-
-          <!-- Teacher Dropdown Row -->
-          <li class="flex justify-between items-center border-b border-gray-300 pb-2">
-            <span class="font-medium text-gray-700">Linked Teacher</span>
-            <%= f.select :teacher_id,
-              options_from_collection_for_select(@teachers, :id, :name, @student.teacher_id),
-              { prompt: "Select a teacher" },
-              class: "border border-gray-300 rounded px-2 py-1"
-            %>
-          </li>
-          <li class="flex justify-between items-center border-b border-gray-300 pb-2">
-            <span class="font-medium text-gray-700">Linked Semesters</span>
-            <%= f.select :semester_id,
-              options_from_collection_for_select(@semesters, :id, :name, @student.semester_id),
-              { prompt: "Select a semester" },
-              class: "border border-gray-300 rounded px-2 py-1"
-            %>
-          </li>
-
-          <!-- Authenticate Toggle Row with info icon and status label -->
-          <li class="flex justify-between items-center border-b border-gray-300 pb-2">
-            <div class="flex items-center space-x-2">
-              <span class="font-medium text-gray-700">Authenticate Teacher</span>
-
-              <!-- Info icon -->
-              <div class="tooltip tooltip-bottom" data-tip="When enabled, your linked teacher can view your progress and activity.">
-                <span class="text-sm font-bold bg-gray-400 text-white rounded-full px-2 cursor-pointer">i</span>
-              </div>
-            </div>
-
-            <!-- Toggle + Status Label -->
-            <div class="flex items-center space-x-3">
-              <%= f.check_box :authenticate, class: "toggle toggle-success toggle-lg" %>
-              <span class="font-semibold <%= @student.authenticate ? 'text-green-600' : 'text-red-600' %>">
-                <%= @student.authenticate ? 'Enabled' : 'Disabled' %>
-              </span>
-            </div>
-          </li>
+            <!-- Name Row -->
+            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
+              <span class="font-medium text-white">Name</span>
+              <span class="text-white"><%= "#{@student.first_name} #{@student.last_name}" %></span>
+            </li>
 
 
 
+            <!-- Email Row -->
+            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
+              <span class="font-medium text-white">Email</span>
+              <span class="text-white"><%= @student.email %></span>
+            </li>
 
-          
+            <!-- Teacher Dropdown Row -->
+            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
+              <span class="font-medium text-white">Linked Teacher</span>
+              <%= f.select :teacher_id,
+                options_from_collection_for_select(@teachers, :id, :name, @student.teacher_id),
+                { prompt: "Select a teacher" },
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
+              %>
+            </li>
+            
+            <!-- Semester Dropdown Row -->
+            <li class="flex justify-between items-center border-b border-gray-700 pb-4">
+              <span class="font-medium text-white">Linked Semester</span>
+              <%= f.select :semester_id,
+                options_from_collection_for_select(@semesters, :id, :name, @student.semester_id),
+                { prompt: "Select a semester" },
+                class: "select select-sm bg-gray-700 text-black border-gray-600"
+              %>
+            </li>
 
-
-
-
-
-          <!-- Save Button Row -->
-          <li class="flex justify-center items-center">
-            <%= f.submit "Save Settings", class: "px-4 py-2 rounded bg-yellow-400 text-black font-bold border border-black" %>
-          </li>
-        </ul>
-      <% end %>
+            <!-- Save Button Row -->
+            <li class="flex justify-center items-center mt-6">
+              <%= f.submit "Save Settings", class: "btn btn-primary" %>
+            </li>
+          </ul>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>

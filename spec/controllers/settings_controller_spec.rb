@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe SettingsController, type: :controller do
   describe 'PUT #update' do
-    let!(:teacher) { Teacher.create!(name: 'Test Teacher', email: 'test@example.com') }
+    let!(:teacher) { Teacher.create!(name: 'Test Teacher', email: 'test@tamu.edu') }
     let!(:semester) { Semester.create!(name: "Test Fall 2024 #{Time.now.to_i}", active: true) }
     let!(:new_semester) { Semester.create!(name: "Test Spring 2025 #{Time.now.to_i}", active: true) }
     let!(:student) do

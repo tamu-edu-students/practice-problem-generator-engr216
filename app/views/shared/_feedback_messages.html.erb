@@ -4,17 +4,6 @@
       <span class="text-red-500 mr-2">✗</span>
       <p>Incorrect, <%= @error_message %></p>
     </div>
-    
-    <!-- Debug Information Display -->
-    <% if defined?(@debug_info) && @debug_info.present? %>
-      <div class="mt-4 text-left p-2 bg-gray-800 rounded text-gray-300 text-sm font-mono whitespace-pre-wrap">
-        <%= @debug_info %>
-      </div>
-    <% elsif session[:debug_info].present? %>
-      <div class="mt-4 text-left p-2 bg-gray-800 rounded text-gray-300 text-sm font-mono whitespace-pre-wrap">
-        <%= session[:debug_info] %>
-      </div>
-    <% end %>
   </div>
 <% end %>
 

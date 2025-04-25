@@ -1,4 +1,20 @@
 class AngularMomentumProblemsController < ApplicationController
+  def view_answer
+    @category = 'Angular Momentum'
+    @question = JSON.parse(session[:current_question], symbolize_names: true)
+
+    if @question
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_angular_momentum_problems_path) and return
+    end
+
+    render 'practice_problems/angular_momentum_problem'
+  end
+
   # rubocop:disable Metrics/AbcSize
   def generate
     @category = 'Angular Momentum'
@@ -14,14 +30,9 @@ class AngularMomentumProblemsController < ApplicationController
       next unless field[:type] == 'radio' && field[:options].is_a?(Array)
 
       original_options = field[:options].dup
-      correct_label = @question[:answer] # e.g., "A"
+      correct_label = @question[:answer]
 
-      label_map = {
-        'A' => 0,
-        'B' => 1,
-        'C' => 2,
-        'D' => 3
-      }
+      label_map = { 'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3 }
 
       if correct_label.match?(/^[A-D]$/) && label_map[correct_label] && original_options[label_map[correct_label]]
         actual_value = original_options[label_map[correct_label]][:value]
@@ -43,6 +54,9 @@ class AngularMomentumProblemsController < ApplicationController
     tolerance = 0.05
 
     @feedback_message = evaluate_answer(@question[:answer], tolerance)
+
+    @disable_view_answer = true if @feedback_message.include?('Correct')
+
     render 'practice_problems/angular_momentum_problem'
   end
 
@@ -70,19 +84,15 @@ class AngularMomentumProblemsController < ApplicationController
       false
     end
 
-    submitted_ans_str = submitted_answers.join(', ')
-
     if all_correct
       save_answer_to_database(true, correct_answers.join(', '))
       "Correct, the answer #{correct_answers.join(', ')} is right!"
     else
-      save_answer_to_database(false, submitted_ans_str)
-      "Incorrect, the correct answer is #{correct_answers.join(', ')}."
+      'Incorrect, try again or press View Answer.'
     end
   end
 
   # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/PerceivedComplexity
   def check_single_answer(correct_ans, tolerance)
     submitted_ans = params[:am_answer].to_s.strip
 
@@ -92,20 +102,16 @@ class AngularMomentumProblemsController < ApplicationController
       correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
       submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
 
-      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
+      correct_index ? ('A'.ord + correct_index).chr : '?'
       submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
 
       is_correct = submitted_index == correct_index
 
       save_answer_to_database(is_correct, submitted_ans)
 
-      if is_correct
-        "Correct, the answer #{submitted_letter} is right!"
-      else
-        "Incorrect, the correct answer is #{correct_letter}."
-      end
+      return "Correct, the answer #{submitted_letter} is right!" if is_correct
+
     else
-      # Handle numeric or string answers
       is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
                      (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
                    else
@@ -114,12 +120,10 @@ class AngularMomentumProblemsController < ApplicationController
 
       save_answer_to_database(is_correct, submitted_ans)
 
-      if is_correct
-        "Correct, the answer #{correct_ans} is right!"
-      else
-        "Incorrect, the correct answer is #{correct_ans}."
-      end
+      return "Correct, the answer #{correct_ans} is right!" if is_correct
+
     end
+    'Incorrect, try again or press View Answer.'
   end
 
   def save_answer_to_database(is_correct, submitted_value)
@@ -156,8 +160,8 @@ class AngularMomentumProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
+
   # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
 
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]

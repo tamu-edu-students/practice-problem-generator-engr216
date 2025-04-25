@@ -1,5 +1,22 @@
 class ParticleStaticsProblemsController < ApplicationController
   # rubocop:disable Metrics/AbcSize
+
+  def view_answer
+    @category = 'Particle Statics'
+    @question = JSON.parse(session[:current_question], symbolize_names: true)
+
+    if @question
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_particle_statics_problems_path) and return
+    end
+
+    render 'practice_problems/particle_statics_problem'
+  end
+
   def generate
     @category = 'Particle Statics'
     tries = 0
@@ -30,7 +47,6 @@ class ParticleStaticsProblemsController < ApplicationController
     session[:problem_start_time] = Time.current.to_s
     render 'practice_problems/particle_statics_problem'
   end
-  # rubocop:enable Metrics/AbcSize
 
   def check_answer
     @category = 'Particle Statics'
@@ -38,6 +54,8 @@ class ParticleStaticsProblemsController < ApplicationController
     tolerance = 0.05
 
     @feedback_message = evaluate_answer(@question[:answer], tolerance)
+    @disable_view_answer = true if @feedback_message.include?('Correct')
+
     render 'practice_problems/particle_statics_problem'
   end
 
@@ -65,40 +83,33 @@ class ParticleStaticsProblemsController < ApplicationController
       false
     end
 
-    submitted_ans_str = submitted_answers.join(', ')
-
     if all_correct
       save_answer_to_database(true, correct_answers.join(', '))
       "Correct, the answer #{correct_answers.join(', ')} is right!"
     else
-      save_answer_to_database(false, submitted_ans_str)
-      "Incorrect, the correct answer is #{correct_answers.join(', ')}."
+      standard_incorrect_message
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/PerceivedComplexity
   def check_single_answer(correct_ans, tolerance)
     submitted_ans = params[:ps_answer].to_s.strip
 
-    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+    if radio_question?
       field = @question[:input_fields].find { |f| f[:type] == 'radio' }
 
       correct_index = field[:options]&.index { |opt| opt[:value].to_s.strip == correct_ans.to_s.strip }
       submitted_index = field[:options]&.index { |opt| opt[:value].to_s.strip == submitted_ans }
 
-      correct_letter = correct_index ? ('A'.ord + correct_index).chr : '?'
+      correct_index ? ('A'.ord + correct_index).chr : '?'
       submitted_letter = submitted_index ? ('A'.ord + submitted_index).chr : '?'
 
       is_correct = submitted_index == correct_index
 
       save_answer_to_database(is_correct, submitted_ans)
 
-      if is_correct
-        "Correct, the answer #{submitted_letter} is right!"
-      else
-        "Incorrect, the correct answer is #{correct_letter}."
-      end
+      return "Correct, the answer #{submitted_letter} is right!" if is_correct
+
+      standard_incorrect_message.to_s
     else
       is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
                      (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
@@ -111,12 +122,19 @@ class ParticleStaticsProblemsController < ApplicationController
       if is_correct
         "Correct, the answer #{correct_ans} is right!"
       else
-        "Incorrect, the correct answer is #{correct_ans}."
+        standard_incorrect_message.to_s
       end
+
     end
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+
+  def standard_incorrect_message
+    'Incorrect, try again or press View Answer.'
+  end
+
+  def radio_question?
+    @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+  end
 
   def numeric?(str)
     Float(str)
@@ -125,26 +143,15 @@ class ParticleStaticsProblemsController < ApplicationController
     false
   end
 
-  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
-    time_spent = nil
-
-    if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-      rescue StandardError => e
-        Rails.logger.debug { "Time calc error: #{e.message}" }
-      end
-    end
+    time_spent = calculate_time_spent
 
     final_value = submitted_value
-
-    if @question[:input_fields]&.any? { |f| f[:type] == 'radio' }
+    if radio_question?
       field = @question[:input_fields].find { |f| f[:type] == 'radio' }
       index = field[:options]&.index { |opt| opt[:value] == submitted_value }
-      letter = index ? ('A'.ord + index).chr : '?'
-      final_value = letter.to_s
+      final_value = index ? ('A'.ord + index).chr : '?'
     end
 
     Answer.create!(
@@ -160,7 +167,15 @@ class ParticleStaticsProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def calculate_time_spent
+    return nil unless session[:problem_start_time]
+
+    (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+  rescue StandardError => e
+    Rails.logger.debug { "Time calc error: #{e.message}" }
+    nil
+  end
 
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]
@@ -169,4 +184,5 @@ class ParticleStaticsProblemsController < ApplicationController
   rescue StandardError
     nil
   end
+  # rubocop:enable Metrics/AbcSize
 end

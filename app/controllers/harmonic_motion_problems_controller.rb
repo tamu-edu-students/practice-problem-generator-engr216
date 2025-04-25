@@ -1,5 +1,22 @@
 class HarmonicMotionProblemsController < ApplicationController
   # rubocop:disable Metrics/AbcSize
+
+  def view_answer
+    @category = 'Harmonic Motion'
+    @question = JSON.parse(session[:current_question], symbolize_names: true)
+
+    if @question
+      save_answer_to_database(false, 'Answer Viewed By Student') # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      Rails.logger.error { 'No question found in session, redirecting to generate path' }
+      redirect_to(generate_harmonic_motion_problems_path) and return
+    end
+
+    render 'practice_problems/harmonic_motion_problem'
+  end
+
   def generate
     @category = 'Harmonic Motion'
     tries = 0
@@ -38,6 +55,10 @@ class HarmonicMotionProblemsController < ApplicationController
     tolerance = 0.05
 
     @feedback_message = evaluate_answer(@question[:answer], tolerance)
+
+    # Disable the view answer button if the answer is correct
+    @disable_view_answer = true if @feedback_message.include?('Correct')
+
     render 'practice_problems/harmonic_motion_problem'
   end
 
@@ -65,14 +86,11 @@ class HarmonicMotionProblemsController < ApplicationController
       false
     end
 
-    submitted_ans_str = submitted_answers.join(', ')
-
     if all_correct
       save_answer_to_database(true, correct_answers.join(', '))
       "Correct, the answer #{correct_answers.join(', ')} is right!"
     else
-      save_answer_to_database(false, submitted_ans_str)
-      "Incorrect, the correct answer is #{correct_answers.join(', ')}."
+      'Incorrect, try again or press View Answer.'
     end
   end
 
@@ -100,7 +118,6 @@ class HarmonicMotionProblemsController < ApplicationController
         "Incorrect, the correct answer is #{correct_letter}."
       end
     else
-      # Handle numeric or string answers properly
       is_correct = if numeric?(submitted_ans) && numeric?(correct_ans)
                      (submitted_ans.to_f - correct_ans.to_f).abs <= tolerance
                    else
@@ -112,10 +129,11 @@ class HarmonicMotionProblemsController < ApplicationController
       if is_correct
         "Correct, the answer #{correct_ans} is right!"
       else
-        "Incorrect, the correct answer is #{correct_ans}."
+        'Incorrect, try again or press View Answer.'
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/PerceivedComplexity
 
   def numeric?(str)
@@ -125,6 +143,7 @@ class HarmonicMotionProblemsController < ApplicationController
     false
   end
 
+  # rubocop:disable Metrics/AbcSize
   def save_answer_to_database(is_correct, submitted_value)
     student = Student.find_by(id: session[:user_id])
     time_spent = nil
@@ -145,6 +164,7 @@ class HarmonicMotionProblemsController < ApplicationController
       letter = index ? ('A'.ord + index).chr : '?'
       final_value = letter
     end
+    # rubocop:enable Metrics/AbcSize
 
     Answer.create!(
       template_id: @question[:template_id] || 0,
@@ -159,7 +179,6 @@ class HarmonicMotionProblemsController < ApplicationController
       time_spent: time_spent
     )
   end
-  # rubocop:enable Metrics/AbcSize
 
   def extract_answer_choices
     return '[]' unless @question[:answer_choices]

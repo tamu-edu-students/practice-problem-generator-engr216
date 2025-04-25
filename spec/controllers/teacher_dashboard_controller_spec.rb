@@ -3,7 +3,7 @@ require 'ostruct'
 CatSummary = Struct.new(:category, :attempted, :correct, :incorrect)
 
 RSpec.describe TeacherDashboardController, type: :controller do
-  let(:teacher) { Teacher.create!(email: 'teacher@example.com', name: 'Teacher 1') }
+  let(:teacher) { Teacher.create!(email: 'teacher@tamu.edu', name: 'Teacher 1') }
 
   let(:fall_semester) do
     Semester.find_or_create_by!(name: 'Fall 2024') { |s| s.active = true }
@@ -13,14 +13,59 @@ RSpec.describe TeacherDashboardController, type: :controller do
     Semester.find_or_create_by!(name: 'Spring 2024') { |s| s.active = true }
   end
 
-  let(:john_student) do
-    Student.create!(first_name: 'John', last_name: 'Doe', email: 'john@example.com', uin: 123_456_789,
-                    semester: fall_semester, teacher: teacher)
-  end
+  # let(:john_student) do
+  #   Student.create!(first_name: 'John', last_name: 'Doe', email: 'john@example.com', uin: 123_456_789,
+  #                   semester: fall_semester, teacher: teacher)
+  # end
 
+  # let(:jane_student) do
+  #   Student.create!(first_name: 'Jane', last_name: 'Smith', email: 'jane@example.com', uin: 987_654_321,
+  #                   semester: spring_semester, teacher: teacher)
+  # end
+  let(:john_student) do
+    Student.create!(
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john@example.com',
+      uin: 123_456_789,
+      teacher: teacher,
+      teacher_id: teacher.id,
+      semester: fall_semester
+    )
+  end
   let(:jane_student) do
-    Student.create!(first_name: 'Jane', last_name: 'Smith', email: 'jane@example.com', uin: 987_654_321,
-                    semester: spring_semester, teacher: teacher)
+    Student.create!(
+      first_name: 'Jane',
+      last_name: 'Smith',
+      email: 'jane@example.com',
+      uin: 987_654_321,
+      teacher: teacher,
+      teacher_id: teacher.id,
+      semester: spring_semester
+    )
+  end
+  # Define test semesters for delete tests
+  let(:test_fall_semester) { Semester.create!(name: "Test Fall #{Time.now.to_i}", active: true) }
+  let(:test_spring_semester) { Semester.create!(name: "Test Spring #{Time.now.to_i}", active: true) }
+  let(:fall_student) do
+    Student.create!(
+      first_name: 'Fall',
+      last_name: 'Student',
+      email: "fall_#{Time.now.to_i}@example.com",
+      uin: 123_456_789,
+      teacher: teacher,
+      semester: test_fall_semester
+    )
+  end
+  let(:spring_student) do
+    Student.create!(
+      first_name: 'Spring',
+      last_name: 'Student',
+      email: "spring_#{Time.now.to_i}@example.com",
+      uin: 987_654_321,
+      teacher: teacher,
+      semester: test_spring_semester
+    )
   end
 
   before do
@@ -111,6 +156,24 @@ RSpec.describe TeacherDashboardController, type: :controller do
       expect(assigns(:category_question_data)).to be_a(Hash)
       expect(assigns(:category_total_correct)).to be >= 1
     end
+
+    it 'filters students by semester when semester_id is provided' do
+      get :student_history_dashboard, params: { semester_id: fall_semester.id }
+      expect(assigns(:students)).to include(john_student)
+      expect(assigns(:students)).not_to include(jane_student)
+    end
+
+    it 'builds category summaries based on filtered students' do
+      # isolate only john_student
+      Answer.where(student_email: john_student.email).destroy_all
+
+      create_answer_for_student(john_student, 'Physics', true)
+
+      summaries = controller.send(:build_category_summaries, [john_student])
+
+      expect(summaries['Physics'][:attempted]).to eq(1)
+      expect(summaries['Physics'][:correct]).to eq(1)
+    end
   end
 
   describe '#student_history' do
@@ -197,6 +260,38 @@ RSpec.describe TeacherDashboardController, type: :controller do
     end
   end
 
+  describe 'POST #delete_semester_students' do
+    before do
+      # Ensure test students exist
+      fall_student
+      spring_student
+    end
+
+    it 'deletes all students in a specific semester' do
+      expect do
+        post :delete_semester_students, params: { semester_id: test_fall_semester.id }
+      end.to change { Student.where(semester: test_fall_semester).count }.by(-1)
+    end
+
+    it 'does not delete students in other semesters' do
+      expect do
+        post :delete_semester_students, params: { semester_id: test_fall_semester.id }
+      end.not_to(change { Student.where(semester: test_spring_semester).count })
+    end
+
+    it 'redirects with a notice after deletion' do
+      post :delete_semester_students, params: { semester_id: test_fall_semester.id }
+      expect(response).to redirect_to(manage_students_path)
+      expect(flash[:notice]).to include('Deleted')
+    end
+
+    it 'redirects with an alert if no semester is provided' do
+      post :delete_semester_students
+      expect(response).to redirect_to(manage_students_path)
+      expect(flash[:alert]).to include('No semester selected')
+    end
+  end
+
   private
 
   def create_answer(student, category, template_id, correct)
@@ -208,6 +303,17 @@ RSpec.describe TeacherDashboardController, type: :controller do
       answer: correct ? 'A' : 'B',
       correctness: correct,
       template_id: template_id
+    )
+  end
+
+  def create_answer_for_student(student, category, correct)
+    Answer.create!(
+      question_description: "Test question for #{category}",
+      answer_choices: %w[A B],
+      answer: correct ? 'A' : 'B',
+      student_email: student.email,
+      correctness: correct,
+      category: category
     )
   end
 end

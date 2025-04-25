@@ -89,7 +89,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       end
 
       it 'returns an incorrect feedback message' do
-        expect(multi_result).to eq('Incorrect, the correct answer is A, B.')
+        expect(multi_result).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       end
 
       it 'rescues the error and returns false for each element, resulting in an incorrect message' do
-        expect(multi_result).to eq('Incorrect, the correct answer is A, B.')
+        expect(multi_result).to eq('Incorrect, try again or press View Answer.')
       end
     end
   end
@@ -151,7 +151,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       end
 
       it 'returns an incorrect feedback message' do
-        expect(single_result).to eq('Incorrect, the correct answer is 18.4.')
+        expect(single_result).to eq('Incorrect, try again or press View Answer.')
       end
     end
 
@@ -175,7 +175,7 @@ RSpec.describe RigidBodyStaticsProblemsController, type: :controller do
       end
 
       it 'returns an incorrect feedback message' do
-        expect(single_result).to eq('Incorrect, the correct answer is AnswerX.')
+        expect(single_result).to eq('Incorrect, try again or press View Answer.')
       end
     end
   end

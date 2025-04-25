@@ -3,19 +3,19 @@ class PracticeProblemsController < ApplicationController
   before_action :require_student_login
   # List unique category names from the questions table.
   def index
-    @categories = Question.distinct.pluck(:category).sort
-    @semesters = Semester.active.order(:name)
-    @teachers = Teacher.all # ← Add this line back
+    @categories = Question.distinct.pluck(:category)
+    @semesters = semester_options
     @student = Student.find_by(id: session[:user_id])
+    # Only prompt if the student needs to select a teacher AND semester
     @prompt_for_uin = @student&.teacher_id.nil? || @student&.semester_id.nil?
+    @teachers = Teacher.all
+    @semesters = Semester.order(:name)
 
     render :index
   end
 
   def semester_options
-    (2023..2026).flat_map do |year|
-      ["Spring #{year}", "Fall #{year}"]
-    end
+    Semester.order(:name)
   end
 
   def generate
@@ -49,7 +49,17 @@ class PracticeProblemsController < ApplicationController
   end
 
   def essential_question_data
-    { type: @question[:type], template_id: @question[:template_id], question: @question[:question], answer: @question[:answer], field_label: @question[:field_label] }
+    {
+      type: @question[:type],
+      template_id: @question[:template_id],
+      question: @question[:question],
+      answer: @question[:answer],
+      field_label: @question[:field_label],
+      input_fields: @question[:input_fields],
+      data_table: @question[:data_table],
+      answers: @question[:answers],
+      parameters: @question[:parameters]
+    }
   end
 
   def check_answer
@@ -63,6 +73,21 @@ class PracticeProblemsController < ApplicationController
     process_answer_for_question_type and return
 
     session[:current_question] = @question.to_json
+    render determine_template_for_question(@question)
+  end
+
+  def view_answer
+    @category = params[:category_id]
+    @question = parse_question_from_session
+
+    if @question
+      save_answer_to_database(false) # Mark as incorrect
+      @show_answer = true
+      @disable_check_answer = true
+    else
+      redirect_to(generate_practice_problems_path(category_id: @category))
+    end
+
     render determine_template_for_question(@question)
   end
 
@@ -216,6 +241,7 @@ class PracticeProblemsController < ApplicationController
 
   def redirect_to_success
     save_answer_to_database(true)
+    @disable_view_answer = true
 
     if @question && @question[:type] == 'propagation of error'
       params[:success] = true
@@ -295,8 +321,8 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
       :redirected
     else
-      @error_message = 'One or more answers are incorrect. Please check your inputs.'
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -323,8 +349,8 @@ class PracticeProblemsController < ApplicationController
 
   def set_direction_error_message(user_answer, correct_answer)
     direction = user_answer < correct_answer ? 'too low' : 'too high'
-    @error_message = "Your answer is #{direction} (correct answer: #{correct_answer})."
-    save_answer_to_database(false)
+    @error_message = "Try again or press View Answer. Your answer was #{direction}"
+    # save_answer_to_database(false)
   end
 
   def check_probability_answer
@@ -333,33 +359,13 @@ class PracticeProblemsController < ApplicationController
     if (user_ans - correct).abs < 0.01
       redirect_to_success
     else
-      @error_message = user_ans < correct ? 'too small' : 'too large'
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
 
   def check_data_statistics_answers
-    answers = @question[:answers]
-
-    all_correct = answers.each_key.all? do |key|
-      next true if params[key].blank?
-
-      user_val = params[key].to_f
-      (user_val - answers[key]).abs <= 0.01
-    end
-    unless all_correct
-      answers.each_key do |key|
-        next unless answer_incorrect?(key, answers[key])
-
-        set_error_message(key, params[key].to_f, answers[key])
-        break
-      end
-    end
-    redirect_to_success if all_correct
-  end
-
-  def check_confidence_interval_answers
     answers = @question[:answers]
     initialize_debug_info
     return handle_blank_inputs if blank_input_present?
@@ -370,7 +376,8 @@ class PracticeProblemsController < ApplicationController
     if @error_message.nil?
       redirect_to_success
     else
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -553,9 +560,9 @@ class PracticeProblemsController < ApplicationController
 
   def set_error_message(key, user_value, expected_value)
     direction = user_value < expected_value ? 'low' : 'high'
-    key_str = key.to_s.humanize.downcase
-    @error_message = "your #{key_str} is too #{direction} (correct answer: #{expected_value})"
-    save_answer_to_database(false)
+    key.to_s.humanize.downcase
+    @error_message = "Try again or press View Answer. Your answer was #{direction}"
+    # save_answer_to_database(false)
   end
 
   def answer_incorrect?(key, expected_value)
@@ -576,8 +583,8 @@ class PracticeProblemsController < ApplicationController
     if user_answer == correct_answer
       redirect_to_success
     else
-      @error_message = "That's incorrect. The correct answer is #{correct_answer ? 'True' : 'False'}."
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -589,8 +596,8 @@ class PracticeProblemsController < ApplicationController
       redirect_to_success
     else
       direction = user_answer < correct_answer ? 'too low' : 'too high'
-      @error_message = "That's incorrect. Your answer is #{direction} (correct answer: #{correct_answer})"
-      save_answer_to_database(false)
+      @error_message = "Try again or press View Answer. Your answer was #{direction}"
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -620,7 +627,8 @@ class PracticeProblemsController < ApplicationController
     if all_correct
       redirect_to_success
     else
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
     end
   end
 
@@ -649,8 +657,8 @@ class PracticeProblemsController < ApplicationController
     if (user_answer - correct_answer).abs < 0.01
       redirect_to_success
     else
-      @error_message = user_answer < correct_answer ? 'too small' : 'too large'
-      save_answer_to_database(false)
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
       nil
     end
   end
@@ -710,9 +718,9 @@ class PracticeProblemsController < ApplicationController
     end
   end
 
-  def set_error_message_for_answer(user_ans, correct)
-    save_answer_to_database(false)
-    @error_message = user_ans < correct ? 'too small' : 'too large'
+  def set_error_message_for_answer(_user_ans, _correct)
+    @error_message = 'Try again or press View Answer.'
+    # save_answer_to_database(false)
     nil
   end
 
@@ -722,18 +730,17 @@ class PracticeProblemsController < ApplicationController
     # Calculate time spent on the problem
     time_spent = nil
     if session[:problem_start_time]
-      begin
-        time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
-      rescue StandardError => e
-        Rails.logger.debug { "Error calculating time spent: #{e.message}" }
-      end
+
+      time_spent = (Time.current - Time.zone.parse(session[:problem_start_time])).to_i.to_s
+
     end
 
     # Get user's answer based on the question type
     user_answer = extract_user_answer
+    user_answer = 'Answer Viewed By Student' if ['', '{}', '{"lower_bound":null,"upper_bound":null}'].include?(user_answer)
 
     # Create and save the answer record
-    answer = Answer.create(
+    Answer.create(
       template_id: @question[:template_id] || 0,
       question_id: nil,
       category: @category,
@@ -745,9 +752,9 @@ class PracticeProblemsController < ApplicationController
       date_completed: Time.current.strftime('%Y-%m-%d %H:%M:%S'),
       time_spent: time_spent
     )
-    Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
+    # Rails.logger.error { "Failed to save answer: #{answer.errors.full_messages.join(', ')}" } unless answer.persisted?
 
-    Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
+    # Rails.logger.debug { "Answer record created: #{answer.persisted? ? 'success' : 'failed'}" }
   end
 
   def extract_user_answer
@@ -757,7 +764,8 @@ class PracticeProblemsController < ApplicationController
     when 'engineering_ethics' then params[:ethics_answer].to_s
     when 'momentum & collisions' then extract_collision_answer
     when 'finite_differences' then extract_finite_differences_answer
-    else params[:answer].to_s
+    else
+      params[:answer].presence || 'Answer Viewed By Student'
     end
   end
 
@@ -783,6 +791,23 @@ class PracticeProblemsController < ApplicationController
     @question[:answer_choices].to_json
   rescue StandardError
     nil
+  end
+
+  def check_confidence_interval_answers
+    answers = @question[:answers]
+    initialize_debug_info
+    return handle_blank_inputs if blank_input_present?
+
+    extract_and_log_problem_parameters if @question[:question].present?
+    check_confidence_bounds(answers)
+    session[:debug_info] = @debug_info
+    if @error_message.nil?
+      redirect_to_success
+    else
+      @error_message = 'Try again or press View Answer.'
+      # save_answer_to_database(false)
+      nil
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength, Layout/LineLength

@@ -64,9 +64,13 @@ class ParticleStaticsProblemGenerator
     [{ label: 'Your Answer', key: 'ps_answer', type: 'radio', options: data[:options] }]
   end
 
-  # rubocop:disable Metrics/MethodLength
   def static_questions
-    questions = [
+    questions = basic_static_questions + advanced_static_questions
+    questions.map { |q| generate_ps_problem_from_data(q) }
+  end
+
+  def basic_static_questions
+    [
       {
         question: 'A 10 kg object is suspended by two cables. What is the tension in each' \
                   'cable if the system is in equilibrium?',
@@ -90,40 +94,54 @@ class ParticleStaticsProblemGenerator
         input_type: 'fill_in',
         field_label: 'Coefficient of Friction',
         template_id: 3
-      },
-      {
-        question: 'Which of the following is a condition for static equilibrium?',
-        answer: 'A',
-        input_type: 'multiple_choice',
-        options: [
-          { value: 'A', label: 'ΣF = 0 and ΣM = 0' },
-          { value: 'B', label: 'ΣF ≠ 0 and ΣM = 0' },
-          { value: 'C', label: 'ΣF = 0 and ΣM ≠ 0' },
-          { value: 'D', label: 'None of the above' }
-        ],
-        template_id: 4
-      },
-      # Particle Statics Problems
-      {
-        question: 'A 100 N force is applied at the edge of a beam. What is the moment about the point of support ' \
-                  '2 meters from the force?',
-        answer: '200',
-        input_type: 'fill_in',
-        field_label: 'Moment (Nm)',
-        template_id: 5
-      },
-      {
-        question: 'A 50 kg object is in equilibrium. There are two forces acting on it. Force A is 100 N at an ' \
-                  'angle of 30° and Force B is 150 N at 60°. What is the resultant force?',
-        answer: '179.69',
-        input_type: 'fill_in',
-        field_label: 'Resultant Force (N)',
-        template_id: 6
       }
     ]
-    questions.map { |q| generate_ps_problem_from_data(q) }
   end
-  # rubocop:enable Metrics/MethodLength
+
+  def advanced_static_questions
+    [
+      multiple_choice_question,
+      moment_question,
+      resultant_force_question
+    ]
+  end
+
+  def multiple_choice_question
+    {
+      question: 'Which of the following is a condition for static equilibrium?',
+      answer: 'A',
+      input_type: 'multiple_choice',
+      options: [
+        { value: 'A', label: 'ΣF = 0 and ΣM = 0' },
+        { value: 'B', label: 'ΣF ≠ 0 and ΣM = 0' },
+        { value: 'C', label: 'ΣF = 0 and ΣM ≠ 0' },
+        { value: 'D', label: 'None of the above' }
+      ],
+      template_id: 4
+    }
+  end
+
+  def moment_question
+    {
+      question: 'A 100 N force is applied at the edge of a beam. What is the moment about the point of support ' \
+                '2 meters from the force?',
+      answer: '200',
+      input_type: 'fill_in',
+      field_label: 'Moment (Nm)',
+      template_id: 5
+    }
+  end
+
+  def resultant_force_question
+    {
+      question: 'A 50 kg object is in equilibrium. There are two forces acting on it. Force A is 100 N at an ' \
+                'angle of 30° and Force B is 150 N at 60°. What is the resultant force?',
+      answer: '179.69',
+      input_type: 'fill_in',
+      field_label: 'Resultant Force (N)',
+      template_id: 6
+    }
+  end
 
   def dynamic_questions
     [

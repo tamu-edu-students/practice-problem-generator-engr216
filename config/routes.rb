@@ -24,6 +24,8 @@ Rails.application.routes.draw do
                                                   as: :generate_measurements_and_error_problems
   post 'measurements_and_error_problems/check_answer', to: 'measurements_and_error_problems#check_answer',
                                                        as: :check_measurements_and_error_answer
+  post 'measurements_and_error_problems/view_answer', to: 'measurements_and_error_problems#view_answer',
+                                                        as: :view_measurements_and_error_answer
 
   # Redirecting after successful login
   get '/auth/google_oauth2/callback', to: 'sessions#omniauth'
@@ -61,30 +63,35 @@ Rails.application.routes.draw do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
   resources :harmonic_motion_problems, only: [] do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
   resources :rigid_body_statics_problems, only: [] do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
   resources :angular_momentum_problems, only: [] do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
   resources :particle_statics_problems do
     collection do
       post :check_answer
       get :generate
+      post 'view_answer'
     end
   end
   
@@ -92,6 +99,7 @@ Rails.application.routes.draw do
     collection do
       get 'generate'
       post 'check_answer'
+      post 'view_answer'
     end
   end
 
