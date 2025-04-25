@@ -1,12 +1,20 @@
+# features/step_definitions/semester_steps.rb
 Given('I am logged in as a teacher') do
-  @teacher = Teacher.create!(name: 'Test Teacher', email: 'teacher@tamu.edu')
-
-  # Instead of using allow_any_instance_of which is RSpec specific,
-  # set up the session directly for Cucumber
+  @teacher = Teacher.find_or_create_by!(email: 'teacher@tamu.edu') do |t|
+    t.name = 'Test Teacher'
+  end
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: 'google_oauth2',
+    uid: '456',
+    info: {
+      email: 'teacher@tamu.edu',
+      name: 'Test Teacher'
+    }
+  )
+  # Set session directly, bypassing callback
   page.set_rack_session(user_type: 'teacher', user_id: @teacher.id)
-
-  # Visit a page to ensure the session is active
-  visit '/'
+  visit teacher_dashboard_path
+  puts "Teacher logged in: #{@teacher.email}"
 end
 
 Given('I am on the student management page') do
@@ -124,4 +132,57 @@ Then('all students in the {string} semester should be deleted') do |semester_nam
   semester = Semester.find_by(name: semester_name)
   # Ensure the check is scoped to the current teacher's students
   expect(@teacher.students.where(semester: semester).count).to eq(0)
+end
+
+# features/step_definitions/semester_steps.rb (append to end)
+Given('I have a semester named {string}') do |semester_name|
+  @fall_semester = Semester.find_or_create_by!(name: semester_name) { |s| s.active = true }
+end
+
+# features/step_definitions/semester_steps.rb
+Given('I have students enrolled in {string}') do |semester_name|
+  @teacher ||= Teacher.find_by(email: 'teacher@tamu.edu')
+  raise 'Teacher not found' unless @teacher
+  semester = Semester.find_or_create_by!(name: semester_name) { |s| s.active = true }
+  @fall_semester = semester if semester_name == 'Fall 2024' # Ensure @fall_semester is set
+  spring_semester = Semester.find_or_create_by!(name: 'Spring 2024') { |s| s.active = true }
+  @student1 = Student.find_or_create_by!(uin: 123_456_789) do |s|
+    s.first_name = 'John'
+    s.last_name = 'Doe'
+    s.email = 'john.semester@example.com'
+    s.teacher = @teacher
+    s.semester = semester
+    s.semester_id = semester.id
+  end
+  @student2 = Student.find_or_create_by!(uin: 987_654_321) do |s|
+    s.first_name = 'Jane'
+    s.last_name = 'Smith'
+    s.email = 'jane.semester@example.com'
+    s.teacher = @teacher
+    s.semester = spring_semester
+    s.semester_id = spring_semester.id
+  end
+  [@student1, @student2].each do |student|
+    question = Question.find_or_create_by!(
+      category: 'Angular Momentum',
+      question: 'Test Question',
+      answer_choices: %w[A B C]
+    )
+    Answer.find_or_create_by!(
+      student_email: student.email,
+      question_id: question.id
+    ) do |ans|
+      ans.category = question.category
+      ans.question_description = question.question
+      ans.answer_choices = question.answer_choices
+      ans.answer = 'A'
+      ans.correctness = true
+      ans.date_completed = Time.zone.today
+      ans.time_spent = '1 minute'
+      ans.template_id = 1
+    end
+  end
+  puts "Students created: #{Student.count}"
+  puts "Teacher students: #{@teacher.students.pluck(:email)}"
+  puts "Answers created: #{Answer.count}"
 end

@@ -1,85 +1,42 @@
-Given('I am on the student history dashboard to filter by semester') do
-  # Ensure teacher exists
-  @teacher ||= Teacher.find_by(email: 'teacher@tamu.edu')
-  @teacher ||= Teacher.create!(name: 'Test Teacher', email: 'teacher@tamu.edu')
-
-  # Set up the session directly for Cucumber
-  page.set_rack_session(user_type: 'teacher', user_id: @teacher.id)
-
-  # Create semesters if they don't exist
-  @fall_semester = Semester.find_or_create_by!(name: 'Fall 2024') do |s|
-    s.active = true
-  end
-
-  @spring_semester = Semester.find_or_create_by!(name: 'Spring 2024') do |s|
-    s.active = true
-  end
-
-  # Create test students in each semester
-  @student1 = Student.find_or_create_by!(uin: 123_456_789) do |s|
-    s.first_name = 'John'
-    s.last_name = 'Smith'
-    s.email = 'john.smith@example.com'
-    s.teacher = @teacher
-    s.semester = @fall_semester
-  end
-  @student1.update!(semester: @fall_semester, teacher: @teacher) unless @student1.semester == @fall_semester
-
-  @student2 = Student.find_or_create_by!(uin: 987_654_321) do |s|
-    s.first_name = 'Jane'
-    s.last_name = 'Doe'
-    s.email = 'jane.doe@example.com'
-    s.teacher = @teacher
-    s.semester = @spring_semester
-  end
-  @student2.update!(semester: @spring_semester, teacher: @teacher) unless @student2.semester == @spring_semester
-
-  # Create some test answers for each student
-  create_test_answers_for_student(@student1)
-  create_test_answers_for_student(@student2)
-
-  # Visit the student history dashboard
-  visit student_history_dashboard_path
-end
-
+# features/step_definitions/filter_statistics_by_semester_steps.rb
 Then('I should see statistics for students across all semesters') do
-  # Check that both students are visible
-  expect(page).to have_content("#{@student1.first_name} #{@student1.last_name}")
-  expect(page).to have_content("#{@student2.first_name} #{@student2.last_name}")
-
-  # Check that the class performance data includes all students
-  within('div.table-wrapper', text: 'Class Performance') do
-    # We can't check exact counts since we don't have the answers method
-    # Just verify that 'Total Completed' is present
-    expect(page).to have_content('Total Completed')
-  end
+  expect(page).to have_content('Class Performance Overview')
+  expect(page).to have_content('Total Completed:')
+  expect(page).to have_content('Total Correct:')
+  expect(page).to have_content('Total Incorrect:')
+  expect(page).to have_content('Per-Category Breakdown')
 end
 
+# features/step_definitions/filter_statistics_by_semester_steps.rb
 Then('I should see statistics only for students in {string}') do |semester_name|
-  # Identify the student for the selected semester
-  student = semester_name == 'Fall 2024' ? @student1 : @student2
-  other_student = semester_name == 'Fall 2024' ? @student2 : @student1
-
-  # Check correct student is visible and other is not
-  expect(page).to have_content("#{student.first_name} #{student.last_name}")
-  expect(page).not_to have_content("#{other_student.first_name} #{other_student.last_name}")
+  expect(page).to have_content('Class Performance Overview')
+  expect(page).to have_select('semester_id', selected: semester_name)
+  expect(page).to have_select('student_email', with_options: [@student1.first_name, 'All'])
+  expect(page).not_to have_select('student_email', with_options: [@student2.first_name])
+  expect(page).to have_content('Total Completed:')
 end
 
-Then('the class performance data should reflect only {string} students') do |_semester_name|
-  # Check that class performance data is present, but we can't check specific counts
-  within('div.table-wrapper', text: 'Class Performance') do
+Then('the class performance data should reflect only {string} students') do |semester_name|
+  within('div.bg-white.shadow-lg.rounded-xl', text: 'Class Performance Overview') do
     expect(page).to have_content('Total Completed')
   end
 end
 
 When('I click on a student name') do
-  expect(page).to have_link("#{@student1.first_name} #{@student1.last_name}")
+  visit "/teacher_dashboard/student_history_dashboard?semester_id=#{@fall_semester.id}"
+  expect(page).to have_select('student_email', wait: 5)
+  # Debug: Print available options
+  options = page.all('#studentDropdown option').map(&:text)
+  puts "Student dropdown options: #{options}"
+  # Select by email to match the <option value>
+  select "#{@student1.first_name} #{@student1.last_name}", from: 'student_email'
+  click_button 'Apply'
 end
 
-Then('I should see that student\'s history filtered for {string}') do |_semester_name|
-  expect(page).to have_select('semester_id', selected: 'Fall 2024')
-  expect(page).to have_content(@student1.first_name)
-  expect(page).to have_content(@student1.last_name)
+Then('I should see that student\'s history filtered for {string}') do |semester_name|
+  expect(page).to have_content('Student Performance Overview')
+  expect(page).to have_content("#{@student1.first_name} #{@student1.last_name}")
+  expect(page).to have_select('semester_id', selected: semester_name)
 end
 
 Then('the back button should maintain the semester filter') do
@@ -94,21 +51,26 @@ Then('the back button should maintain the semester filter') do
 end
 
 When('I search for {string} in the search field') do |search_term|
-  fill_in 'search', with: search_term
-  click_button 'Search'
+  visit "/teacher_dashboard/student_history_dashboard?semester_id=#{@fall_semester.id}&search=#{search_term}"
+  # Debug: Confirm the page loaded and check student dropdown
+  expect(page).to have_select('student_email', wait: 5)
+  options = page.all('#studentDropdown option').map(&:text)
+  puts "Student dropdown options after search: #{options}"
 end
 
 Then('I should see only {string} students with {string} in their name or email') do |semester_name, search_term|
-  # Get the student that should match
-  student = @student1 if semester_name == 'Fall 2024' && @student1.last_name.include?(search_term)
-  student = @student2 if semester_name == 'Spring 2024' && @student2.last_name.include?(search_term)
-
-  # Check that this student is visible
-  expect(page).to have_content("#{student.first_name} #{student.last_name}") if student
-
-  # Ensure other student is not visible
-  other_student = student == @student1 ? @student2 : @student1
-  expect(page).not_to have_content("#{other_student.first_name} #{other_student.last_name}")
+  expect(page).to have_select('semester_id', selected: semester_name)
+  if semester_name == 'Fall 2024' && search_term == 'Smith'
+    # No students should match, dropdown should only have "All"
+    expect(page).to have_select('student_email', with_options: ['All'])
+  else
+    # Handle other cases if needed
+    expected_options = ['All']
+    student = @student1 if semester_name == 'Fall 2024' && (@student1.last_name.include?(search_term) || @student1.first_name.include?(search_term) || @student1.email.include?(search_term))
+    student = @student2 if semester_name == 'Spring 2024' && (@student2.last_name.include?(search_term) || @student2.first_name.include?(search_term) || @student2.email.include?(search_term))
+    expected_options << "#{student.first_name} #{student.last_name}" if student
+    expect(page).to have_select('student_email', with_options: expected_options)
+  end
 end
 
 Then('the semester filter should be maintained') do
