@@ -52,7 +52,10 @@
       <form action="<%= view_answer_practice_problems_path %>" method="post" class="mt-4">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <%= hidden_field_tag :category_id, @category %>
-        <button type="submit" id="view-answer-btn" class=" px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer" onclick="return confirm('Are you sure you want to view the answer? You won\'t be able to submit any more answers after this.');">
+        <button type="submit" id="view-answer-btn" 
+          class="px-6 py-2 rounded transition-colors cursor-pointer <%= @disable_view_answer ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600' %>"
+          onclick="return confirm('Are you sure you want to view the answer? You won\'t be able to submit any more answers after this.');"
+          <%= 'disabled' if @disable_view_answer %>>
           View Answer
         </button>
       </form>

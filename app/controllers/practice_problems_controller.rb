@@ -241,6 +241,7 @@ class PracticeProblemsController < ApplicationController
 
   def redirect_to_success
     save_answer_to_database(true)
+    @disable_view_answer = true
 
     if @question && @question[:type] == 'propagation of error'
       params[:success] = true
