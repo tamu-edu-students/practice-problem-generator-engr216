@@ -36,13 +36,13 @@ end
 # Seed Teachers
 teachers_data = [
   { email: 'kjs3767@tamu.edu', first_name: 'kevin', last_name: 'shi' },
-  { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'tuorci' },
+  { email: 'n2rowc@tamu.edu', first_name: 'nicholas', last_name: 'turoci' },
   { email: 'coopercalk@tamu.edu', first_name: 'cooper', last_name: 'calk' },
   { email: 'jordandary@tamu.edu', first_name: 'jordan', last_name: 'daryanani' },
   { email: 'vivek.somarapu@tamu.edu', first_name: 'vivek', last_name: 'somarapu' },
   { email: 'dhruvmanihar@tamu.edu', first_name: 'dhruv', last_name: 'manihar' },
-  { email: 'susindar@tamu.edu', first_name: 'philip', last_name: 'ritchey' },
-  { email: 'pcr@tamu.edu', first_name: 'sahinya', last_name: 'susindar' }
+  { email: 'pcr@tamu.edu', first_name: 'philip', last_name: 'ritchey' },
+  { email: 'susindar@tamu.edu', first_name: 'sahinya', last_name: 'susindar' }
 ]
 
 teachers = teachers_data.map do |teacher_data|
