@@ -105,7 +105,6 @@ Then('I should be able to edit their information') do
   click_link 'Edit this student'
   fill_in 'First name', with: 'Jane'
   fill_in 'Last name', with: 'Smith'
-  fill_in 'Uin', with: '987654321'
   click_button 'Update Student'
   expect(page).to have_content('Student was successfully updated.')
 end
