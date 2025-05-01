@@ -1,5 +1,3 @@
-# features/step_definitions/rigid_body_statics_steps.rb
-
 Given('I am on the {string} page for bodies') do |page_name|
   @student = Student.create!(
     email: 'test@example.com',
@@ -28,22 +26,22 @@ Then('a new {string} problem should be dynamically generated') do |category|
 end
 
 When('I submit a Rigid Body Statics answer') do
-  if page.has_field?('rbs_answer', wait: 5)
-    fill_in 'rbs_answer', with: '1.234'
-  elsif page.has_field?('rbs_answer_1', wait: 5) && page.has_field?('rbs_answer_2', wait: 5)
-    fill_in 'rbs_answer_1', with: '1.234'
-    fill_in 'rbs_answer_2', with: '1.234'
+  if page.has_selector?('input[type="radio"][name="rbs_answer"]', wait: 5)
+    first('input[type="radio"][name="rbs_answer"]').click
   else
-    inputs = page.all('input[type="text"]')
-    raise 'No input fields found for rigid body statics answer' unless inputs.any?
+    text_fields = page.all('input[type="text"][name^="rbs_answer"]', wait: 5)
+    raise 'No input fields found for rigid body statics answer' unless text_fields.any?
 
-    inputs.each { |input| input.set('1.234') }
+    text_fields.each_with_index do |field, index|
+      field.set((1.234 + (index * 0.1)).round(3).to_s)
+    end
+
   end
-
   click_button 'Check Answer'
 end
 
 Then('I should receive feedback on my Rigid Body Statics answer') do
-  # Check that a feedback message is displayed, assuming it uses a border class for color.
-  expect(page).to have_content(/Correct.*answer.*is right!|Incorrect.*try again.*View Answer/, wait: 5)
+  expect(page).to have_content(
+    /Correct.*answer.*is right!|Incorrect.*try again.*View Answer|Incorrect, the correct answer is [A-D]\./, wait: 5
+  )
 end
