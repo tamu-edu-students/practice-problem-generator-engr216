@@ -1,5 +1,3 @@
-# features/step_definitions/harmonic_motion_steps.rb
-
 Given('I am on the Harmonic Motion Problem Generator page') do
   @student = Student.find_or_create_by!(
     email: 'test@example.com',
@@ -17,16 +15,19 @@ When('I click the New Problem button') do
 end
 
 When('I submit a Harmonic Motion answer') do
-  if page.has_field?('shm_answer', wait: 5)
-    fill_in 'shm_answer', with: '1.734'
-  elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
-    fill_in 'shm_answer_1', with: '1.734'
-    fill_in 'shm_answer_2', with: '0.403'
+  if page.has_selector?('input[type="radio"][name="shm_answer"]', wait: 5)
+    # Multiple-choice question: select the first radio button
+    first('input[type="radio"][name="shm_answer"]').click
   else
-    inputs = page.all('input[type="text"]')
-    raise 'No enabled input fields found for harmonic motion answer' unless inputs.any?
+    # Fill-in-the-blank question: look for text fields
+    text_fields = page.all('input[type="text"][name^="shm_answer"]', wait: 5)
+    raise 'No input fields found for harmonic motion answer' unless text_fields.any?
 
-    inputs.each { |input| input.set('1.234') }
+    text_fields.each_with_index do |field, index|
+      # Fill with incremental test values (e.g., 1.734, 1.834, etc.)
+      field.set((1.734 + (index * 0.1)).round(3).to_s)
+    end
+
   end
 
   click_button 'Check Answer'
@@ -37,5 +38,7 @@ Then('a new Harmonic Motion problem should be dynamically generated') do
 end
 
 Then('I should receive feedback on my Harmonic Motion answer') do
-  expect(page).to have_content(/Correct.*answer.*is right!|Incorrect.*try again.*View Answer/, wait: 5)
+  expect(page).to have_content(
+    /Correct.*answer.*is right!|Incorrect.*try again.*View Answer|Incorrect, the correct answer is [A-D]\./, wait: 5
+  )
 end

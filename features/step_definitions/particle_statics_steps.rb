@@ -18,20 +18,20 @@ When('I submit a particle statics answer') do
   # First ensure a problem is present
   step 'I click the particle statics new problem button'
 
-  # Wait for inputs to appear
-  sleep(1)
-
-  if page.has_field?('ps_answer', wait: 5)
-    fill_in 'ps_answer', with: '12.0'
-  elsif page.has_field?('ps_answer_1', wait: 5) && page.has_field?('ps_answer_2', wait: 5)
-    fill_in 'ps_answer_1', with: '1.234'
-    fill_in 'ps_answer_2', with: '2.345'
+  # Check for multiple-choice (radio buttons) first
+  if page.has_selector?('input[type="radio"][name="ps_answer"]', wait: 5)
+    # Select the first radio button option
+    first('input[type="radio"][name="ps_answer"]').click
   else
-    # Fall back to any visible text input fields
-    inputs = page.all('input[type="text"]')
-    raise 'No input fields found for particle statics answer' unless inputs.any?
+    # Handle fill-in-the-blank (text fields)
+    text_fields = page.all('input[type="text"][name^="ps_answer"]', wait: 5)
+    raise 'No input fields found for particle statics answer' unless text_fields.any?
 
-    inputs.each { |input| input.set('1.234') }
+    text_fields.each_with_index do |field, index|
+      # Fill with incremental test values (e.g., 1.234, 1.334, etc.)
+      field.set((1.234 + (index * 0.1)).round(3).to_s)
+    end
+
   end
 
   click_button 'Check Answer'
@@ -42,5 +42,7 @@ Then('a new "Particle Statics" problem should be dynamically generated for parti
 end
 
 Then('I should receive feedback on my particle statics answer') do
-  expect(page).to have_content(/Correct.*answer.*is right!|Incorrect.*try again.*View Answer/, wait: 5)
+  expect(page).to have_content(
+    /Correct.*answer.*is right!|Incorrect.*try again.*View Answer|Incorrect, the correct answer is [A-D]\./, wait: 5
+  )
 end
