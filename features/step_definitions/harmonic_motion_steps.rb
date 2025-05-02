@@ -17,18 +17,41 @@ When('I click the New Problem button') do
 end
 
 When('I submit a Harmonic Motion answer') do
-  if page.has_field?('shm_answer', wait: 5)
-    fill_in 'shm_answer', with: '1.734'
-  elsif page.has_field?('shm_answer_1', wait: 5) && page.has_field?('shm_answer_2', wait: 5)
-    fill_in 'shm_answer_1', with: '1.734'
-    fill_in 'shm_answer_2', with: '0.403'
-  else
-    inputs = page.all('input[type="text"]')
-    raise 'No enabled input fields found for harmonic motion answer' unless inputs.any?
+  max_attempts = 5
+  attempts = 0
 
-    inputs.each { |input| input.set('1.234') }
+  # 1) Keep generating new problems until we see a shm_answer field (or fail)
+  loop do
+    click_link_or_button('Generate New Problem')
+    break if page.has_selector?('input[id^="shm_answer"]', visible: true, wait: 3)
+
+    attempts += 1
+    raise "No Harmonic Motion answer fields found after #{max_attempts} attempts" if attempts >= max_attempts
   end
 
+  # 2) Collect all visible, enabled shm_answer inputs
+  elements = all('input[id^="shm_answer"]', visible: true)
+             .reject(&:disabled?)
+
+  if elements.any?
+    # 3) Fill text fields or click radio buttons
+    elements.each do |el|
+      if el[:type] == 'text'
+        el.set('1.734')
+      else
+        el.click
+      end
+    end
+  else
+    # 4) Fallback to any visible text inputs
+    fallback = all('input[type="text"]', visible: true)
+               .reject(&:disabled?)
+    raise 'No answer fields found for Harmonic Motion' if fallback.empty?
+
+    fallback.each { |f| f.set('1.734') }
+  end
+
+  # 5) Finally, submit
   click_button 'Check Answer'
 end
 
