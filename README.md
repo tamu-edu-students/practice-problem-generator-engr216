@@ -44,7 +44,7 @@ bundle exec cucumber
 heroku login
 ```
 ```bash
-heroku create temp-app
+heroku git:remote -a whispering-reaches-02252
 ```
 ```bash
 git push heroku main
