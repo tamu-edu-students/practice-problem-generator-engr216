@@ -28,18 +28,32 @@ Then('a new {string} problem should be dynamically generated') do |category|
 end
 
 When('I submit a Rigid Body Statics answer') do
-  if page.has_field?('rbs_answer', wait: 5)
-    fill_in 'rbs_answer', with: '1.234'
-  elsif page.has_field?('rbs_answer_1', wait: 5) && page.has_field?('rbs_answer_2', wait: 5)
-    fill_in 'rbs_answer_1', with: '1.234'
-    fill_in 'rbs_answer_2', with: '1.234'
-  else
-    inputs = page.all('input[type="text"]')
-    raise 'No input fields found for rigid body statics answer' unless inputs.any?
+  max_attempts = 5
+  attempts = 0
 
-    inputs.each { |input| input.set('1.234') }
+  # 1) Keep generating new problems until an answer field shows up (or we give up)
+  loop do
+    click_link_or_button('Generate New Problem')
+    break if page.has_selector?('input[id^="rbs_answer"]', visible: true, wait: 3)
+
+    attempts += 1
+    raise "No RBS answer fields found after #{max_attempts} attempts" if attempts >= max_attempts
   end
 
+  # 2) Grab all the visible, enabled inputs starting with "rbs_answer"
+  elements = all('input[id^="rbs_answer"]', visible: true)
+             .reject(&:disabled?)
+
+  # 3) Fill or click each one
+  elements.each do |el|
+    if el[:type] == 'text'
+      el.set('1.234')
+    else
+      el.click
+    end
+  end
+
+  # 4) Finally submit
   click_button 'Check Answer'
 end
 

@@ -124,7 +124,6 @@ RSpec.describe ParticleStaticsProblemsController, type: :controller do
       session[:current_question] = radio_question.to_json
     end
 
-
     it 'incorrectly identifies when the wrong answer is selected' do
       post :check_answer, params: { ps_answer: 'Option A' }
       expect(assigns(:feedback_message)).to eq('Incorrect, try again or press View Answer.')
